@@ -1,0 +1,1753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Equity Market Intelligence Report — Feb 27, 2026</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #0d0d1a;
+      color: #e8e8f0;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ─── SLIDE CONTAINER ─── */
+    .presentation { width: 100%; height: 100vh; position: relative; }
+
+    .slide {
+      display: none;
+      width: 100%;
+      height: calc(100vh - 52px);
+      padding: 44px 64px 36px;
+      position: relative;
+      overflow: hidden;
+      background: #F5F5F0;
+      color: #1A1A2E;
+    }
+    .slide.active { display: flex; flex-direction: column; }
+
+    /* ─── CONTROLS ─── */
+    .controls {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 52px;
+      background: #1A1A2E;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      z-index: 100;
+      border-top: 1px solid #2e3f5c;
+    }
+    .controls button {
+      background: #1E3A5F;
+      color: #F5F5F0;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+      letter-spacing: 0.3px;
+      transition: background 0.2s;
+    }
+    .controls button:hover { background: #3B82F6; }
+    #slide-counter {
+      font-size: 13px;
+      color: #8898aa;
+      min-width: 70px;
+      text-align: center;
+    }
+
+    /* ─── TITLE SLIDE ─── */
+    .title-slide {
+      background: linear-gradient(135deg, #1A1A2E 0%, #0f2244 50%, #1a3a5c 100%) !important;
+      color: #F5F5F0 !important;
+      justify-content: center !important;
+      align-items: flex-start !important;
+    }
+    .title-slide::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(59,130,246,0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(14,165,233,0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .title-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+    .title-label {
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #3B82F6;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+    .title-main {
+      font-size: 46px;
+      font-weight: 800;
+      line-height: 1.1;
+      color: #F5F5F0;
+      margin-bottom: 20px;
+    }
+    .title-main span { color: #3B82F6; }
+    .title-sub {
+      font-size: 16px;
+      color: #8898aa;
+      line-height: 1.6;
+    }
+    .title-meta {
+      margin-top: 40px;
+      display: flex;
+      gap: 32px;
+    }
+    .title-meta-item { display: flex; flex-direction: column; gap: 4px; }
+    .title-meta-item .lbl { font-size: 10px; color: #4a6080; text-transform: uppercase; letter-spacing: 1.5px; }
+    .title-meta-item .val { font-size: 13px; color: #8898aa; font-weight: 500; }
+
+    .agent-badges {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .agent-badge {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      border-radius: 10px;
+      border: 1px solid rgba(59,130,246,0.2);
+      background: rgba(255,255,255,0.04);
+    }
+    .agent-badge .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .agent-badge .name { font-size: 13px; font-weight: 700; color: #d0d8f0; }
+    .agent-badge .desc { font-size: 11px; color: #5a6a80; margin-top: 2px; }
+
+    /* ─── CONTENT SLIDE ─── */
+    .slide-header {
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #e0e0d8;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .slide-header-left { display: flex; flex-direction: column; gap: 4px; }
+    .agent-tag {
+      font-size: 10px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 3px;
+      display: inline-block;
+      width: fit-content;
+    }
+    .tag-bull { background: #dcfce7; color: #15803d; }
+    .tag-bear { background: #fee2e2; color: #b91c1c; }
+    .tag-risk { background: #fef3c7; color: #b45309; }
+    .tag-sent { background: #ede9fe; color: #6d28d9; }
+    .tag-synth { background: #dbeafe; color: #1d4ed8; }
+    .tag-exec { background: #f0fdf4; color: #166534; }
+
+    .slide-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: #1E3A5F;
+      margin-top: 6px;
+    }
+    .slide-date { font-size: 12px; color: #9aa5b4; }
+
+    /* ─── METRIC BOXES ─── */
+    .metrics-row {
+      display: grid;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .metrics-row.cols-4 { grid-template-columns: repeat(4, 1fr); }
+    .metrics-row.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .metrics-row.cols-2 { grid-template-columns: repeat(2, 1fr); }
+
+    .metric-box {
+      padding: 16px 18px;
+      border-radius: 8px;
+      background: #ffffff;
+      border-left: 4px solid #3B82F6;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .metric-box.green { border-left-color: #10B981; }
+    .metric-box.red { border-left-color: #DC2626; }
+    .metric-box.amber { border-left-color: #F59E0B; }
+    .metric-box.purple { border-left-color: #8B5CF6; }
+    .metric-box.navy { border-left-color: #1E3A5F; }
+
+    .metric-label { font-size: 10px; color: #6b7280; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 6px; font-weight: 600; }
+    .metric-value { font-size: 28px; font-weight: 800; color: #1A1A2E; line-height: 1; }
+    .metric-value.sm { font-size: 18px; }
+    .metric-delta { font-size: 12px; margin-top: 4px; font-weight: 600; }
+    .metric-delta.pos { color: #10B981; }
+    .metric-delta.neg { color: #DC2626; }
+    .metric-delta.neu { color: #6b7280; }
+    .metric-note { font-size: 11px; color: #9aa5b4; margin-top: 4px; }
+
+    /* ─── TWO COLUMN ─── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; flex: 1; }
+    .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; flex: 1; }
+
+    /* ─── CONTENT CARDS ─── */
+    .content-card {
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 20px 22px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1E3A5F;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #f0f0e8;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    /* ─── BULLET POINTS ─── */
+    .point-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .point-list li {
+      font-size: 13.5px;
+      color: #374151;
+      line-height: 1.5;
+      padding-left: 20px;
+      position: relative;
+    }
+    .point-list li::before {
+      content: '›';
+      position: absolute;
+      left: 0;
+      color: #3B82F6;
+      font-weight: 700;
+      font-size: 16px;
+      top: -1px;
+    }
+    .point-list li.pos::before { color: #10B981; }
+    .point-list li.neg::before { color: #DC2626; }
+    .point-list li.warn::before { color: #F59E0B; }
+    .point-list li strong { color: #1E3A5F; }
+
+    /* ─── SCORE BAR ─── */
+    .score-row { display: flex; flex-direction: column; gap: 14px; }
+    .score-item { display: flex; flex-direction: column; gap: 6px; }
+    .score-label { display: flex; justify-content: space-between; align-items: center; }
+    .score-name { font-size: 12px; color: #374151; font-weight: 600; }
+    .score-num { font-size: 13px; font-weight: 800; color: #1A1A2E; }
+    .score-bar-bg {
+      height: 8px;
+      background: #f0f0e8;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .score-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.8s ease;
+    }
+
+    /* ─── SCENARIO TABLE ─── */
+    .scenario-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .scenario-table th {
+      background: #1E3A5F;
+      color: #F5F5F0;
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 11px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+    .scenario-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #f0f0e8;
+      color: #374151;
+      vertical-align: top;
+    }
+    .scenario-table tr:nth-child(even) td { background: #fafaf8; }
+    .scenario-table .base { color: #1d4ed8; font-weight: 700; }
+    .scenario-table .stress { color: #b45309; font-weight: 700; }
+    .scenario-table .shock { color: #b91c1c; font-weight: 700; }
+
+    /* ─── REGIME BADGE ─── */
+    .regime-box {
+      background: linear-gradient(135deg, #1E3A5F, #2d5080);
+      color: #F5F5F0;
+      border-radius: 12px;
+      padding: 24px 28px;
+      text-align: center;
+    }
+    .regime-box .r-label { font-size: 10px; letter-spacing: 2px; color: #8898aa; text-transform: uppercase; margin-bottom: 8px; }
+    .regime-box .r-value { font-size: 32px; font-weight: 800; color: #F59E0B; }
+    .regime-box .r-desc { font-size: 12px; color: #8898aa; margin-top: 8px; line-height: 1.5; }
+
+    /* ─── EXEC SUMMARY HIGHLIGHT ─── */
+    .highlight-box {
+      background: linear-gradient(135deg, #1E3A5F 0%, #0f4c8c 100%);
+      border-radius: 10px;
+      padding: 20px 24px;
+      color: #F5F5F0;
+    }
+    .highlight-box .h-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #8898aa; margin-bottom: 6px; }
+    .highlight-box .h-text { font-size: 14px; line-height: 1.65; color: #d0dcea; }
+
+    /* ─── INVALIDATION BOX ─── */
+    .invalid-row { display: flex; flex-direction: column; gap: 10px; }
+    .invalid-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 12px 16px;
+      border-radius: 8px;
+      background: #fff8f8;
+      border: 1px solid #fecaca;
+    }
+    .invalid-icon { font-size: 18px; flex-shrink: 0; }
+    .invalid-title { font-size: 12px; font-weight: 700; color: #991b1b; margin-bottom: 2px; }
+    .invalid-desc { font-size: 12px; color: #6b7280; line-height: 1.5; }
+
+    /* ─── CATALYST TIMELINE ─── */
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+    .timeline-item {
+      display: flex;
+      gap: 20px;
+      padding-bottom: 20px;
+      position: relative;
+    }
+    .timeline-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 17px;
+      top: 36px;
+      bottom: 0;
+      width: 2px;
+      background: #e0e0d8;
+    }
+    .timeline-dot {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+      z-index: 1;
+      font-weight: 700;
+    }
+    .timeline-content { flex: 1; padding-top: 4px; }
+    .timeline-date { font-size: 10px; color: #9aa5b4; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+    .timeline-title { font-size: 13px; font-weight: 700; color: #1A1A2E; margin-bottom: 3px; }
+    .timeline-desc { font-size: 12px; color: #6b7280; line-height: 1.5; }
+
+    /* ─── FOOTER ─── */
+    .slide-footer {
+      margin-top: auto;
+      padding-top: 14px;
+      border-top: 1px solid #e8e8e0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-source { font-size: 10px; color: #b0b8c8; }
+    .footer-page { font-size: 10px; color: #b0b8c8; }
+
+    /* ─── SVG CHARTS ─── */
+    .chart-wrap { background: #fff; border-radius: 8px; padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .chart-title { font-size: 11px; font-weight: 700; color: #374151; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; }
+
+    /* ─── QUOTE ─── */
+    .quote-box {
+      background: #f8f9ff;
+      border-left: 4px solid #3B82F6;
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      font-size: 13px;
+      font-style: italic;
+      color: #374151;
+      line-height: 1.6;
+    }
+    .quote-source { font-size: 11px; font-style: normal; color: #9aa5b4; margin-top: 6px; font-weight: 600; }
+
+    /* ─── BIAS TABLE ─── */
+    .bias-card {
+      background: linear-gradient(135deg, #dcfce7, #f0fdf4);
+      border: 2px solid #10B981;
+      border-radius: 10px;
+      padding: 20px 22px;
+    }
+    .bias-card.neutral-bg {
+      background: linear-gradient(135deg, #dbeafe, #eff6ff);
+      border-color: #3B82F6;
+    }
+
+    /* ─── TRANSITION ─── */
+    .slide { animation: none; }
+
+    /* ─── DARK SLIDE ─── */
+    .dark-slide {
+      background: #1A1A2E !important;
+      color: #F5F5F0 !important;
+    }
+    .dark-slide .slide-title { color: #F5F5F0 !important; }
+    .dark-slide .slide-header { border-bottom-color: #2e3f5c !important; }
+    .dark-slide .metric-box { background: rgba(255,255,255,0.05) !important; }
+    .dark-slide .metric-value { color: #F5F5F0 !important; }
+    .dark-slide .metric-note { color: #5a6a80 !important; }
+    .dark-slide .content-card { background: rgba(255,255,255,0.05) !important; }
+    .dark-slide .card-title { color: #8898aa !important; }
+    .dark-slide .point-list li { color: #c8d0e0 !important; }
+    .dark-slide .slide-footer { border-top-color: #2e3f5c !important; }
+
+  </style>
+</head>
+<body>
+<div class="presentation">
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 1 — TITLE
+  ══════════════════════════════════════════ -->
+  <div class="slide title-slide active" id="slide-1">
+    <div class="title-grid">
+      <div>
+        <div class="title-label">Multi-Agent Equity Market Intelligence</div>
+        <div class="title-main">US Equity<br><span>Market Report</span></div>
+        <div class="title-sub">Four-agent adversarial framework: Bull · Bear · Risk · Sentiment &amp; Positioning. Synthesizing regime, crowding, and asymmetry signals.</div>
+        <div class="title-meta">
+          <div class="title-meta-item">
+            <span class="lbl">Date</span>
+            <span class="val">February 27, 2026</span>
+          </div>
+          <div class="title-meta-item">
+            <span class="lbl">Sources</span>
+            <span class="val">TMTB · GS · Citadel · Huishui</span>
+          </div>
+          <div class="title-meta-item">
+            <span class="lbl">Orientation</span>
+            <span class="val">Buy-Side Decision Support</span>
+          </div>
+        </div>
+      </div>
+      <div class="agent-badges">
+        <div class="agent-badge">
+          <div class="dot" style="background:#10B981"></div>
+          <div><div class="name">Bull Agent</div><div class="desc">Structural upside drivers &amp; reflexive loops</div></div>
+        </div>
+        <div class="agent-badge">
+          <div class="dot" style="background:#DC2626"></div>
+          <div><div class="name">Bear Agent</div><div class="desc">Counter-thesis, stress tests &amp; scenario downside</div></div>
+        </div>
+        <div class="agent-badge">
+          <div class="dot" style="background:#F59E0B"></div>
+          <div><div class="name">Risk Agent</div><div class="desc">Fragility, tail risk &amp; cross-asset linkages</div></div>
+        </div>
+        <div class="agent-badge">
+          <div class="dot" style="background:#8B5CF6"></div>
+          <div><div class="name">Sentiment &amp; Positioning</div><div class="desc">Crowding, narrative &amp; flow dynamics</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer" style="border-top-color:#2e3f5c; margin-top:40px;">
+      <span class="footer-source" style="color:#3a4a60">Equity Market Intelligence System — Adversarial Multi-Agent Framework</span>
+      <span class="footer-page" style="color:#3a4a60">1 / 16</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 2 — EXECUTIVE SUMMARY
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="slide-2">
+    <div class="slide-header">
+      <div class="slide-header-left">
+        <span class="agent-tag tag-exec">Executive Summary</span>
+        <div class="slide-title">The Market at an Inflection</div>
+      </div>
+      <span class="slide-date">Feb 27, 2026</span>
+    </div>
+
+    <div class="metrics-row cols-4" style="margin-bottom:20px">
+      <div class="metric-box navy">
+        <div class="metric-label">Regime</div>
+        <div class="metric-value sm">Fragile Bull</div>
+        <div class="metric-note">AI intact; NVDA can't break out</div>
+      </div>
+      <div class="metric-box amber">
+        <div class="metric-label">Narrative Stability</div>
+        <div class="metric-value">62<span style="font-size:16px">/100</span></div>
+        <div class="metric-note">Mid–late cycle consensus</div>
+      </div>
+      <div class="metric-box red">
+        <div class="metric-label">Crowding Risk</div>
+        <div class="metric-value">74<span style="font-size:16px">/100</span></div>
+        <div class="metric-note">AI hardware; JP Morgan warns extremes</div>
+      </div>
+      <div class="metric-box green">
+        <div class="metric-label">Tactical Bias</div>
+        <div class="metric-value sm">Neutral+</div>
+        <div class="metric-note">Rotate hardware → software</div>
+      </div>
+    </div>
+
+    <div class="two-col" style="gap:20px">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="highlight-box">
+          <div class="h-label">Core Thesis</div>
+          <div class="h-text">NVDA's near-perfect Q4 ($68.1B, +$1.9B beat; Q1 guide $78B, +$6B above consensus) confirms AI infrastructure demand is structurally intact through 2027. Yet the stock fell 5% on the print — a textbook crowded-long exhaustion signal. The market is telling us the easy money on AI hardware is behind us.</div>
+        </div>
+        <div class="highlight-box" style="background:linear-gradient(135deg,#2d1a1a,#4a1a1a)">
+          <div class="h-label">Key Risk</div>
+          <div class="h-text">Goldman's trading desk reports zero S&P call demand — institutional conviction is not building at these levels. S&P 500 at 21.5x forward P/E (vs 18.8x 10-yr avg) and CAPE at 46x leave no margin for error on earnings execution.</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="content-card">
+          <div class="card-title">Three Core Signals</div>
+          <ul class="point-list">
+            <li class="pos"><strong>Software Inflection:</strong> After weeks of underperformance, software names finally caught a bid (Feb 19). WDAY's AI investment step-up is a near-term headwind but validates the long cycle.</li>
+            <li class="neg"><strong>NVDA Distribution Risk:</strong> "Buy the news, sell the fact" — buyside already built positions; stock sub-15x on CY27 EPS ~$13–15 but can't break out despite perfect results.</li>
+            <li class="warn"><strong>Korea as Canary:</strong> Samsung +8%, Hynix +8% on memory/HBM demand. Korea KOSPI +3.67% (Feb 26). If memory names stall, AI infrastructure conviction narrows sharply.</li>
+          </ul>
+        </div>
+        <div class="content-card" style="background:#fefce8">
+          <div class="card-title">Next Catalysts</div>
+          <ul class="point-list">
+            <li><strong>Mar 4:</strong> Jensen Huang at MS TMT Conference</li>
+            <li><strong>Mar 16:</strong> GTC — Rubin platform, NVL576, inference roadmap</li>
+            <li><strong>Mar (TBD):</strong> China "Two Sessions" policy signals</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span class="footer-source">Sources: TMTB Morning Wrap 2/26/26 · NVDA Earnings Analysis (Huishui Club) · GS China Open 2/25/26</span>
+      <span class="footer-page">2 / 16</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 3 — BULL CASE: NVDA & AI Infrastructure
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="slide-3">
+    <div class="slide-header">
+      <div class="slide-header-left">
+        <span class="agent-tag tag-bull">Bull Agent</span>
+        <div class="slide-title">AI Infrastructure: The Demand Thesis Is Intact</div>
+      </div>
+      <span class="slide-date">Feb 27, 2026</span>
+    </div>
+
+    <div class="metrics-row cols-4" style="margin-bottom:18px">
+      <div class="metric-box green">
+        <div class="metric-label">NVDA Q4 Revenue</div>
+        <div class="metric-value">$68.1B</div>
+        <div class="metric-delta pos">+$1.9B vs consensus</div>
+      </div>
+      <div class="metric-box green">
+        <div class="metric-label">Q1 FY27 Guide</div>
+        <div class="metric-value">$78B</div>
+        <div class="metric-delta pos">+$6B above street</div>
+      </div>
+      <div class="metric-box green">
+        <div class="metric-label">Gross Margin</div>
+        <div class="metric-value">75.2%</div>
+        <div class="metric-delta pos">Blackwell no longer headwind</div>
+      </div>
+      <div class="metric-box green">
+        <div class="metric-label">Networking Rev</div>
+        <div class="metric-value">$11B</div>
+        <div class="metric-delta pos">+300% YoY; 16% of total</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="content-card">
+          <div class="card-title">Core Bull Thesis: Structural Demand Cycle</div>
+          <ul class="point-list">
+            <li class="pos"><strong>Sequential revenue growth through all of CY2026</strong> — CFO guided above the $500B Blackwell+Rubin opportunity previously disclosed.</li>
+            <li class="pos"><strong>Demand visibility extends into 2027</strong> — buyside CY27 EPS estimates moved up to $13–15; stock trades sub-15x those numbers.</li>
+            <li class="pos"><strong>Networking becoming a standalone revenue pillar</strong> — NVLink, NVSwitch, Spectrum ecosystem at $11B signals deepening lock-in vs TPUs/ASICs.</li>
+            <li class="pos"><strong>China revenue excluded from results and guide</strong> — any normalization is incremental upside, not in the base case.</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <div class="card-title">Capital Cycle Tailwinds</div>
+          <ul class="point-list">
+            <li class="pos"><strong>OpenAI $600B compute OPEX by 2030</strong> — and $1.4T in broader capex commitments (Azure, AWS, ORCL, CRWV).</li>
+            <li class="pos"><strong>AI capex = 2% of US GDP ($650B)</strong> — Citadel (Feb 24): "AI adjacent commodities up 65% since Jan '23, 2,800 data centers planned."</li>
+            <li class="pos"><strong>Korea memory ripping:</strong> Samsung +8%, Hynix +8% (Feb 26) on HBM demand — confirms AI buildout intact at the supply-chain level.</li>
+          </ul>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="content-card">
+          <div class="card-title">Forward Catalyst Map</div>
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-dot" style="background:#dcfce7;color:#15803d">M4</div>
+              <div class="timeline-content">
+                <div class="timeline-date">March 4, 2026</div>
+                <div class="timeline-title">Jensen Huang at MS TMT Conference</div>
+                <div class="timeline-desc">First major public appearance post-earnings. Expected to reinforce demand visibility and Rubin ramp.</div>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot" style="background:#dbeafe;color:#1d4ed8">GTC</div>
+              <div class="timeline-content">
+                <div class="timeline-date">March 16, 2026</div>
+                <div class="timeline-title">GTC Conference — The Next Major Catalyst</div>
+                <div class="timeline-desc">NVL576 super-rack reveal, Rubin platform revenue timeline, LPU acquisition integration as standalone inference unit, short-range optical interconnect roadmap.</div>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot" style="background:#fef3c7;color:#b45309">2S</div>
+              <div class="timeline-content">
+                <div class="timeline-date">March 2026 (TBD)</div>
+                <div class="timeline-title">China Two Sessions</div>
+                <div class="timeline-desc">Policy signals on advanced manufacturing, AI industrial upgrading, domestic consumption stimulus. Positive for HK tech.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="quote-box">
+          "We expect sequential revenue growth throughout calendar 2026, exceeding what was included in the $500 billion Blackwell and Rubin revenue opportunity we shared last year."
+          <div class="quote-source">— NVDA CFO, Q4 FY27 Earnings Call, Feb 26, 2026</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span class="footer-source">Sources: TMTB Morning Wrap 2/26/26 · NVDA Earnings Analysis (Huishui Club, 2/26/26) · Citadel Securities 2/24/26</span>
+      <span class="footer-page">3 / 16</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 4 — BULL CASE: Software Inflection
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="slide-4">
+    <div class="slide-header">
+      <div class="slide-header-left">
+        <span class="agent-tag tag-bull">Bull Agent</span>
+        <div class="slide-title">Software Inflection: The Next Leg of the AI Trade</div>
+      </div>
+      <span class="slide-date">Feb 27, 2026</span>
+    </div>
+
+    <div class="two-col">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="content-card">
+          <div class="card-title">Why Software Is the Next Rotational Target</div>
+          <ul class="point-list">
+            <li class="pos">Feb 19: <strong>"Software and internet finally got a bid"</strong> after weeks of underperformance (TMTB EOD). Volume down 20% = low-conviction selling, not distribution.</li>
+            <li class="pos">PANW platformization count +35% YoY to ~1,550 — cybersecurity benefits from AI attack surface expansion; Prisma AIRS, agentic security positioning early.</li>
+            <li class="pos">CDNS +4% on clean beat-and-raise: Q4 EPS $1.99 vs $1.91E, FY26 guide midpoint $5.95B vs $5.94B street. EDA/IP is a steady AI semiconductor tool chain beneficiary.</li>
+            <li class="pos">Wall Street 2026 consensus: ~half of S&P 500 EPS growth coming from Tech — software is a leveraged play on AI monetization coming through in enterprise deployments.</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <div class="card-title">WDAY: Pain Is the Setup</div>
+          <ul class="point-list">
+            <li class="warn">WDAY -9% on FY27 guide step-down due to agentic-AI investment ramp — near-term EPS headwind.</li>
+            <li class="pos">CEO Bhusri: <em>"No amount of vibe coding is going to produce an HR or ERP system"</em> — defensibility of mission-critical software is underappreciated by bears.</li>
+            <li class="pos">Deal elongation = enterprises evaluating AI workflow changes, <strong>not canceling</strong> — pipeline is building, not shrinking.</li>
+            <li class="pos">Historical pattern: Aggressive AI investment in year 1–2 → margin recovery + re-rating in year 3–4. SaaS companies that invest ahead of the curve tend to take share.</li>
+          </ul>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="content-card">
+          <div class="card-title">Earnings Scorecard — Week of Feb 17–26</div>
+          <table class="scenario-table">
+            <thead>
+              <tr><th>Name</th><th>Reaction</th><th>Signal</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>NVDA</strong></td><td class="neg">−5%</td><td>Beat; sell-the-news / crowded</td></tr>
+              <tr><td><strong>CRM</strong></td><td>TBD</td><td>Reported Feb 26 — watching cloud billings</td></tr>
+              <tr><td><strong>CDNS</strong></td><td class="base">+4%</td><td>Clean beat-and-raise; EDA cycle intact</td></tr>
+              <tr><td><strong>PANW</strong></td><td class="stress">−6%</td><td>Organic miss vs buyside; platform counts strong</td></tr>
+              <tr><td><strong>WDAY</strong></td><td class="shock">−9%</td><td>FY27 guide cut; AI investment step-up</td></tr>
+              <tr><td><strong>CVNA</strong></td><td class="shock">−24%</td><td>EBITDA miss; vague FY26 guidance</td></tr>
+              <tr><td><strong>DASH</strong></td><td class="base">+1%</td><td>Modest beat; Q1 EBITDA guide light</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="content-card" style="background:#f0fdf4">
+          <div class="card-title">Bull Upside Pathway: S&P 500 Targets</div>
+          <ul class="point-list">
+            <li class="pos"><strong>Goldman Sachs:</strong> 7,800 target (+14%) — US equities outperform global peers; ~12% EPS growth in 2026.</li>
+            <li class="pos"><strong>Morgan Stanley:</strong> 7,800 (12-month); "unusually favorable policy environment."</li>
+            <li class="pos"><strong>Consensus:</strong> 8–12% total return in 2026; $306 EPS estimate (+12.5% YoY).</li>
+            <li class="pos"><strong>NVDA bull:</strong> CY27 EPS ~$10–15, 25x PE = $250–375 year-end range.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span class="footer-source">Sources: TMTB EOD 2/18 & 2/19/26 · TMTB Morning Wrap 2/25 & 2/26/26 · Investing.com Analyst Consensus · GS 2026 Outlook</span>
+      <span class="footer-page">4 / 16</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 5 — BEAR CASE: NVDA Price Action & Crowding
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="slide-5">
+    <div class="slide-header">
+      <div class="slide-header-left">
+        <span class="agent-tag tag-bear">Bear Agent</span>
+        <div class="slide-title">NVDA's Perfect Print + −5% = A Distribution Signal</div>
+      </div>
+      <span class="slide-date">Feb 27, 2026</span>
+    </div>
+
+    <div class="metrics-row cols-3" style="margin-bottom:18px">
+      <div class="metric-box red">
+        <div class="metric-label">NVDA Post-Earnings Reaction</div>
+        <div class="metric-value">−5%</div>
+        <div class="metric-delta neg">Despite "near-perfect" results</div>
+        <div class="metric-note">Worst day since last spring (CNBC)</div>
+      </div>
+      <div class="metric-box red">
+        <div class="metric-label">S&P 500 Fwd P/E</div>
+        <div class="metric-value">21.5x</div>
+        <div class="metric-delta neg">vs 18.8x 10-year avg (+14% premium)</div>
+      </div>
+      <div class="metric-box red">
+        <div class="metric-label">CAPE Ratio</div>
+        <div class="metric-value">46x</div>
+        <div class="metric-delta neg">Extreme historical valuation</div>
+        <div class="metric-note">ACR: near all-time highs</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="content-card">
+          <div class="card-title">Why Bears See NVDA's Reaction as Structural</div>
+          <ul class="point-list">
+            <li class="neg"><strong>The stock couldn't break out on best-case results</strong> — "same things that have been discussed for months… memory prices, competition, flows going into memory/optical/semicap, power constraints."</li>
+            <li class="neg"><strong>First-wave fast money automatically bought, second wave immediately sold into the pop</strong> — illustrates how front-loaded positioning has become.</li>
+            <li class="neg"><strong>AMD trades at a HIGHER multiple than NVDA</strong> despite 11x smaller data center business and inferior margin — valuation gap signals market uncertainty about NVDA's competitive moat duration.</li>
+            <li class="neg"><strong>GS trading desk: zero S&P call demand</strong> — institutions protecting existing positions, not adding new risk. No FOMO left.</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <div class="card-title">Margin Compression Pathways</div>
+          <ul class="point-list">
+            <li class="neg"><strong>Memory price inflation:</strong> HBM demand surge (Samsung/Hynix +8%) could translate into COGS pressure for NVDA's future quarters — management did NOT address it.</li>
+            <li class="neg"><strong>Hyperscaler capex scrutiny:</strong> Any guidance cut or "digestion period" comment from MSFT/AMZN/GOOG would compress NVDA's forward multiple instantly.</li>
+            <li class="neg"><strong>Custom ASIC displacement:</strong> TPU, Trainium, and new custom chip commitments chip at long-run NVDA share; networking revenue ($11B) signals NVDA is compensating, not ignoring the risk.</li>
+            <li class="neg"><strong>WDAY's AI investment step-up</strong> = every enterprise software company is now diverting FCF toward AI infrastructure, compressing near-term EPS visibility.</li>
+          </ul>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="content-card">
+          <div class="card-title">What Must Go Right for the Bull Case to Hold</div>
+          <table class="scenario-table">
+            <thead><tr><th>Assumption</th><th>Bear Stress Test</th></tr></thead>
+            <tbody>
+              <tr><td>Hyperscaler capex continues +30%+ YoY</td><td class="neg">Even a "pause for digestion" kills the NTM multiple</td></tr>
+              <tr><td>GM sustains 75%+ through Rubin</td><td class="warn">Memory cost inflation untested; mgmt silent</td></tr>
+              <tr><td>China revenue recovers incrementally</td><td class="neg">Geopolitical risk expanding; China hitting Japan firms too</td></tr>
+              <tr><td>No credible ASICs challenge</td><td class="warn">AMD, Google, Amazon all investing aggressively</td></tr>
+              <tr><td>No macro-driven risk-off</td><td class="neg">CAPE at 46x; zero margin for error on macro</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="quote-box">
+          "The good news is that the correction at the stock level is 70–80% done… but the question investors have to ask themselves is: does the index now need to catch down?"
+          <div class="quote-source">— Michael Wilson, Morgan Stanley (via Investopedia, 2/26/26)</div>
+        </div>
+        <div class="quote-box" style="border-left-color:#DC2626; background:#fff5f5">
+          "There Is Zero S&P Call Demand On The Trading Floor."
+          <div class="quote-source">— Goldman Sachs Trading Desk (via ZeroHedge, Feb 2026)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span class="footer-source">Sources: TMTB Morning Wrap 2/26 · Investopedia Market News 2/26/26 · GS Zero Call Demand · FactSet EarningsInsight</span>
+      <span class="footer-page">5 / 16</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 6 — BEAR CASE: Valuation & Macro Stress
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="slide-6">
+    <div class="slide-header">
+      <div class="slide-header-left">
+        <span class="agent-tag tag-bear">Bear Agent</span>
+        <div class="slide-title">Valuation Premium + Macro Headwinds = Asymmetric Risk</div>
+      </div>
+      <span class="slide-date">Feb 27, 2026</span>
+    </div>
+
+    <div class="two-col">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="content-card">
+          <div class="card-title">Valuation Stress Analysis</div>
+          <table class="scenario-table">
+            <thead><tr><th>Metric</th><th>Current</th><th>10-Yr Avg</th><th>Signal</th></tr></thead>
+            <tbody>
+              <tr><td>Fwd P/E (S&P 500)</td><td class="stress">21.5x</td><td>18.8x</td><td class="neg">14% premium</td></tr>
+              <tr><td>CAPE</td><td class="shock">46x</td><td>~28x</td><td class="neg">Extreme</td></tr>
+              <tr><td>EPS Growth Req'd</td><td class="base">+12.5% ('26E)</td><td>+8–10% avg</td><td class="warn">Above trend; no miss tolerance</td></tr>
+              <tr><td>Tech Concentration</td><td class="stress">~35% S&P</td><td>—</td><td class="neg">Record (JP Morgan)</td></tr>
+              <tr><td>10-Yr Treasury</td><td class="stress">~4.5%</td><td>~3.0%</td><td class="neg">Rate of change is headwind</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="content-card">
+          <div class="card-title">Macro Headwinds Building</div>
+          <ul class="point-list">
+            <li class="neg"><strong>Tariff-driven inflation:</strong> Schwab warns tariff headwinds + rising healthcare = corporate margin compression and consumer spending reduction.</li>
+            <li class="neg"><strong>BTC proxy signal:</strong> BTC -1.4% to -2% over the past week, no longer participating in equity rallies — historically a leading indicator for risk appetite degradation.</li>
+            <li class="neg"><strong>Fed stuck until July 29:</strong> 5+ months without a cut in an elevated-rate environment while markets price 21.5x forward P/E.</li>
+            <li class="neg"><strong>"Prolonged government shutdown, sticky inflation, weak consumer confidence"</strong> (Madison Investments) — lower earners strained; spending skewing cautious.</li>
+          </ul>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="content-card">
+          <div class="card-title">Downside Scenario Matrix</div>
+          <table class="scenario-table">
+            <thead><tr><th>Scenario</th><th>Trigger</th><th>S&P 500 Level</th><th>P</th></tr></thead>
+            <tbody>
+              <tr><td class="base">Base</td><td>Soft landing; 12% EPS growth delivers</td><td>7,500–7,800</td><td>60%</td></tr>
+              <tr><td class="stress">Stress</td><td>H1 correction on rates/tariff re-acceleration</td><td>6,500–6,800</td><td>30%</td></tr>
+              <tr><td class="shock">Shock</td><td>Hyperscaler capex pause + recession signal</td><td>5,800–6,100</td><td>10%</td></tr>
+            </tbody>
+          </table>
+          <div style="font-size:11px; color:#9aa5b4; margin-top:8px">Seeking Alpha 2026 Outlook: "Correction to 6,100 in H1, lower low in H2 — lower lows into Q3." Yardeni: recession probability at 20%.</div>
+        </div>
+        <div class="content-card">
+          <div class="card-title">Historical Analogs That Warn of Downside</div>
+          <ul class="point-list">
+            <li class="neg"><strong>2000 analog:</strong> CAPE above 44x; tech concentration above 35%; lead sector couldn't break out on earnings. Not predicting same outcome, but risk profile is elevated.</li>
+            <li class="neg"><strong>Post-DeepSeek shock:</strong> "AI Dumps Most Since DeepSeek" — the market has already shown it can reprice AI hardware narratives rapidly on competitive surprises.</li>
+            <li class="neg"><strong>CVNA −24%:</strong> A reminder that high-multiple consumer-facing stories with "vague guidance" get crushed when they miss — same risk applies to any consensus AI name that misses buyside targets.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span class="footer-source">Sources: FactSet EarningsInsight · ACR 2026 Outlook · Schwab 2026 Outlook · Seeking Alpha · Madison Investments Dec 2025</span>
+      <span class="footer-page">6 / 16</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 7 — RISK AGENT: Macro & Rate Risk
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="slide-7">
+    <div class="slide-header">
+      <div class="slide-header-left">
+        <span class="agent-tag tag-risk">Risk Agent</span>
+        <div class="slide-title">Risk Map: Rates, Macro &amp; Fragility</div>
+      </div>
+      <span class="slide-date">Feb 27, 2026</span>
+    </div>
+
+    <div class="three-col">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="content-card">
+          <div class="card-title">Rate &amp; Policy Risk</div>
+          <ul class="point-list">
+            <li class="neg"><strong>Fed next cut: July 29</strong> — 5+ month window of no relief. Elevated real rates constrain valuation multiples at 21.5x forward P/E.</li>
+            <li class="neg"><strong>10-yr Treasury consensus: 4.0–4.55%</strong> — RBC projects 4.55% by year-end; Oppenheimer 4.0–4.25%. Either scenario = rate headwind.</li>
+            <li class="warn"><strong>Sticky inflation / tariff re-acceleration:</strong> Any upside surprise in CPI re-opens the "higher for longer" debate and compresses P/E multiples instantly.</li>
+            <li class="warn"><strong>H1 correction risk:</strong> Consensus Wall Street view is that bond yield spike in H1 could trigger 5–10% S&P correction before recovery.</li>
+          </ul>
+        </div>
+        <div class="metric-box amber">
+          <div class="metric-label">Rate Risk Score</div>
+          <div class="metric-value">HIGH</div>
+          <div class="metric-note">Elevated real rates + sticky inflation + no near-term Fed relief</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="content-card">
+          <div class="card-title">Geopolitical &amp; Trade Risk</div>
+          <ul class="point-list">
+            <li class="neg"><strong>China export curbs expanding:</strong> China has begun hitting Japanese firms with tighter export restrictions — signals escalation beyond US-China bilateral to a broader multi-party trade conflict.</li>
+            <li class="neg"><strong>"China may adjust countermeasures as it assesses US tariffs"</strong> — retaliatory cycle not resolved; each escalation round adds supply chain uncertainty.</li>
+            <li class="neg"><strong>NVDA China revenue excluded</strong> from Q4 and Q1 — ongoing export restriction is a structural revenue hole. Any incremental recovery is upside; any new restriction is incremental downside.</li>
+            <li class="warn"><strong>China "Two Sessions" next week</strong> — policy risk is two-sided: positive signal on manufacturing/consumption could boost HK/A-share tech; miss on ambition disappoints.</li>
+          </ul>
+        </div>
+        <div class="metric-box red">
+          <div class="metric-label">Geopolitical Risk Score</div>
+          <div class="metric-value">ELEVATED</div>
+          <div class="metric-note">US-China tech war + export curb expansion into Japan firms</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="content-card">
+          <div class="card-title">AI Capex &amp; Concentration Risk</div>
+          <ul class="point-list">
+            <li class="neg"><strong>JP Morgan: "New extremes in crowding, record concentration, winner-takes-all dynamics"</strong> in 2026 — crowded positioning amplifies drawdown severity if a catalyst disappoints.</li>
+            <li class="neg"><strong>Citadel (Feb 24):</strong> AI capex near-term is <em>inflationary</em> — increasing AI spend competes for labor, energy, and commodities. This is an underappreciated macro channel.</li>
+            <li class="warn"><strong>Reflexivity risk:</strong> If NVDA/mega-cap tech sells off, passive fund rebalancing amplifies the move due to record index concentration.</li>
+            <li class="pos"><strong>Constructive long-run:</strong> Citadel's end-state view is more positive — job postings for software engineers +11% YoY despite displacement narrative.</li>
+          </ul>
+        </div>
+        <div class="metric-box red">
+          <div class="metric-label">Concentration Risk Score</div>
+          <div class="metric-value">HIGH</div>
+          <div class="metric-note">Record tech weight; winner-takes-all amplifies tail events</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span class="footer-source">Sources: GS China Open 2/25/26 · Citadel Securities "The 2026 Global Intelligence Crisis" 2/24/26 · JP Morgan 2026 Market Outlook · RBC 2026 Outlook</span>
+      <span class="footer-page">7 / 16</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 8 — RISK AGENT: Tail Risks & Scenario Matrix
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="slide-8">
+    <div class="slide-header">
+      <div class="slide-header-left">
+        <span class="agent-tag tag-risk">Risk Agent</span>
+        <div class="slide-title">Tail Risk Scenarios &amp; Probability-Weighted Downside</div>
+      </div>
+      <span class="slide-date">Feb 27, 2026</span>
+    </div>
+
+    <div class="two-col">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="content-card">
+          <div class="card-title">Full Scenario Matrix</div>
+          <table class="scenario-table">
+            <thead><tr><th>Scenario</th><th>Key Trigger</th><th>AI Infra Impact</th><th>S&P</th><th>Prob</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="base"><strong>Base Case</strong></td>
+                <td>Soft landing; ~12% EPS growth; Fed cuts Jul 29; AI capex sustains</td>
+                <td>NVDA earnings delivery; GTC catalyst; software inflection materializes</td>
+                <td>7,500–7,800</td>
+                <td>55%</td>
+              </tr>
+              <tr>
+                <td class="stress"><strong>Stress</strong></td>
+                <td>10-yr rises to 4.75%+; tariff re-escalation; H1 correction; capex "digestion" language</td>
+                <td>Multiple compression; NVDA re-rates to 18–20x; software selloff deepens</td>
+                <td>6,500–6,800</td>
+                <td>33%</td>
+              </tr>
+              <tr>
+                <td class="shock"><strong>Shock</strong></td>
+                <td>Hyperscaler capex pause + AI disruption competitive shock + recession signal</td>
+                <td>Narrative collapse; AI positioning unwinds; DeepSeek-style repricing x3</td>
+                <td>5,800–6,100</td>
+                <td>12%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="content-card">
+          <div class="card-title">Liquidity Vulnerability Assessment</div>
+          <ul class="point-list">
+            <li class="neg"><strong>Record concentration in mega-cap tech</strong> means any forced selling (rebalancing, margin calls) creates outsized index-level impact.</li>
+            <li class="neg"><strong>BTC decoupling from equities</strong> (BTC -1.4–2% while equity rallied) — crypto was previously a high-beta risk barometer. Decoupling suggests different demand structure, but also a warning that risk appetite has limits.</li>
+            <li class="warn"><strong>High short interest underperforming</strong> (factor data Feb 18) — shorts have been squeezed; less cushion if market needs to find a floor on selling pressure.</li>
+            <li class="warn"><strong>Volume down 20% on Feb 19 QQQ rally</strong> — low-conviction bounce, not institutional re-accumulation.</li>
+          </ul>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="content-card">
+          <div class="card-title">Cross-Asset Linkage Risks</div>
+          <ul class="point-list">
+            <li class="neg"><strong>Rates → Equities:</strong> The most dangerous scenario is a bond market selloff forcing a P/E compression in a market already trading at elevated multiples. 100bps move in 10-yr = ~15% P/E compression at current earnings level.</li>
+            <li class="warn"><strong>AI Capex → Commodities → Inflation:</strong> Citadel explicitly flags AI capex as near-term inflationary via energy, labor, and material demand. This feeds back into the rate environment.</li>
+            <li class="warn"><strong>China Macro → Global Semis:</strong> A miss on Two Sessions policy ambitions, or escalating export controls, creates a risk-off ripple through Korea memory, Taiwan semis, and global AI supply chains.</li>
+            <li class="pos"><strong>Korea as a leading indicator:</strong> KOSPI +3.67% (Feb 26) suggests global tech institutional money is still allocating to AI infrastructure adjacencies. Watch Samsung/Hynix for early warning.</li>
+          </ul>
+        </div>
+        <div class="content-card" style="background:#fff8e6">
+          <div class="card-title">Asymmetry Assessment</div>
+          <ul class="point-list">
+            <li class="warn"><strong>Upside asymmetry:</strong> Software names (WDAY, PANW, enterprise cloud) — compressed valuations + AI monetization catalyst. Multiple expansion possible if deal cycles accelerate.</li>
+            <li class="warn"><strong>Downside asymmetry:</strong> AI hardware crowded names (NVDA, memory) — zero tolerance for disappointment at current positioning. One negative capex comment = violent repricing.</li>
+            <li class="pos"><strong>Best risk/reward:</strong> Long software enablers (CDNS, PANW), long Korea memory (Samsung, Hynix) as AI infrastructure validation plays with less crowding than NVDA directly.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span class="footer-source">Sources: TMTB EOD 2/18–19/26 · Citadel Securities 2/24/26 · Seeking Alpha 2026 Outlook · JP Morgan Market Outlook 2026</span>
+      <span class="footer-page">8 / 16</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 9 — SENTIMENT & POSITIONING: Crowding
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="slide-9">
+    <div class="slide-header">
+      <div class="slide-header-left">
+        <span class="agent-tag tag-sent">Sentiment &amp; Positioning Agent</span>
+        <div class="slide-title">Crowding Diagnosis: AI Hardware Late-Stage, Software Early</div>
+      </div>
+      <span class="slide-date">Feb 27, 2026</span>
+    </div>
+
+    <div class="metrics-row cols-4" style="margin-bottom:18px">
+      <div class="metric-box purple">
+        <div class="metric-label">NVDA Positioning</div>
+        <div class="metric-value sm">Late-Stage</div>
+        <div class="metric-delta neg">Sell-the-news on blowout</div>
+      </div>
+      <div class="metric-box green">
+        <div class="metric-label">Software Positioning</div>
+        <div class="metric-value sm">Early Bid</div>
+        <div class="metric-delta pos">First institutional bid Feb 19</div>
+      </div>
+      <div class="metric-box amber">
+        <div class="metric-label">Institutional Conviction</div>
+        <div class="metric-value sm">Low</div>
+        <div class="metric-delta neg">Zero S&P call demand (GS)</div>
+      </div>
+      <div class="metric-box red">
+        <div class="metric-label">AI Narrative Stress</div>
+        <div class="metric-value sm">Elevated</div>
+        <div class="metric-delta neg">"Citrini Selloff" triggered Asia sell</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="content-card">
+          <div class="card-title">Crowding Risk: Sub-Sector Classification</div>
+          <div class="score-row">
+            <div class="score-item">
+              <div class="score-label">
+                <span class="score-name">NVDA / AI Hardware</span>
+                <span class="score-num" style="color:#DC2626">88/100</span>
+              </div>
+              <div class="score-bar-bg"><div class="score-bar-fill" style="width:88%;background:#DC2626"></div></div>
+            </div>
+            <div class="score-item">
+              <div class="score-label">
+                <span class="score-name">Korea Memory (Samsung/Hynix)</span>
+                <span class="score-num" style="color:#F59E0B">62/100</span>
+              </div>
+              <div class="score-bar-bg"><div class="score-bar-fill" style="width:62%;background:#F59E0B"></div></div>
+            </div>
+            <div class="score-item">
+              <div class="score-label">
+                <span class="score-name">Cybersecurity (PANW)</span>
+                <span class="score-num" style="color:#F59E0B">52/100</span>
+              </div>
+              <div class="score-bar-bg"><div class="score-bar-fill" style="width:52%;background:#F59E0B"></div></div>
+            </div>
+            <div class="score-item">
+              <div class="score-label">
+                <span class="score-name">Enterprise SaaS (WDAY, CRM)</span>
+                <span class="score-num" style="color:#10B981">28/100</span>
+              </div>
+              <div class="score-bar-bg"><div class="score-bar-fill" style="width:28%;background:#10B981"></div></div>
+            </div>
+            <div class="score-item">
+              <div class="score-label">
+                <span class="score-name">EDA / Design Tools (CDNS)</span>
+                <span class="score-num" style="color:#10B981">22/100</span>
+              </div>
+              <div class="score-bar-bg"><div class="score-bar-fill" style="width:22%;background:#10B981"></div></div>
+            </div>
+            <div class="score-item">
+              <div class="score-label">
+                <span class="score-name">S&amp;P 500 Broad Index</span>
+                <span class="score-num" style="color:#F59E0B">58/100</span>
+              </div>
+              <div class="score-bar-bg"><div class="score-bar-fill" style="width:58%;background:#F59E0B"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="content-card">
+          <div class="card-title">Narrative Phase Classification</div>
+          <table class="scenario-table">
+            <thead><tr><th>Sub-Sector</th><th>Phase</th><th>Implication</th></tr></thead>
+            <tbody>
+              <tr><td>AI Hardware / NVDA</td><td class="shock">Late-Stage Crowding</td><td>Reflexivity at risk; watch for distribution</td></tr>
+              <tr><td>Korea Memory / HBM</td><td class="stress">Mid-Cycle Consensus</td><td>Still momentum but getting consensus</td></tr>
+              <tr><td>Enterprise Software</td><td class="base">Early Narrative</td><td>Best risk/reward entry window</td></tr>
+              <tr><td>Physical AI / Robotics</td><td class="base">Very Early</td><td>GS highlights; GTC expected to amplify</td></tr>
+              <tr><td>Cybersecurity</td><td class="base">Early–Mid</td><td>Platform consolidation narrative intact</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="content-card">
+          <div class="card-title">Key Positioning Dynamics</div>
+          <ul class="point-list">
+            <li class="neg"><strong>"Re-grossing not fully walked"</strong> (Huishui Club) — existing longs are protecting PnL, creating a structural bid ceiling until risk appetite re-expands.</li>
+            <li class="neg"><strong>Three-wave post-earnings price action in NVDA</strong>: (1) headline fast money +4%, (2) profit-taking wave -7%, (3) re-entry at -5% vs high. This is a positioning stress pattern, not a fundamental one.</li>
+            <li class="pos"><strong>Bernstein conference (Feb 25)</strong>: SNDK presenting — implies institutional roadshow season is active; new money being pitched on memory/AI infrastructure.</li>
+            <li class="warn"><strong>"Momo Slumps &amp; AI Dumps Most Since DeepSeek"</strong> — momentum factor stress event occurred in late Feb, purging weak hands from AI longs.</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <div class="card-title">Fund Flow Signals</div>
+          <ul class="point-list">
+            <li class="neg"><strong>BTC decoupling:</strong> Historically correlated to risk-on appetite; persistent BTC weakness (-1.4 to -2%) while equities rally = crypto market signaling risk fatigue.</li>
+            <li class="neg"><strong>GARP and TMT momentum held up (Feb 18)</strong> while high short interest, non-profitable tech, and Bitcoin-related exposures underperformed — factor rotation toward quality, away from speculative.</li>
+            <li class="pos"><strong>Asia markets leading on Feb 25:</strong> All green overnight — Taiwan +2.05%, Korea +1.91%, Japan +2.2% — institutional flows going into Asia AI/memory first, US AI hardware second.</li>
+            <li class="warn"><strong>Software sector:</strong> Volume down on Feb 19 bounce — not yet institutional re-accumulation. Confirmation needed for conviction long.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span class="footer-source">Sources: Huishui Club NVDA Analysis 2/26/26 · TMTB EOD 2/18 & 2/19/26 · TMTB Morning Wrap 2/25/26 · GS Trading Desk Note</span>
+      <span class="footer-page">9 / 16</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 10 — SENTIMENT: Narrative Map
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="slide-10">
+    <div class="slide-header">
+      <div class="slide-header-left">
+        <span class="agent-tag tag-sent">Sentiment &amp; Positioning Agent</span>
+        <div class="slide-title">Narrative Dominance &amp; Reflexivity Map</div>
+      </div>
+      <span class="slide-date">Feb 27, 2026</span>
+    </div>
+
+    <div class="two-col">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="content-card">
+          <div class="card-title">Current Dominant Narrative</div>
+          <div class="highlight-box" style="background:linear-gradient(135deg,#1a2e1a,#1a3d2a);margin-bottom:12px">
+            <div class="h-label">Primary Narrative (Mid-Late Cycle)</div>
+            <div class="h-text">"AI infrastructure buildout is a multi-year, irreversible capital cycle. Hyperscalers are compelled to spend; NVDA is the irreplaceable pick-and-shovel play. Memory is the next bottleneck. Software will eventually monetize the AI investment."</div>
+          </div>
+          <ul class="point-list">
+            <li class="warn"><strong>Narrative strength: 62/100</strong> — strong enough to survive a bad quarter, but not strong enough to absorb multiple bad quarters.</li>
+            <li class="neg"><strong>Narrative fragility:</strong> "Citrini's Dystopia" paper triggered an Asian AI selloff — illustrates how a single substack post can catalyze positioning unwinds when crowding is high.</li>
+            <li class="warn"><strong>Counter-narrative gaining traction:</strong> "AI productivity hasn't shown up in the data yet" + displacement fears + OpenAI reducing visible spend from $1.4T to $600B capex framing.</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <div class="card-title">Narrative Stability Score</div>
+          <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px">
+            <div class="score-item">
+              <div class="score-label">
+                <span class="score-name">AI Capex Sustainability</span>
+                <span class="score-num" style="color:#10B981">78/100</span>
+              </div>
+              <div class="score-bar-bg"><div class="score-bar-fill" style="width:78%;background:#10B981"></div></div>
+            </div>
+            <div class="score-item">
+              <div class="score-label">
+                <span class="score-name">NVDA Competitive Moat</span>
+                <span class="score-num" style="color:#F59E0B">61/100</span>
+              </div>
+              <div class="score-bar-bg"><div class="score-bar-fill" style="width:61%;background:#F59E0B"></div></div>
+            </div>
+            <div class="score-item">
+              <div class="score-label">
+                <span class="score-name">Software AI Monetization</span>
+                <span class="score-num" style="color:#F59E0B">45/100</span>
+              </div>
+              <div class="score-bar-bg"><div class="score-bar-fill" style="width:45%;background:#F59E0B"></div></div>
+            </div>
+            <div class="score-item">
+              <div class="score-label">
+                <span class="score-name">Macro Soft Landing</span>
+                <span class="score-num" style="color:#F59E0B">55/100</span>
+              </div>
+              <div class="score-bar-bg"><div class="score-bar-fill" style="width:55%;background:#F59E0B"></div></div>
+            </div>
+            <div class="score-item">
+              <div class="score-label">
+                <span class="score-name">China AI Policy Upside</span>
+                <span class="score-num" style="color:#F59E0B">50/100</span>
+              </div>
+              <div class="score-bar-bg"><div class="score-bar-fill" style="width:50%;background:#F59E0B"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="content-card">
+          <div class="card-title">Reflexivity Analysis: Where Loops Are Present</div>
+          <ul class="point-list">
+            <li class="neg"><strong>NVDA ↔ AI Capex loop (late stage):</strong> NVDA stock ↑ → hyperscaler capex ↑ → NVDA earnings ↑ → NVDA stock ↑. But the loop is reversible: any capex "digestion" commentary breaks it violently.</li>
+            <li class="pos"><strong>Korea memory ↔ HBM demand loop (mid-stage):</strong> AI GPU demand → HBM required → Samsung/Hynix pricing power → more investment in HBM capacity → NVDA supply chain resilience. Less crowded entry than NVDA directly.</li>
+            <li class="pos"><strong>Physical AI / Robotics (early loop forming):</strong> GTC March 16 is expected to elevate the Physical AI narrative. GS China team flagged it as a key NVDA management discussion topic. Early-stage narrative = optionality upside.</li>
+            <li class="warn"><strong>Citrini short narrative:</strong> A single piece of negative AI research triggered an Asian-market sell-off ("Citrini's Dystopia Fuels Asia's Breakaway"). Negative reflexivity loops can ignite fast when crowding is high.</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <div class="card-title">Consensus Belief Mapping</div>
+          <table class="scenario-table">
+            <thead><tr><th>Consensus Belief</th><th>Stress Test</th><th>Risk</th></tr></thead>
+            <tbody>
+              <tr><td>Hyperscaler capex is durable</td><td>OpenAI reduced visible spend framing from $1.4T → $600B</td><td class="stress">Medium</td></tr>
+              <tr><td>NVDA at sub-15x CY27 is cheap</td><td>Only if $13–15 EPS materializes; competition risk</td><td class="stress">Medium</td></tr>
+              <tr><td>Software will monetize AI in 2026</td><td>WDAY guide-down proves timeline is 2027+ for most</td><td class="shock">High</td></tr>
+              <tr><td>Fed provides H2 relief</td><td>Inflation re-acceleration delays Jul 29 cut</td><td class="stress">Medium</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span class="footer-source">Sources: TMTB Morning Wrap 2/23/26 · GS China Open 2/25/26 · Bloomberg "Citrini's Dystopia Fuels Asia's Breakaway" · Huishui Club NVDA 2/26</span>
+      <span class="footer-page">10 / 16</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 11 — SYNTHESIS: Regime & Scores
+  ══════════════════════════════════════════ -->
+  <div class="slide dark-slide" id="slide-11">
+    <div class="slide-header" style="border-bottom-color:#2e3f5c">
+      <div class="slide-header-left">
+        <span class="agent-tag tag-synth">Synthesis Engine</span>
+        <div class="slide-title" style="color:#F5F5F0">Regime Classification &amp; Composite Scores</div>
+      </div>
+      <span class="slide-date" style="color:#4a6080">Feb 27, 2026</span>
+    </div>
+
+    <div class="metrics-row cols-3" style="margin-bottom:20px">
+      <div class="regime-box">
+        <div class="r-label">Market Regime</div>
+        <div class="r-value">FRAGILE BULL</div>
+        <div class="r-desc">AI infrastructure thesis intact. But NVDA distribution signal, institutional conviction gap, and valuation premium create fragility beneath the surface.</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:24px 28px;display:flex;flex-direction:column;gap:16px">
+        <div class="score-item">
+          <div class="score-label">
+            <span class="score-name" style="color:#c8d0e0">Narrative Stability</span>
+            <span class="score-num" style="color:#F59E0B;font-size:22px">62</span>
+          </div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:62%;background:#F59E0B"></div></div>
+          <div style="font-size:11px;color:#5a6a80;margin-top:4px">Mid-to-late cycle consensus. Strong on capex sustainability; weak on software monetization timeline.</div>
+        </div>
+        <div class="score-item">
+          <div class="score-label">
+            <span class="score-name" style="color:#c8d0e0">Crowding Risk</span>
+            <span class="score-num" style="color:#DC2626;font-size:22px">74</span>
+          </div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:74%;background:#DC2626"></div></div>
+          <div style="font-size:11px;color:#5a6a80;margin-top:4px">Record tech concentration. JP Morgan warns of "new extremes." AI hardware specifically at 88/100.</div>
+        </div>
+        <div class="score-item">
+          <div class="score-label">
+            <span class="score-name" style="color:#c8d0e0">Upside/Downside Convexity</span>
+            <span class="score-num" style="color:#3B82F6;font-size:22px">0.6x</span>
+          </div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:40%;background:#3B82F6"></div></div>
+          <div style="font-size:11px;color:#5a6a80;margin-top:4px">Limited upside (+8–12%) vs meaningful downside (−15 to −25%) in stress scenario. Not favorable at these levels.</div>
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:24px 28px;display:flex;flex-direction:column;gap:12px">
+        <div style="font-size:11px;letter-spacing:2px;color:#4a6080;text-transform:uppercase;margin-bottom:4px">Agent Consensus Summary</div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:10px;height:10px;border-radius:50%;background:#10B981;flex-shrink:0"></div>
+          <div style="font-size:12px;color:#c8d0e0"><strong style="color:#10B981">Bull:</strong> AI demand structural; software inflecting; Korea memory confirmation; GTC catalyst near</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:10px;height:10px;border-radius:50%;background:#DC2626;flex-shrink:0"></div>
+          <div style="font-size:12px;color:#c8d0e0"><strong style="color:#DC2626">Bear:</strong> NVDA distribution signal; GS zero call demand; 21.5x P/E; CAPE 46x; BTC decoupling</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:10px;height:10px;border-radius:50%;background:#F59E0B;flex-shrink:0"></div>
+          <div style="font-size:12px;color:#c8d0e0"><strong style="color:#F59E0B">Risk:</strong> Rate headwind July+; tariff re-escalation; China export curb broadening; record concentration</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:10px;height:10px;border-radius:50%;background:#8B5CF6;flex-shrink:0"></div>
+          <div style="font-size:12px;color:#c8d0e0"><strong style="color:#8B5CF6">Sentiment:</strong> AI hardware late-stage crowded; software early-narrative; institutional conviction lacking; momentum purge underway</div>
+        </div>
+        <div style="margin-top:8px;padding-top:12px;border-top:1px solid #2e3f5c">
+          <div style="font-size:11px;color:#4a6080;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px">Net Synthesis</div>
+          <div style="font-size:13px;color:#d0dcea;line-height:1.6">Bull thesis is structural but the easy trade is behind us. Rotation from AI hardware toward software/enablers is the highest risk-adjusted opportunity. Wait for GTC confirmation before adding NVDA.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">
+      <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:16px 18px;border:1px solid rgba(16,185,129,0.3)">
+        <div style="font-size:10px;color:#10B981;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px">Bull Score</div>
+        <div style="font-size:36px;font-weight:800;color:#10B981">68</div>
+        <div style="font-size:11px;color:#5a6a80;margin-top:4px">Structural demand; catalyst runway</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:16px 18px;border:1px solid rgba(220,38,38,0.3)">
+        <div style="font-size:10px;color:#DC2626;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px">Bear Score</div>
+        <div style="font-size:36px;font-weight:800;color:#DC2626">62</div>
+        <div style="font-size:11px;color:#5a6a80;margin-top:4px">Valuation + distribution signal</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:16px 18px;border:1px solid rgba(245,158,11,0.3)">
+        <div style="font-size:10px;color:#F59E0B;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px">Risk Score</div>
+        <div style="font-size:36px;font-weight:800;color:#F59E0B">71</div>
+        <div style="font-size:11px;color:#5a6a80;margin-top:4px">Rates + concentration + geopolitical</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:16px 18px;border:1px solid rgba(139,92,246,0.3)">
+        <div style="font-size:10px;color:#8B5CF6;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px">Sentiment Score</div>
+        <div style="font-size:36px;font-weight:800;color:#8B5CF6">44</div>
+        <div style="font-size:11px;color:#5a6a80;margin-top:4px">Cautious; momentum purge ongoing</div>
+      </div>
+    </div>
+
+    <div class="slide-footer" style="border-top-color:#2e3f5c">
+      <span class="footer-source" style="color:#2e3f5c">Synthesis Engine — Multi-Agent Equity Intelligence Framework</span>
+      <span class="footer-page" style="color:#2e3f5c">11 / 16</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 12 — TACTICAL BIAS
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="slide-12">
+    <div class="slide-header">
+      <div class="slide-header-left">
+        <span class="agent-tag tag-synth">Synthesis Engine</span>
+        <div class="slide-title">Tactical Bias: Neutral+ with Rotation Strategy</div>
+      </div>
+      <span class="slide-date">Feb 27, 2026</span>
+    </div>
+
+    <div class="two-col">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="bias-card neutral-bg">
+          <div class="card-title" style="color:#1d4ed8">Tactical Bias: NEUTRAL+ (Lean Long, Selective)</div>
+          <ul class="point-list">
+            <li class="pos"><strong>Maintain AI infrastructure exposure</strong> — but shift from NVDA/semiconductor direct to software enablers and AI infrastructure adjacencies (PANW, CDNS, memory via Korea names).</li>
+            <li class="pos"><strong>Begin scaling into enterprise software</strong> — WDAY, CRM, SNOW still in price discovery post-guide-down. AI investment ramp is the setup, not the end of the story.</li>
+            <li class="pos"><strong>Hold through GTC (March 16)</strong> — do not add material NVDA risk before GTC. Jensen's message on Rubin timeline + NVL576 + inference roadmap is the next fundamental re-rating event.</li>
+            <li class="warn"><strong>Reduce momentum / high-beta AI longs</strong> — if you are sitting on large P&L in NVDA/AI hardware, "protecting PnL" is rational given crowding. Hedge overlay on AI hardware concentration.</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <div class="card-title">Position Sizing Framework</div>
+          <table class="scenario-table">
+            <thead><tr><th>Theme</th><th>Sizing</th><th>Rationale</th></tr></thead>
+            <tbody>
+              <tr><td>AI Hardware (NVDA direct)</td><td class="warn">Reduce to Neutral</td><td>Crowded; wait for GTC re-rating</td></tr>
+              <tr><td>Memory / HBM (Korea)</td><td class="base">Maintain / Add on weakness</td><td>Less crowded; AI capex validation</td></tr>
+              <tr><td>Enterprise Software</td><td class="base">Add selectively</td><td>Early narrative; WDAY/PANW setup</td></tr>
+              <tr><td>EDA / Design Tools</td><td class="base">Maintain</td><td>Clean beat-and-raise; cycle intact</td></tr>
+              <tr><td>Physical AI / Robotics</td><td class="base">Small exploratory</td><td>GTC catalyst; very early narrative</td></tr>
+              <tr><td>BTC / High-Beta Risk</td><td class="neg">Reduce</td><td>Decoupling signal; risk fatigue</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="content-card">
+          <div class="card-title">What Would Change the Bias</div>
+          <ul class="point-list">
+            <li class="pos"><strong>→ More Bullish:</strong> GTC delivers above-expectation Rubin timeline + NVL576 demand data + physical AI roadmap. Enterprise software guidance accelerates (AI-driven deal cycles shorten). Fed signals earlier cut.</li>
+            <li class="pos"><strong>→ More Bullish:</strong> China Two Sessions delivers strong manufacturing/AI stimulus; NVDA China export restrictions ease incrementally.</li>
+            <li class="neg"><strong>→ More Bearish:</strong> Any hyperscaler capex "digestion" commentary (MSFT/AMZN/GOOG earnings). CPI re-acceleration forces Fed pause through year-end.</li>
+            <li class="neg"><strong>→ More Bearish:</strong> NVDA breaks key support levels post-GTC disappointment. Software guide-downs become a sector-wide pattern (WDAY was not isolated).</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <div class="card-title">Hedge Overlay Recommendations</div>
+          <ul class="point-list">
+            <li class="warn"><strong>Rate risk hedge:</strong> Short duration via TBT/TBF or rates vol overlay given elevated 10-yr trajectory and Fed pause risk.</li>
+            <li class="warn"><strong>AI concentration hedge:</strong> Long VIX / put spreads on QQQ as tail protection for concentrated AI hardware long books — premium cheap relative to crowding level (zero S&P call demand = complacency).</li>
+            <li class="warn"><strong>China geopolitical hedge:</strong> Monitor China-Japan export control escalation; reduce Taiwan semiconductor exposure if geopolitical temperature rises pre-Two Sessions.</li>
+            <li class="pos"><strong>Wait-for-reset strategy:</strong> Seeking Alpha targets 6,100 in H1 — keeping 10–15% dry powder to add on a 10–15% correction is rational given convexity profile.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span class="footer-source">Sources: TMTB Morning Wrap 2/23–26/26 · GS Trading Desk · Huishui Club NVDA 2/26 · Seeking Alpha 2026 Outlook · JP Morgan 2026</span>
+      <span class="footer-page">12 / 16</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 13 — INVALIDATION TRIGGERS
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="slide-13">
+    <div class="slide-header">
+      <div class="slide-header-left">
+        <span class="agent-tag tag-synth">Synthesis Engine</span>
+        <div class="slide-title">Invalidation Triggers: What Breaks the Dominant Narrative</div>
+      </div>
+      <span class="slide-date">Feb 27, 2026</span>
+    </div>
+
+    <div class="two-col">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="card-title" style="padding:0;border:none;font-size:14px;color:#1E3A5F;margin-bottom:4px">Triggers That Would Invalidate the Bull Narrative</div>
+        <div class="invalid-row">
+          <div class="invalid-item">
+            <div class="invalid-icon">⚡</div>
+            <div>
+              <div class="invalid-title">Hyperscaler Capex Guidance Cut</div>
+              <div class="invalid-desc">Any "digestion period," "slowing investment pace," or capex cut from MSFT, AMZN, or GOOG in their next earnings. This would directly undermine NVDA's demand visibility thesis.</div>
+            </div>
+          </div>
+          <div class="invalid-item">
+            <div class="invalid-icon">📉</div>
+            <div>
+              <div class="invalid-title">NVDA GTC Disappointment</div>
+              <div class="invalid-desc">If GTC (March 16) fails to deliver incremental demand data, Rubin revenue timeline, or NVL576 commercial traction, the "next catalyst" narrative collapses. Stock likely retests prior lows.</div>
+            </div>
+          </div>
+          <div class="invalid-item">
+            <div class="invalid-icon">🏦</div>
+            <div>
+              <div class="invalid-title">Fed Delays July 29 Cut</div>
+              <div class="invalid-desc">CPI re-acceleration above 3.5% forces the Fed to pause entirely through year-end. 21.5x forward P/E becomes unsustainable at 5%+ real rates.</div>
+            </div>
+          </div>
+          <div class="invalid-item">
+            <div class="invalid-icon">🌏</div>
+            <div>
+              <div class="invalid-title">China Geopolitical Escalation</div>
+              <div class="invalid-desc">New export restrictions expanding beyond Japan firms to broader tech supply chains, or Taiwan tensions elevating. Would reprice the entire AI infrastructure supply chain.</div>
+            </div>
+          </div>
+          <div class="invalid-item">
+            <div class="invalid-icon">🔄</div>
+            <div>
+              <div class="invalid-title">Competitive Disruption Shock</div>
+              <div class="invalid-desc">A credible commercial alternative to NVDA (DeepSeek-style hardware efficiency surprise, or major ASIC announcement from MSFT/GOOG) that calls into question the GPU-centric AI capex assumption.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="card-title" style="padding:0;border:none;font-size:14px;color:#1E3A5F;margin-bottom:4px">Triggers That Would Confirm the Bull Thesis</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border-radius:8px;background:#f0fdf4;border:1px solid #bbf7d0">
+            <div style="font-size:18px">✅</div>
+            <div>
+              <div style="font-size:12px;font-weight:700;color:#166534;margin-bottom:2px">GTC Delivers Rubin Revenue Timeline</div>
+              <div style="font-size:12px;color:#6b7280;line-height:1.5">Clear CY27 Rubin ramp guidance + NVL576 commercial orders would confirm NVDA's "$500B+ opportunity" claim and re-rate the stock above current trading range.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border-radius:8px;background:#f0fdf4;border:1px solid #bbf7d0">
+            <div style="font-size:18px">✅</div>
+            <div>
+              <div style="font-size:12px;font-weight:700;color:#166534;margin-bottom:2px">Software Deal Cycles Accelerate (Q1 Reports)</div>
+              <div style="font-size:12px;color:#6b7280;line-height:1.5">If WDAY/CRM/SNOW Q1 reports show shortening deal cycles and AI-driven upsell, the software rotation trade has fundamental legs, not just a mean-reversion bounce.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border-radius:8px;background:#f0fdf4;border:1px solid #bbf7d0">
+            <div style="font-size:18px">✅</div>
+            <div>
+              <div style="font-size:12px;font-weight:700;color:#166534;margin-bottom:2px">China Two Sessions Strong Policy Signals</div>
+              <div style="font-size:12px;color:#6b7280;line-height:1.5">Bold advanced manufacturing/AI stimulus would re-rate HK tech and validate the global AI capex expansion narrative beyond just US hyperscalers.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border-radius:8px;background:#f0fdf4;border:1px solid #bbf7d0">
+            <div style="font-size:18px">✅</div>
+            <div>
+              <div style="font-size:12px;font-weight:700;color:#166534;margin-bottom:2px">CPI Softens → Fed Signals Earlier Cut</div>
+              <div style="font-size:12px;color:#6b7280;line-height:1.5">Any inflation surprise to the downside that opens the door to a June cut would immediately re-expand multiples and remove the key macro overhang.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span class="footer-source">Sources: TMTB Morning Wrap 2/23–26/26 · GS China Open 2/25/26 · Citadel Securities 2/24/26 · Huishui Club NVDA 2/26/26</span>
+      <span class="footer-page">13 / 16</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 14 — GLOBAL INTELLIGENCE CRISIS (Citadel)
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="slide-14">
+    <div class="slide-header">
+      <div class="slide-header-left">
+        <span class="agent-tag tag-risk">Risk Agent</span>
+        <div class="slide-title">The 2026 AI Intelligence Crisis: Citadel's Framework</div>
+      </div>
+      <span class="slide-date">Citadel Securities, Feb 24, 2026</span>
+    </div>
+
+    <div class="two-col">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="content-card">
+          <div class="card-title">Key Data Points from Citadel (Feb 24, 2026)</div>
+          <div class="metrics-row cols-2" style="margin-bottom:14px">
+            <div class="metric-box amber">
+              <div class="metric-label">Unemployment Rate</div>
+              <div class="metric-value">4.28%</div>
+              <div class="metric-note">Post-print; AI displacement narrative active</div>
+            </div>
+            <div class="metric-box amber">
+              <div class="metric-label">AI Capex / GDP</div>
+              <div class="metric-value">2%</div>
+              <div class="metric-note">$650B — extraordinary scale</div>
+            </div>
+            <div class="metric-box green">
+              <div class="metric-label">AI Commodities Rise</div>
+              <div class="metric-value">+65%</div>
+              <div class="metric-note">Since Jan 2023</div>
+            </div>
+            <div class="metric-box green">
+              <div class="metric-label">SWE Job Postings</div>
+              <div class="metric-value">+11%</div>
+              <div class="metric-note">YoY — displacement fears overblown?</div>
+            </div>
+          </div>
+          <ul class="point-list">
+            <li class="warn"><strong>2,800 data centers planned for US construction</strong> — scale of infrastructure commitment is historically unprecedented.</li>
+            <li class="warn"><strong>Near-term: AI capex is inflationary</strong> — competing for labor, energy, commodities. Creates a feedback loop back into the rate environment.</li>
+            <li class="pos"><strong>End-state: Citadel is constructive</strong> — long-run productivity gains are real; AI is not purely deflationary in the near term but is in the medium term.</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <div class="card-title">The Paradox: Displacement vs. Job Creation</div>
+          <ul class="point-list">
+            <li class="warn">The "2028 Global Intelligence Crisis" narrative on Substack has shaped consensus expectations of job destruction — yet Citadel data shows <strong>software engineer job postings +11% YoY</strong>.</li>
+            <li class="pos">Historical analog: every major technology displacement cycle (industrial revolution, PC, internet) created more jobs than it destroyed over a 5–10 year horizon.</li>
+            <li class="neg">Near-term pain is real for specific worker cohorts. The speed of AI capability improvements means this cycle may be faster and more concentrated than prior transitions.</li>
+            <li class="warn">For equity markets, the key transmission mechanism is: <em>How quickly does AI capex translate into productivity, margin expansion, and EPS growth?</em> The bull thesis requires this to happen by 2027.</li>
+          </ul>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="content-card">
+          <div class="card-title">Implications for Investment Positioning</div>
+          <ul class="point-list">
+            <li class="pos"><strong>AI capex at 2% of GDP is not cyclical — it is structural.</strong> This is the most important data point for the bull case. The investment base is too large to unwind quickly.</li>
+            <li class="neg"><strong>Near-term inflationary pressure</strong> from AI capex is a real macro risk. $650B in AI spending competes for scarce skilled labor and energy — upward pressure on wages and electricity prices.</li>
+            <li class="warn"><strong>The "displacement narrative" vs. actual data divergence</strong> suggests markets may be pricing in too much AI negative impact on enterprise software (e.g., WDAY's multiple compression may be excessive).</li>
+            <li class="pos"><strong>Physical AI / Robotics:</strong> GS highlighted this as a key NVDA GTC topic. If physical AI displaces workers in manufacturing, the capex cycle extends beyond data centers into new end markets.</li>
+          </ul>
+        </div>
+        <div class="highlight-box">
+          <div class="h-label">Citadel's Bottom Line (Feb 24, 2026)</div>
+          <div class="h-text">We see the near-term dynamics around the AI capex story as inflationary, but given markets are focused on the forward narrative, the constructive end-state take is warranted. The question isn't whether AI creates value — it's whether that value accrues to equity holders faster than the market has priced in at current multiples.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span class="footer-source">Source: "The 2026 Global Intelligence Crisis" — Citadel Securities, Frank Flight, February 24, 2026</span>
+      <span class="footer-page">14 / 16</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 15 — KEY TAKEAWAYS
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="slide-15">
+    <div class="slide-header">
+      <div class="slide-header-left">
+        <span class="agent-tag tag-synth">Key Takeaways</span>
+        <div class="slide-title">What Every PM Needs to Know Right Now</div>
+      </div>
+      <span class="slide-date">Feb 27, 2026</span>
+    </div>
+
+    <div class="three-col">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="content-card" style="background:#f0fdf4;border:1px solid #bbf7d0">
+          <div class="card-title" style="color:#15803d">What the Bulls Got Right</div>
+          <ul class="point-list">
+            <li class="pos">NVDA's Q4 was objectively near-perfect — beats across all metrics, Q1 guide +$6B above street, GM defended at 75%+. Demand visibility to 2027 is real.</li>
+            <li class="pos">AI capex at 2% of GDP ($650B) is structural, not cyclical. The investment base cannot unwind quickly.</li>
+            <li class="pos">Korea memory confirmation (Samsung/Hynix +8%) validates AI infrastructure buildout at the supply chain level.</li>
+            <li class="pos">Software inflection beginning — first institutional bid appeared Feb 19 after weeks of weakness. Early narrative = best risk/reward.</li>
+          </ul>
+        </div>
+        <div class="content-card" style="background:#fff5f5;border:1px solid #fecaca">
+          <div class="card-title" style="color:#b91c1c">What the Bears Got Right</div>
+          <ul class="point-list">
+            <li class="neg">NVDA fell 5% on its best results in recent memory — the clearest possible crowded-long distribution signal.</li>
+            <li class="neg">GS trading desk: zero S&P call demand. Institutions protecting, not accumulating.</li>
+            <li class="neg">CAPE at 46x, forward P/E at 21.5x — no margin for error at these valuations if macro surprises negatively.</li>
+          </ul>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="content-card" style="background:#fffbeb;border:1px solid #fde68a">
+          <div class="card-title" style="color:#b45309">The Key Tensions to Monitor</div>
+          <ul class="point-list">
+            <li class="warn"><strong>GTC (March 16)</strong> is the single most important near-term event. NVDA needs Jensen to deliver a Rubin timeline and NVL576 commercial traction to break out of its trading range.</li>
+            <li class="warn"><strong>Software Q1 earnings</strong> — will WDAY's deal elongation prove idiosyncratic or sector-wide? The answer determines whether the software rotation trade is a trade or a trend.</li>
+            <li class="warn"><strong>Hyperscaler capex language</strong> at next MSFT/AMZN/GOOG earnings — the most important earnings guidance beyond NVDA for the entire AI infrastructure narrative.</li>
+            <li class="warn"><strong>China Two Sessions</strong> — bifurcated risk: strong policy = re-rate HK tech + A-shares; weak policy = confirmation of China AI investment slowdown.</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <div class="card-title">The Trade Nobody Is Talking About</div>
+          <ul class="point-list">
+            <li class="pos"><strong>Physical AI / Robotics:</strong> GS flagged it as a GTC management topic. Citadel sees labor displacement in manufacturing as the next phase. This trade is in the <em>very early narrative</em> phase — maximum optionality, minimum crowding.</li>
+            <li class="pos"><strong>EDA toolchain (CDNS):</strong> Clean beat-and-raise, steady guide, FY26 EPS midpoint above street. AI chip design complexity requires more EDA. Quiet compounder with cycle tailwinds.</li>
+          </ul>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="content-card" style="background:linear-gradient(135deg,#1E3A5F,#2d5080);color:#F5F5F0">
+          <div class="card-title" style="color:#8898aa;border-bottom-color:#2e3f5c">The One-Slide Summary</div>
+          <ul class="point-list" style="margin-top:8px">
+            <li style="color:#d0dcea"><strong style="color:#3B82F6">REGIME:</strong> Fragile Bull — AI demand intact, but positioning exhausted in hardware.</li>
+            <li style="color:#d0dcea"><strong style="color:#10B981">OPPORTUNITY:</strong> Rotate from AI hardware crowding → software (early narrative) + Korea memory (mid-cycle) + Physical AI (very early).</li>
+            <li style="color:#d0dcea"><strong style="color:#F59E0B">RISK:</strong> Zero margin for error at 21.5x P/E. Protect against rate shock and capex disappointment.</li>
+            <li style="color:#d0dcea"><strong style="color:#8B5CF6">CATALYST:</strong> March 4 (Jensen, MS TMT) + March 16 (GTC). These two events determine whether NVDA breaks out or breaks down.</li>
+            <li style="color:#d0dcea"><strong style="color:#DC2626">INVALIDATION:</strong> Any hyperscaler capex "digestion" language. Watch MSFT/AMZN/GOOG more than NVDA itself.</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <div class="card-title">Next Report Triggers</div>
+          <ul class="point-list">
+            <li>Jensen at MS TMT — March 4</li>
+            <li>China Two Sessions outcomes — mid-March</li>
+            <li>NVDA GTC Conference — March 16</li>
+            <li>Fed minutes + next CPI print</li>
+            <li>Hyperscaler next earnings cycle (Q1 results)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span class="footer-source">Sources: All TMTB files 2/18–26/26 · Citadel Securities 2/24/26 · GS China Open 2/25/26 · Huishui Club NVDA 2/26/26 · NVDA Earnings 2/26/26</span>
+      <span class="footer-page">15 / 16</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE 16 — APPENDIX: ASIA CONTEXT
+  ══════════════════════════════════════════ -->
+  <div class="slide" id="slide-16">
+    <div class="slide-header">
+      <div class="slide-header-left">
+        <span class="agent-tag tag-bull">Asia Context</span>
+        <div class="slide-title">Asia Market Intelligence: Korea, China &amp; HK Dynamics</div>
+      </div>
+      <span class="slide-date">Feb 25–26, 2026</span>
+    </div>
+
+    <div class="two-col">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="content-card">
+          <div class="card-title">Asia Market Performance (Feb 26, 2026)</div>
+          <table class="scenario-table">
+            <thead><tr><th>Market</th><th>Feb 26</th><th>Signal</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Korea KOSPI</strong></td><td class="base">+3.67%</td><td class="pos">Memory/HBM rip; global AI validation</td></tr>
+              <tr><td>Samsung Electronics</td><td class="base">+8%</td><td class="pos">HBM demand surge post-NVDA guide</td></tr>
+              <tr><td>SK Hynix</td><td class="base">+8%</td><td class="pos">SNDK HBF partnership announced</td></tr>
+              <tr><td>Taiwan TAIEX</td><td>Flat</td><td>Digesting NVDA; optical/semicap focus</td></tr>
+              <tr><td>Japan TPX</td><td>+0.97%</td><td>Steady; no major catalyst</td></tr>
+              <tr><td>Hang Seng</td><td class="stress">−1.44%</td><td class="neg">Citrini AI narrative + export curb fears</td></tr>
+              <tr><td>HSCEI</td><td class="shock">−2.44%</td><td class="neg">AI gloom; China policy uncertainty pre-Two Sessions</td></tr>
+              <tr><td>SHCOMP</td><td>−0.01%</td><td>Flat; holiday-return consolidation</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="content-card">
+          <div class="card-title">GS China Open: First Day of Year of Horse</div>
+          <ul class="point-list">
+            <li class="pos"><strong>First trading day of Chinese New Year was strong</strong> — cyclicals and AI hardware outperformed as A shares caught up post-holiday.</li>
+            <li class="pos"><strong>Anthropic partnership</strong> with software companies alleviated AI fears overnight (Feb 24), catalyzing the US rebound that fed into Asia open.</li>
+            <li class="warn"><strong>Physical AI / Robotics:</strong> GS US team flagged this as a key NVDA management topic for GTC — attention shifting to the next phase of AI deployment.</li>
+            <li class="warn"><strong>Two Sessions policy signals:</strong> Market expects focus on advanced manufacturing, domestic consumption stimulus, and industrial upgrading. A "miss" on ambition would hit A-shares and HK tech hard.</li>
+          </ul>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="content-card">
+          <div class="card-title">China Geopolitical Signals (Feb 25, 2026)</div>
+          <ul class="point-list">
+            <li class="neg"><strong>China hits Takaichi/Japan firms with tighter export curbs</strong> — geopolitical escalation broadening beyond US-China bilateral. Supply chain risk for Japan-linked AI component makers.</li>
+            <li class="warn"><strong>"China may adjust countermeasures as it assesses US tariffs"</strong> — signals ongoing retaliatory cycle; each round adds supply chain uncertainty.</li>
+            <li class="pos"><strong>Silver Economy policy signal:</strong> State Council pledged stepped-up support for elderly consumption and eldercare services — a domestic demand stimulus lever with less geopolitical contamination.</li>
+            <li class="pos"><strong>China raised fuel prices 3rd consecutive round</strong> — commodity pass-through suggests some pricing power returning; reduces risk of deflationary spiral in China industrial sector.</li>
+          </ul>
+        </div>
+        <div class="content-card" style="background:#f0fdf4">
+          <div class="card-title">Asia Investment Conclusion</div>
+          <ul class="point-list">
+            <li class="pos"><strong>Korea memory is the cleanest AI infrastructure play</strong> — less crowded than NVDA, directly validated by HBM demand surge, and benefits from both US and China AI buildouts.</li>
+            <li class="warn"><strong>China/HK requires a catalyst</strong> — Two Sessions outcome is binary. Strong policy → add; vague policy → avoid until clarity.</li>
+            <li class="neg"><strong>Taiwan TAIEX at risk</strong> if geopolitical temperature rises pre-Two Sessions. Optical/semicap flows may provide some buffer but not enough to absorb a serious escalation.</li>
+            <li class="pos"><strong>Japan steady but not exciting</strong> — +0.97% on Feb 26 without a major domestic catalyst. Beneficiary of global reflation and AI infrastructure but not a high-conviction addition at current levels.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span class="footer-source">Sources: TMTB Morning Wrap 2/26/26 · GS China Open 2/25/26 · Bloomberg "Citrini's Dystopia Fuels Asia's Breakaway" · GS China Export Curbs 2/25/26</span>
+      <span class="footer-page">16 / 16</span>
+    </div>
+  </div>
+
+</div><!-- end presentation -->
+
+<!-- ══════════ CONTROLS ══════════ -->
+<div class="controls">
+  <button id="prev">← Prev</button>
+  <span id="slide-counter">1 / 16</span>
+  <button id="next">Next →</button>
+</div>
+
+<script>
+  let current = 0;
+  const slides = document.querySelectorAll('.slide');
+  const counter = document.getElementById('slide-counter');
+
+  function show(n) {
+    slides[current].classList.remove('active');
+    current = ((n % slides.length) + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    counter.textContent = (current + 1) + ' / ' + slides.length;
+  }
+
+  document.getElementById('prev').onclick = () => show(current - 1);
+  document.getElementById('next').onclick = () => show(current + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') show(current + 1);
+    if (e.key === 'ArrowLeft') show(current - 1);
+  });
+
+  show(0);
+</script>
+</body>
+</html>

@@ -1,0 +1,1363 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>2026 Payments & Commerce: Tough Road for Many Incumbents — Strategy Deck</title>
+<style>
+  :root{
+    --slide-w: 1280px;
+    --slide-h: 720px;
+    --pad-x: 56px;
+    --pad-y: 44px;
+    --header-h: 76px;
+    --footer-h: 54px;
+    --radius: 18px;
+    --border: rgba(0,0,0,.12);
+    --muted: rgba(0,0,0,.62);
+    --muted2: rgba(0,0,0,.48);
+    --bg: #f6f7fb;
+    --card: #ffffff;
+    --ink: #0b0f1a;
+    --accent: #1f4bff;
+    --accent2:#00a3ff;
+    --good:#0e9f6e;
+    --warn:#d97706;
+    --bad:#dc2626;
+    --shadow: 0 14px 38px rgba(15,23,42,.12);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%; margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";}
+  body{background:#0b1020; display:flex; align-items:center; justify-content:center; overflow:hidden;}
+  /* stage */
+  .stage{
+    width: var(--slide-w);
+    height: var(--slide-h);
+    background: var(--bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden; /* deck must show full slide; per-slide content is scaled to fit within safe areas */
+  }
+  /* slide container */
+  .slide{
+    position:absolute; inset:0;
+    padding: 0;
+    display:none;
+  }
+  .slide.active{display:block;}
+  /* header/footer safe areas (prevent overlap) */
+  .header{
+    position:absolute; left:0; right:0; top:0;
+    height: var(--header-h);
+    padding: 18px var(--pad-x);
+    display:flex; align-items:center; justify-content:space-between;
+    background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.70));
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(6px);
+    z-index:5;
+  }
+  .header .title{
+    font-weight:800; color:var(--ink);
+    font-size: 26px; letter-spacing:-0.2px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    max-width: 860px;
+  }
+  .header .meta{
+    color:var(--muted);
+    font-weight:650;
+    font-size: 14px;
+    white-space:nowrap;
+  }
+  .footer{
+    position:absolute; left:0; right:0; bottom:0;
+    height: var(--footer-h);
+    padding: 10px var(--pad-x);
+    display:flex; align-items:center; justify-content:space-between;
+    border-top: 1px solid var(--border);
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: blur(6px);
+    z-index:5;
+  }
+  .footer .pager{
+    font-weight:750; color:var(--muted);
+    font-size: 14px;
+  }
+  .footer .hint{
+    font-size: 13px; color: var(--muted2); font-weight:650;
+    white-space:nowrap;
+  }
+  /* nav buttons (kept inside footer safe area; never overlap content due to reserved safe areas) */
+  .nav{
+    display:flex; gap:10px; align-items:center;
+  }
+  .btn{
+    border: 1px solid var(--border);
+    background: #fff;
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 13px;
+    color: #0b0f1a;
+    cursor: pointer;
+    user-select: none;
+  }
+  .btn:active{transform: translateY(1px);}
+  .btn.primary{background: var(--accent); color:#fff; border-color: rgba(31,75,255,.35);}
+  /* content area that will be scaled to never clip */
+  .content-wrap{
+    position:absolute;
+    left: var(--pad-x);
+    right: var(--pad-x);
+    top: calc(var(--header-h) + 16px);
+    bottom: calc(var(--footer-h) + 16px);
+    overflow: hidden; /* no scrolling */
+  }
+  .content{
+    width: 100%;
+    transform-origin: top left;
+  }
+
+  /* typography */
+  h1,h2,h3{margin:0}
+  h1{font-size:52px; letter-spacing:-0.8px; line-height:1.08; color:var(--ink);}
+  h2{font-size:34px; letter-spacing:-0.35px; line-height:1.15; color:var(--ink);}
+  h3{font-size:22px; letter-spacing:-0.2px; color:var(--ink);}
+  p{margin:0; color:var(--muted); font-size:18px; line-height:1.35; font-weight:600;}
+  .kicker{font-size:14px; font-weight:850; text-transform:uppercase; letter-spacing:0.12em; color:rgba(31,75,255,.92);}
+  .subtle{color:var(--muted2)}
+  .big{font-size:20px}
+  .small{font-size:14px}
+  .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
+
+  /* layout helpers */
+  .grid{display:grid; gap:16px;}
+  .g2{grid-template-columns: 1.2fr 0.8fr;}
+  .g2eq{grid-template-columns: 1fr 1fr;}
+  .g3{grid-template-columns: 1fr 1fr 1fr;}
+  .card{
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px 16px;
+    box-shadow: 0 10px 26px rgba(15,23,42,.06);
+  }
+  .card.tight{padding:14px}
+  .card .hdr{display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:8px;}
+  .badge{
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-weight: 900;
+    font-size: 12px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    background: rgba(2,6,23,.03);
+    white-space:nowrap;
+  }
+  .badge.good{color:var(--good); border-color: rgba(14,159,110,.25); background: rgba(14,159,110,.08);}
+  .badge.warn{color:var(--warn); border-color: rgba(217,119,6,.22); background: rgba(217,119,6,.08);}
+  .badge.bad{color:var(--bad); border-color: rgba(220,38,38,.22); background: rgba(220,38,38,.08);}
+  ul{margin:10px 0 0 0; padding-left: 18px;}
+  li{margin:8px 0; color: var(--ink); font-size:18px; line-height:1.26; font-weight:650;}
+  li span{color: var(--muted); font-weight:650;}
+  .callout{
+    border-left: 5px solid rgba(31,75,255,.85);
+    background: rgba(31,75,255,.06);
+    padding: 14px 14px;
+    border-radius: 14px;
+  }
+  .callout p{color: rgba(11,15,26,.78); font-weight:700;}
+  .metric{
+    display:flex; flex-direction:column; gap:8px;
+    padding: 14px 14px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.70));
+  }
+  .metric .label{font-size:13px; font-weight:900; color:var(--muted2); text-transform:uppercase; letter-spacing:.08em;}
+  .metric .value{font-size:30px; font-weight:900; letter-spacing:-0.35px; color:var(--ink);}
+  .metric .note{font-size:13px; font-weight:750; color:var(--muted); line-height:1.25;}
+  .divider{height:1px; background: var(--border); margin: 12px 0;}
+
+  /* tables */
+  table{width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border-radius:14px; border:1px solid var(--border); }
+  thead th{
+    background: rgba(2,6,23,.04);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--muted);
+    text-align:left;
+    padding: 10px 12px;
+    font-weight: 900;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  tbody td{
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(0,0,0,.06);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    vertical-align: top;
+  }
+  tbody tr:last-child td{border-bottom:none;}
+  .right{text-align:right;}
+  .center{text-align:center;}
+  .muted{color: var(--muted);}
+  .pill{
+    display:inline-block; padding: 5px 9px; border-radius: 999px; font-size: 12px; font-weight: 900;
+    border: 1px solid var(--border); background: rgba(2,6,23,.03); color: var(--muted);
+    white-space:nowrap;
+  }
+  .pill.ow{color: var(--good); border-color: rgba(14,159,110,.25); background: rgba(14,159,110,.08);}
+  .pill.ew{color: rgba(37,99,235,.9); border-color: rgba(37,99,235,.22); background: rgba(37,99,235,.08);}
+  .pill.uw{color: var(--bad); border-color: rgba(220,38,38,.22); background: rgba(220,38,38,.08);}
+
+  /* charts */
+  .chart{
+    width:100%;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 12px 12px;
+    background: #fff;
+  }
+  .chart .cap{display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:10px;}
+  .chart .cap .t{font-weight:900; color:var(--ink); font-size:16px;}
+  .chart .cap .s{font-weight:800; color:var(--muted); font-size:12px;}
+  .legend{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;}
+  .leg{display:flex; align-items:center; gap:8px; font-size:12px; font-weight:850; color:var(--muted);}
+  .dot{width:10px; height:10px; border-radius:3px; background: var(--accent);}
+  .dot.b{background: var(--accent2);}
+  .dot.g{background: var(--good);}
+  .dot.o{background: var(--warn);}
+  .dot.r{background: var(--bad);}
+
+  /* title slide hero */
+  .hero{
+    display:grid;
+    grid-template-columns: 1.25fr .75fr;
+    gap: 18px;
+    align-items: stretch;
+  }
+  .hero .left{padding: 14px 10px 0 0;}
+  .hero .right{display:flex; flex-direction:column; gap:12px;}
+  .hero .stamp{
+    border-radius: 18px;
+    padding: 14px 14px;
+    border: 1px solid rgba(31,75,255,.18);
+    background: linear-gradient(180deg, rgba(31,75,255,.14), rgba(31,75,255,.06));
+  }
+  .hero .stamp .k{font-size:12px; font-weight:950; letter-spacing:.10em; text-transform:uppercase; color: rgba(31,75,255,.92);}
+  .hero .stamp .v{font-size:26px; font-weight:950; letter-spacing:-.35px; color: var(--ink); margin-top:6px;}
+  .hero .stamp .n{font-size:14px; font-weight:750; color: var(--muted); margin-top:6px; line-height:1.25;}
+
+  /* print */
+  @media print{
+    body{background:#fff;}
+    .stage{box-shadow:none; border-radius:0;}
+    .btn{display:none;}
+    .footer .hint{display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <!-- Slide 1 -->
+  <section class="slide active" data-title="2026 Payments & Commerce — Year Ahead" data-subtitle="Agentic commerce, security monetization, and a tougher road for incumbents">
+    <div class="header">
+      <div class="title">2026 Payments & Commerce — Year Ahead</div>
+      <div class="meta">Investment & strategy synthesis • Fixed 1280×720</div>
+    </div>
+    <div class="content-wrap">
+      <div class="content">
+        <div class="hero">
+          <div class="left">
+            <div class="kicker">Core thesis</div>
+            <h1 style="margin-top:10px;">Moats shift from “checkout UX” to <span style="color:var(--accent);">trust, tokens & risk rails</span>.</h1>
+            <p class="big" style="margin-top:14px;">
+              Agentic purchasing makes checkout invisible. The economic battleground becomes authentication,
+              fraud/chargeback controls, and network-level standards—while many incumbents face pricing downshifts.
+            </p>
+            <div class="callout" style="margin-top:16px;">
+              <p><b>2026 is a product + security arms race:</b> winners monetize risk; laggards see share and valuation pressure.</p>
+            </div>
+            <div class="divider"></div>
+            <div class="grid g3">
+              <div class="metric">
+                <div class="label">Agentic e-comm TAM (US)</div>
+                <div class="value">$8B → $192B</div>
+                <div class="note">’26 to ’30 forecast; grows to ~10–11% of US e-comm.</div>
+              </div>
+              <div class="metric">
+                <div class="label">Networks VAS mix</div>
+                <div class="value">MA ~40% / V ~28%</div>
+                <div class="note">VAS is already meaningful; agentic raises attach for trust/security.</div>
+              </div>
+              <div class="metric">
+                <div class="label">Key at-risk incumbent</div>
+                <div class="value">PYPL</div>
+                <div class="note">Agentic removes consumer “button” decision point—weakens branded checkout moat.</div>
+              </div>
+            </div>
+          </div>
+          <div class="right">
+            <div class="card">
+              <div class="hdr"><h3>What changes decisions</h3><span class="badge">context-engineered</span></div>
+              <ul>
+                <li><b>Security becomes the product:</b> agent identity + authorization tokens become gating standards.</li>
+                <li><b>Economics reallocate, not vanish:</b> issuer → platform fees (illustrative ~15 bps) vs merchant MDR.</li>
+                <li><b>Valuation dispersion widens:</b> “cheap” processors can stay cheap if margin slopes flatten.</li>
+              </ul>
+            </div>
+            <div class="card tight">
+              <div class="hdr"><h3>Coverage map</h3><span class="badge">ratings</span></div>
+              <table>
+                <thead><tr><th>Overweight</th><th>Equal-weight</th><th>Underweight</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td><span class="pill ow">V</span> <span class="pill ow">MA</span> <span class="pill ow">CHYM</span> <span class="pill ow">GLBE</span></td>
+                    <td><span class="pill ew">XYZ</span> <span class="pill ew">AFRM</span> <span class="pill ew">KLAR</span> <span class="pill ew">FOUR</span> <span class="pill ew">FISV</span></td>
+                    <td><span class="pill uw">PYPL</span> <span class="pill uw">WU</span></td>
+                  </tr>
+                </tbody>
+              </table>
+              <p class="small subtle" style="margin-top:8px;">Tickers per report nomenclature; private comps mentioned: Stripe, Adyen.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="nav">
+        <button class="btn" id="prevBtn">← Prev</button>
+        <button class="btn primary" id="nextBtn">Next →</button>
+      </div>
+      <div class="pager" id="pager">1 / 10</div>
+      <div class="hint">Keys: ← → • P: print</div>
+    </div>
+  </section>
+
+  <!-- Slide 2 -->
+  <section class="slide" data-title="Storyline & scorecard" data-subtitle="From agentic TAM → moat shift → winners/losers → catalysts">
+    <div class="header">
+      <div class="title">Storyline & scorecard</div>
+      <div class="meta">How the deck is organized</div>
+    </div>
+    <div class="content-wrap">
+      <div class="content">
+        <div class="grid g2">
+          <div class="card">
+            <div class="hdr"><h2>Decision framework</h2><span class="badge">what matters in 2026</span></div>
+            <p class="big">Agentic commerce changes <b>where value accrues</b>. Evaluate each name by:</p>
+            <div class="divider"></div>
+            <div class="grid g2eq">
+              <div class="callout">
+                <p><b>1) Trust rails</b><br><span class="subtle">Agent identity, auth tokens, dispute/fraud controls</span></p>
+              </div>
+              <div class="callout">
+                <p><b>2) Economic capture</b><br><span class="subtle">VAS attach, take-rate durability, issuer/merchant pass-through</span></p>
+              </div>
+              <div class="callout">
+                <p><b>3) Distribution</b><br><span class="subtle">Default placement in agent ecosystems; standards leadership</span></p>
+              </div>
+              <div class="callout">
+                <p><b>4) Margin slope</b><br><span class="subtle">Pricing power vs competition; opex required to defend share</span></p>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <ul>
+              <li><b>Key swing factor:</b> enterprise readiness for agent-token recognition + fraud modernization.</li>
+              <li><b>2026 “tell”:</b> security + VAS monetization accelerates faster than core volume growth.</li>
+              <li><b>Risk:</b> incumbents defend with pricing/opex—hurting EPS even before share visibly drops.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="hdr"><h2>2026 scorecard</h2><span class="badge">who benefits first</span></div>
+            <table>
+              <thead>
+                <tr><th>Theme</th><th>Primary beneficiaries</th><th>Key risk to watch</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><b>Agentic commerce</b><br><span class="muted small">Checkout becomes machine-mediated</span></td>
+                  <td><b>MA, V</b> (standards + risk services)<br><span class="muted small">+ ecosystem partners</span></td>
+                  <td><b>Moat shift away from wallets</b><br><span class="muted small">PYPL “button” less relevant</span></td>
+                </tr>
+                <tr>
+                  <td><b>SMB processing reset</b><br><span class="muted small">Price aggression to expand TAM</span></td>
+                  <td>Best integrators (private: <b>Stripe</b>, <b>Adyen</b>)</td>
+                  <td><b>Margin slope flattens</b> for FISV/FOUR/XYZ</td>
+                </tr>
+                <tr>
+                  <td><b>Cross-border enablement</b><br><span class="muted small">Merchant onboarding + mix</span></td>
+                  <td><b>GLBE</b> (growth + operating leverage)</td>
+                  <td><b>Take-rate/mix volatility</b> drives multiple</td>
+                </tr>
+                <tr>
+                  <td><b>Stablecoins</b><br><span class="muted small">Use cases emerge, but economics bite</span></td>
+                  <td>Niche verticals first</td>
+                  <td><b>Off-ramp cost</b> limits displacement near-term</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="divider"></div>
+            <div class="grid g3">
+              <div class="metric">
+                <div class="label">Top picks (report)</div>
+                <div class="value">MA, V</div>
+                <div class="note">Durable compounders + VAS uplift + agentic tailwind.</div>
+              </div>
+              <div class="metric">
+                <div class="label">Cheap growth</div>
+                <div class="value">GLBE</div>
+                <div class="note">~30% GMV growth with margin expansion; EPS inflection.</div>
+              </div>
+              <div class="metric">
+                <div class="label">Key short (report)</div>
+                <div class="value">PYPL</div>
+                <div class="note">Agentic removes consumer decision moment; pressure on guidance framework.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="footer">
+      <div class="nav">
+        <button class="btn" data-nav="prev">← Prev</button>
+        <button class="btn primary" data-nav="next">Next →</button>
+      </div>
+      <div class="pager">2 / 10</div>
+      <div class="hint">Charts & tables are scaled to fit; no scrolling.</div>
+    </div>
+  </section>
+
+  <!-- Slide 3 -->
+  <section class="slide" data-title="Agentic commerce TAM" data-subtitle="From novelty to 10–11% of US e-commerce by 2030 (report forecast)">
+    <div class="header">
+      <div class="title">Agentic commerce TAM</div>
+      <div class="meta">Market sizing & implication</div>
+    </div>
+    <div class="content-wrap">
+      <div class="content">
+        <div class="grid g2">
+          <div class="card">
+            <div class="hdr"><h2>Growth is the message</h2><span class="badge good">structural</span></div>
+            <p class="big">Agentic commerce scales from early pilots to a meaningful share of e-commerce, forcing a trust-layer rebuild.</p>
+            <div class="divider"></div>
+            <ul>
+              <li><b>Step-change in bargaining power:</b> “up-funnel placement” matters less; QoS metrics become the buyer’s objective.</li>
+              <li><b>Security gating:</b> agent-token recognition + fraud modernization is the adoption bottleneck (not consumer awareness).</li>
+              <li><b>Economics reallocate:</b> report assumes ~<b>15 bps</b> platform fee borne by issuers (Apple Pay analog) rather than merchants.</li>
+              <li><b>Investment implication:</b> scaled risk rails monetize <i>per transaction</i> even if consumer brands fade.</li>
+            </ul>
+            <div class="divider"></div>
+            <div class="grid g3">
+              <div class="metric">
+                <div class="label">2026</div>
+                <div class="value">$8B</div>
+                <div class="note">~1% of US e-commerce (illustrative).</div>
+              </div>
+              <div class="metric">
+                <div class="label">2030</div>
+                <div class="value">$192B</div>
+                <div class="note">~10–11% of US e-commerce (illustrative).</div>
+              </div>
+              <div class="metric">
+                <div class="label">Stack change</div>
+                <div class="value">Trust layer</div>
+                <div class="note">Auth tokens + dispute/fraud controls become the “product”.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart">
+            <div class="cap">
+              <div class="t">Agentic e-commerce GMV forecast (US)</div>
+              <div class="s">Source: report figures • $B</div>
+            </div>
+            <!-- Inline SVG chart -->
+            <svg viewBox="0 0 560 360" width="100%" height="360" aria-label="Agentic commerce forecast chart">
+              <defs>
+                <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#1f4bff" stop-opacity="0.32"/>
+                  <stop offset="1" stop-color="#1f4bff" stop-opacity="0.05"/>
+                </linearGradient>
+              </defs>
+              <!-- axes -->
+              <line x1="48" y1="320" x2="540" y2="320" stroke="rgba(0,0,0,0.25)" stroke-width="1"/>
+              <line x1="48" y1="40" x2="48" y2="320" stroke="rgba(0,0,0,0.25)" stroke-width="1"/>
+              <!-- y labels -->
+              <g font-size="12" font-weight="800" fill="rgba(0,0,0,0.55)">
+                <text x="10" y="324">$0</text>
+                <text x="6" y="254">$50</text>
+                <text x="2" y="184">$100</text>
+                <text x="2" y="114">$150</text>
+                <text x="2" y="44">$200</text>
+              </g>
+              <!-- gridlines -->
+              <g stroke="rgba(0,0,0,0.08)" stroke-width="1">
+                <line x1="48" y1="320" x2="540" y2="320"/>
+                <line x1="48" y1="250" x2="540" y2="250"/>
+                <line x1="48" y1="180" x2="540" y2="180"/>
+                <line x1="48" y1="110" x2="540" y2="110"/>
+                <line x1="48" y1="40" x2="540" y2="40"/>
+              </g>
+              <!-- data: 2026..2030 : 8, 26, 60, 110, 192 -->
+              <!-- scale: y = 320 - (v/200)*280 -->
+              <g>
+                <path d="M80,308.8 L180,283.6 L280,236.0 L380,166.0 L480,51.2 L480,320 L80,320 Z" fill="url(#g1)"/>
+                <path d="M80,308.8 L180,283.6 L280,236.0 L380,166.0 L480,51.2" fill="none" stroke="#1f4bff" stroke-width="3.5"/>
+                <!-- points -->
+                <g fill="#1f4bff">
+                  <circle cx="80" cy="308.8" r="5.2"/>
+                  <circle cx="180" cy="283.6" r="5.2"/>
+                  <circle cx="280" cy="236.0" r="5.2"/>
+                  <circle cx="380" cy="166.0" r="5.2"/>
+                  <circle cx="480" cy="51.2" r="5.2"/>
+                </g>
+                <!-- value labels -->
+                <g font-size="12" font-weight="900" fill="rgba(11,15,26,0.82)">
+                  <text x="68" y="300">$8</text>
+                  <text x="168" y="274">$26</text>
+                  <text x="268" y="226">$60</text>
+                  <text x="364" y="156">$110</text>
+                  <text x="458" y="42">$192</text>
+                </g>
+                <!-- x labels -->
+                <g font-size="12" font-weight="900" fill="rgba(0,0,0,0.62)">
+                  <text x="68" y="346">2026</text>
+                  <text x="168" y="346">2027</text>
+                  <text x="268" y="346">2028</text>
+                  <text x="368" y="346">2029</text>
+                  <text x="468" y="346">2030</text>
+                </g>
+              </g>
+            </svg>
+            <div class="legend">
+              <div class="leg"><span class="dot"></span>Agentic GMV (forecast)</div>
+            </div>
+
+            <div class="divider"></div>
+            <div class="card tight">
+              <div class="hdr"><h3>Second-order implication</h3><span class="badge">why it matters</span></div>
+              <p>Once agents buy on behalf of users, the competitive edge becomes <b>authorization + liability management</b>.
+                 Platforms that own the <b>trust primitives</b> gain pricing power even if consumer brands commoditize.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="nav">
+        <button class="btn" data-nav="prev">← Prev</button>
+        <button class="btn primary" data-nav="next">Next →</button>
+      </div>
+      <div class="pager">3 / 10</div>
+      <div class="hint">All visuals are inline SVG; no external libraries.</div>
+    </div>
+  </section>
+
+  <!-- Slide 4 -->
+  <section class="slide" data-title="Winners vs incumbents at risk" data-subtitle="Moat migration: standards + VAS vs branded checkout & SMB margin slope">
+    <div class="header">
+      <div class="title">Winners vs incumbents at risk</div>
+      <div class="meta">Moat map</div>
+    </div>
+    <div class="content-wrap">
+      <div class="content">
+        <div class="grid g2">
+          <div class="card">
+            <div class="hdr"><h2>Moat migration map</h2><span class="badge">agentic-driven</span></div>
+            <div class="chart" style="padding:10px 10px;">
+              <div class="cap">
+                <div class="t">2026 value capture shifts</div>
+                <div class="s">Higher = stronger benefit</div>
+              </div>
+              <svg viewBox="0 0 560 330" width="100%" height="320" aria-label="Moat migration quadrant">
+                <!-- axes -->
+                <line x1="70" y1="290" x2="520" y2="290" stroke="rgba(0,0,0,0.25)" stroke-width="1"/>
+                <line x1="70" y1="50" x2="70" y2="290" stroke="rgba(0,0,0,0.25)" stroke-width="1"/>
+                <!-- quadrant lines -->
+                <line x1="295" y1="50" x2="295" y2="290" stroke="rgba(0,0,0,0.10)" stroke-width="1"/>
+                <line x1="70" y1="170" x2="520" y2="170" stroke="rgba(0,0,0,0.10)" stroke-width="1"/>
+                <!-- labels -->
+                <g font-size="12" font-weight="900" fill="rgba(0,0,0,0.62)">
+                  <text x="86" y="312">Lower consumer decision-point reliance</text>
+                  <text x="168" y="34">Higher trust / security monetization</text>
+                  <text x="86" y="170" transform="rotate(-90 86,170)">More standards / rails leverage</text>
+                </g>
+
+                <!-- points (illustrative positioning consistent with report narrative) -->
+                <g font-size="12" font-weight="950">
+                  <g>
+                    <rect x="360" y="88" width="70" height="28" rx="10" fill="rgba(14,159,110,.14)" stroke="rgba(14,159,110,.35)"/>
+                    <text x="395" y="107" text-anchor="middle" fill="rgba(11,15,26,.86)">MA</text>
+                  </g>
+                  <g>
+                    <rect x="330" y="128" width="70" height="28" rx="10" fill="rgba(14,159,110,.14)" stroke="rgba(14,159,110,.35)"/>
+                    <text x="365" y="147" text-anchor="middle" fill="rgba(11,15,26,.86)">V</text>
+                  </g>
+                  <g>
+                    <rect x="110" y="212" width="84" height="28" rx="10" fill="rgba(220,38,38,.12)" stroke="rgba(220,38,38,.32)"/>
+                    <text x="152" y="231" text-anchor="middle" fill="rgba(11,15,26,.86)">PYPL</text>
+                  </g>
+                  <g>
+                    <rect x="164" y="246" width="74" height="28" rx="10" fill="rgba(217,119,6,.12)" stroke="rgba(217,119,6,.32)"/>
+                    <text x="201" y="265" text-anchor="middle" fill="rgba(11,15,26,.86)">FOUR</text>
+                  </g>
+                  <g>
+                    <rect x="210" y="246" width="74" height="28" rx="10" fill="rgba(217,119,6,.12)" stroke="rgba(217,119,6,.32)"/>
+                    <text x="247" y="265" text-anchor="middle" fill="rgba(11,15,26,.86)">FISV</text>
+                  </g>
+                  <g>
+                    <rect x="255" y="246" width="74" height="28" rx="10" fill="rgba(217,119,6,.12)" stroke="rgba(217,119,6,.32)"/>
+                    <text x="292" y="265" text-anchor="middle" fill="rgba(11,15,26,.86)">XYZ</text>
+                  </g>
+                  <g>
+                    <rect x="360" y="214" width="84" height="28" rx="10" fill="rgba(31,75,255,.12)" stroke="rgba(31,75,255,.30)"/>
+                    <text x="402" y="233" text-anchor="middle" fill="rgba(11,15,26,.86)">GLBE</text>
+                  </g>
+                </g>
+              </svg>
+              <div class="legend">
+                <div class="leg"><span class="dot g"></span>Structural winners (rails + trust)</div>
+                <div class="leg"><span class="dot r"></span>Incumbents at risk (button dependence)</div>
+                <div class="leg"><span class="dot o"></span>SMB margin-slope risk</div>
+                <div class="leg"><span class="dot"></span>Growth w/ leverage</div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+            <ul>
+              <li><b>Key insight:</b> “network effects” in agentic are <b>standards effects</b> (auth/liability), not consumer habit.</li>
+              <li><b>Strategy lens:</b> invest where security becomes a billable product and default integration is sticky.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="hdr"><h2>What each group must prove</h2><span class="badge">2026 checkpoints</span></div>
+            <div class="grid" style="grid-template-columns:1fr; gap:12px;">
+              <div class="card tight" style="border-left:5px solid rgba(14,159,110,.75);">
+                <div class="hdr"><h3>Rails & standards (MA, V)</h3><span class="badge good">OW</span></div>
+                <ul>
+                  <li><b>Lead protocol adoption</b> (agent tokens / trusted agent standards).</li>
+                  <li><b>Monetize risk</b>: VAS attach grows faster than core volume.</li>
+                  <li><b>Valuation support</b>: multiple discount vs history narrows as tailwinds show up.</li>
+                </ul>
+              </div>
+              <div class="card tight" style="border-left:5px solid rgba(220,38,38,.75);">
+                <div class="hdr"><h3>Branded checkout (PYPL)</h3><span class="badge bad">UW</span></div>
+                <ul>
+                  <li><b>Defend share</b> without paying away margin (pricing + incentives).</li>
+                  <li><b>Agentic relevance</b>: show differentiated trust/value beyond UI.</li>
+                  <li><b>Framework risk</b>: potential medium-term reset is a catalyst overhang.</li>
+                </ul>
+              </div>
+              <div class="card tight" style="border-left:5px solid rgba(217,119,6,.75);">
+                <div class="hdr"><h3>SMB processors (FISV/FOUR/XYZ)</h3><span class="badge warn">EW</span></div>
+                <ul>
+                  <li><b>Pricing downshift</b>: competition pushes price aggression and churn risk.</li>
+                  <li><b>Feature parity</b>: software attach becomes harder; opex rises to defend.</li>
+                  <li><b>“Cheap” ≠ safe</b>: low multiples can persist if margin slope flattens.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="nav">
+        <button class="btn" data-nav="prev">← Prev</button>
+        <button class="btn primary" data-nav="next">Next →</button>
+      </div>
+      <div class="pager">4 / 10</div>
+      <div class="hint">Quadrant positions are illustrative, anchored to report narrative.</div>
+    </div>
+  </section>
+
+  <!-- Slide 5 -->
+  <section class="slide" data-title="Networks: durable compounders" data-subtitle="Multi-lever growth algorithm + VAS mix + valuation reset">
+    <div class="header">
+      <div class="title">Networks: durable compounders (MA, V)</div>
+      <div class="meta">Why the report stays OW</div>
+    </div>
+    <div class="content-wrap">
+      <div class="content">
+        <div class="grid g2">
+          <div class="card">
+            <div class="hdr"><h2>Growth algorithm (building blocks)</h2><span class="badge good">OW: MA, V</span></div>
+            <p class="big">The bull case is not one driver—it’s a <b>stacked algorithm</b> that agentic can enhance.</p>
+            <div class="divider"></div>
+            <div class="chart">
+              <div class="cap">
+                <div class="t">Illustrative contributors to HSD–LDD growth</div>
+                <div class="s">From report narrative</div>
+              </div>
+              <svg viewBox="0 0 560 220" width="100%" height="220" aria-label="Growth algorithm stacked bars">
+                <!-- axes baseline -->
+                <line x1="60" y1="190" x2="520" y2="190" stroke="rgba(0,0,0,0.25)" stroke-width="1"/>
+                <g font-size="12" font-weight="900" fill="rgba(0,0,0,0.62)">
+                  <text x="74" y="210">GDP (~3%)</text>
+                  <text x="214" y="210">Cross-border (~1%)</text>
+                  <text x="374" y="210">VAS (~2%)</text>
+                </g>
+                <!-- bars -->
+                <rect x="70" y="120" width="120" height="70" rx="10" fill="rgba(31,75,255,.18)" stroke="rgba(31,75,255,.35)"/>
+                <rect x="230" y="160" width="120" height="30" rx="10" fill="rgba(0,163,255,.18)" stroke="rgba(0,163,255,.35)"/>
+                <rect x="390" y="140" width="120" height="50" rx="10" fill="rgba(14,159,110,.18)" stroke="rgba(14,159,110,.35)"/>
+                <g font-size="14" font-weight="950" fill="rgba(11,15,26,.86)">
+                  <text x="130" y="160" text-anchor="middle">~3%</text>
+                  <text x="290" y="178" text-anchor="middle">~1%</text>
+                  <text x="450" y="168" text-anchor="middle">~2%</text>
+                </g>
+              </svg>
+              <div class="legend">
+                <div class="leg"><span class="dot"></span>Macro volume</div>
+                <div class="leg"><span class="dot b"></span>Cross-border</div>
+                <div class="leg"><span class="dot g"></span>Value-added services</div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+            <ul>
+              <li><b>VAS already large:</b> ~40% of MA net revenue; ~28% of V—agentic increases demand for fraud/cyber controls.</li>
+              <li><b>US sensitivity differs:</b> V ~40% US exposure vs MA ~30% (report).</li>
+              <li><b>Multiple reset:</b> MA ~25x CY27e vs ~32x (2018–24 avg); V ~23x vs ~28x.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="hdr"><h2>2026 “tell” metrics</h2><span class="badge">what to monitor</span></div>
+            <div class="grid g3">
+              <div class="metric">
+                <div class="label">VAS growth vs core</div>
+                <div class="value">↑ attach</div>
+                <div class="note">Should outpace payments volume if agentic risk demand is real.</div>
+              </div>
+              <div class="metric">
+                <div class="label">Protocol adoption</div>
+                <div class="value">Tokens</div>
+                <div class="note">Trusted-agent / agent pay standards expand interoperability.</div>
+              </div>
+              <div class="metric">
+                <div class="label">Cross-border slope</div>
+                <div class="value">Resilient</div>
+                <div class="note">Adds diversification as domestic volumes mature.</div>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div class="card tight">
+              <div class="hdr"><h3>Strategic implication</h3><span class="badge">forward-looking</span></div>
+              <p><b>Agentic turns networks into identity/liability arbiters.</b>
+                 If MA/V become the default “trust rail,” they can monetize more of the transaction lifecycle—not just the swipe.</p>
+            </div>
+            <div class="divider"></div>
+            <table>
+              <thead><tr><th>Company</th><th>Rating</th><th>Why it works in agentic</th><th class="right">Valuation note</th></tr></thead>
+              <tbody>
+                <tr><td><b>Visa (V)</b></td><td><span class="pill ow">OW</span></td><td>Standards + scale; VAS to secure agentic flows</td><td class="right muted">~23x CY27e vs ~28x hist</td></tr>
+                <tr><td><b>Mastercard (MA)</b></td><td><span class="pill ow">OW</span></td><td>VAS-heavy mix; tokenization/security stack</td><td class="right muted">~25x CY27e vs ~32x hist</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="nav">
+        <button class="btn" data-nav="prev">← Prev</button>
+        <button class="btn primary" data-nav="next">Next →</button>
+      </div>
+      <div class="pager">5 / 10</div>
+      <div class="hint">All numbers shown come from the prior synthesis (report-derived).</div>
+    </div>
+  </section>
+
+  <!-- Slide 6 -->
+  <section class="slide" data-title="PYPL: agentic removes the 'button' moat" data-subtitle="The core risk is structural, not cyclical">
+    <div class="header">
+      <div class="title">PYPL: agentic removes the “button” moat</div>
+      <div class="meta">Underweight thesis (report)</div>
+    </div>
+    <div class="content-wrap">
+      <div class="content">
+        <div class="grid g2">
+          <div class="card">
+            <div class="hdr"><h2>Why the risk is structural</h2><span class="badge bad">UW: PYPL</span></div>
+            <p class="big">If agents optimize purchases, the consumer no longer “chooses PayPal.” That compresses the branded checkout advantage.</p>
+            <div class="divider"></div>
+            <ul>
+              <li><b>Branded share loss + price pressure:</b> report argues PYPL has been too slow improving branded checkout, increasing competitive pressure.</li>
+              <li><b>Agentic overhang:</b> even gradual adoption caps the multiple due to terminal-moat uncertainty.</li>
+              <li><b>Venmo optionality fades:</b> slow acceptance build + competition reduces monetization runway.</li>
+              <li><b>Catalyst risk:</b> potential medium-term framework reset (report references ~3.3% TM dollar growth in ’27).</li>
+            </ul>
+            <div class="divider"></div>
+            <div class="callout">
+              <p><b>Non-obvious takeaway:</b> the biggest earnings risk can come from <b>defensive behavior</b> (pricing + incentives + opex) before share visibly collapses.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="hdr"><h2>What PYPL must show to de-risk</h2><span class="badge">checkpoints</span></div>
+            <table>
+              <thead><tr><th>Workstream</th><th>Investor test</th><th>Why it matters in agentic</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><b>Trust primitives</b></td>
+                  <td>Can PYPL become a trusted agent credential / liability manager?</td>
+                  <td>Agents need authorization + dispute rules; UI advantage is less relevant.</td>
+                </tr>
+                <tr>
+                  <td><b>Economics</b></td>
+                  <td>Defend branded volumes without paying away margin</td>
+                  <td>Competition pressures take rate; incentives can impair EPS.</td>
+                </tr>
+                <tr>
+                  <td><b>Distribution</b></td>
+                  <td>Integration “default” in agent ecosystems</td>
+                  <td>Standards + defaults decide routing in machine-mediated checkout.</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="divider"></div>
+            <div class="chart">
+              <div class="cap">
+                <div class="t">Moat erosion mechanism (conceptual)</div>
+                <div class="s">From report narrative</div>
+              </div>
+              <svg viewBox="0 0 560 240" width="100%" height="220" aria-label="Moat erosion mechanism">
+                <defs>
+                  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(0,0,0,0.55)"/>
+                  </marker>
+                </defs>
+                <g font-size="13" font-weight="950" fill="rgba(11,15,26,.86)">
+                  <rect x="30" y="40" width="160" height="58" rx="14" fill="rgba(31,75,255,.10)" stroke="rgba(31,75,255,.30)"/>
+                  <text x="110" y="65" text-anchor="middle">Consumer chooses</text>
+                  <text x="110" y="83" text-anchor="middle">checkout button</text>
+
+                  <line x1="190" y1="69" x2="260" y2="69" stroke="rgba(0,0,0,0.35)" stroke-width="2.2" marker-end="url(#arrow)"/>
+
+                  <rect x="260" y="40" width="160" height="58" rx="14" fill="rgba(0,163,255,.10)" stroke="rgba(0,163,255,.30)"/>
+                  <text x="340" y="65" text-anchor="middle">Wallet brand</text>
+                  <text x="340" y="83" text-anchor="middle">captures flow</text>
+
+                  <line x1="340" y1="98" x2="340" y2="132" stroke="rgba(0,0,0,0.25)" stroke-width="2.2" marker-end="url(#arrow)"/>
+
+                  <rect x="240" y="132" width="200" height="70" rx="14" fill="rgba(220,38,38,.08)" stroke="rgba(220,38,38,.30)"/>
+                  <text x="340" y="160" text-anchor="middle">Agentic commerce:</text>
+                  <text x="340" y="178" text-anchor="middle">routing optimized by agent</text>
+
+                  <line x1="240" y1="167" x2="160" y2="167" stroke="rgba(0,0,0,0.25)" stroke-width="2.2" marker-end="url(#arrow)"/>
+
+                  <rect x="30" y="132" width="130" height="70" rx="14" fill="rgba(14,159,110,.10)" stroke="rgba(14,159,110,.30)"/>
+                  <text x="95" y="160" text-anchor="middle">Trust rails</text>
+                  <text x="95" y="178" text-anchor="middle">win share</text>
+                </g>
+              </svg>
+              <p class="small subtle">Interpretation: value shifts from UI choice → trust rails + standards + liability management.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="nav">
+        <button class="btn" data-nav="prev">← Prev</button>
+        <button class="btn primary" data-nav="next">Next →</button>
+      </div>
+      <div class="pager">6 / 10</div>
+      <div class="hint">Focus: second-order EPS risk from defensive pricing/opex.</div>
+    </div>
+  </section>
+
+  <!-- Slide 7 -->
+  <section class="slide" data-title="SMB processing: pricing downshift" data-subtitle="Competition pushes price aggression; margin slope is the debate, not the multiple">
+    <div class="header">
+      <div class="title">SMB processing: pricing downshift & margin slope risk</div>
+      <div class="meta">FISV • FOUR • XYZ</div>
+    </div>
+    <div class="content-wrap">
+      <div class="content">
+        <div class="grid g2">
+          <div class="card">
+            <div class="hdr"><h2>Why “cheap” may stay cheap</h2><span class="badge warn">EW group</span></div>
+            <p class="big">The report’s contention: investors overestimate the durability of <b>price-up + software attach</b> playbooks in SMB.</p>
+            <div class="divider"></div>
+            <ul>
+              <li><b>Adverse selection + churn:</b> repeated price hikes change merchant mix and raise churn probability.</li>
+              <li><b>Feature parity:</b> as tools converge, “attach” becomes harder; defense requires more opex.</li>
+              <li><b>E-comm gap:</b> lower e-commerce penetration vs Stripe/Adyen advantage increases pressure.</li>
+            </ul>
+            <div class="divider"></div>
+            <div class="callout">
+              <p><b>Non-obvious takeaway:</b> market may underprice a competitive reset even with low multiples because the <b>growth algorithm itself</b> changes.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="hdr"><h2>Evidence: growth vs monetization + valuation</h2><span class="badge">report figures</span></div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Company</th>
+                  <th>Signal</th>
+                  <th class="right">Volume / GP growth</th>
+                  <th class="right">Current multiple</th>
+                  <th class="right">Hist avg</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><b>XYZ (Square)</b></td>
+                  <td><span class="pill ew">EW</span></td>
+                  <td class="right">PV CAGR 16% (’19–’25E); GP +19% YoY (3Q25)</td>
+                  <td class="right">~9x ’27e EBITDA</td>
+                  <td class="right">~17x (’23–’25)</td>
+                </tr>
+                <tr>
+                  <td><b>FISV (Clover)</b></td>
+                  <td><span class="pill ew">EW</span></td>
+                  <td class="right">Vol CAGR 17%; Rev +27%</td>
+                  <td class="right">~8.6x ’27e EPS</td>
+                  <td class="right">~19x (’18–’25)</td>
+                </tr>
+                <tr>
+                  <td><b>FOUR</b></td>
+                  <td><span class="pill ew">EW</span></td>
+                  <td class="right">Competitive price aggression rising</td>
+                  <td class="right">~10x</td>
+                  <td class="right">~25x (’22–’25)</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="divider"></div>
+            <div class="chart">
+              <div class="cap">
+                <div class="t">SMB reset mechanism</div>
+                <div class="s">Cause → effect</div>
+              </div>
+              <svg viewBox="0 0 560 200" width="100%" height="190" aria-label="SMB mechanism">
+                <defs>
+                  <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(0,0,0,0.55)"/>
+                  </marker>
+                </defs>
+                <g font-size="13" font-weight="950" fill="rgba(11,15,26,.86)">
+                  <rect x="28" y="52" width="160" height="44" rx="12" fill="rgba(217,119,6,.10)" stroke="rgba(217,119,6,.30)"/>
+                  <text x="108" y="79" text-anchor="middle">Price aggression ↑</text>
+
+                  <line x1="188" y1="74" x2="252" y2="74" stroke="rgba(0,0,0,0.35)" stroke-width="2.2" marker-end="url(#arrow2)"/>
+
+                  <rect x="252" y="52" width="160" height="44" rx="12" fill="rgba(31,75,255,.10)" stroke="rgba(31,75,255,.30)"/>
+                  <text x="332" y="79" text-anchor="middle">Churn risk ↑</text>
+
+                  <line x1="412" y1="74" x2="476" y2="74" stroke="rgba(0,0,0,0.35)" stroke-width="2.2" marker-end="url(#arrow2)"/>
+
+                  <rect x="476" y="52" width="56" height="44" rx="12" fill="rgba(220,38,38,.08)" stroke="rgba(220,38,38,.30)"/>
+                  <text x="504" y="79" text-anchor="middle">GM</text>
+
+                  <rect x="28" y="116" width="504" height="48" rx="14" fill="rgba(2,6,23,.03)" stroke="rgba(0,0,0,0.10)"/>
+                  <text x="280" y="146" text-anchor="middle">Result: margin slope flattens → “cheap” multiples persist</text>
+                </g>
+              </svg>
+              <p class="small subtle">Interpretation: competition changes the growth algorithm, not only near-term KPIs.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="nav">
+        <button class="btn" data-nav="prev">← Prev</button>
+        <button class="btn primary" data-nav="next">Next →</button>
+      </div>
+      <div class="pager">7 / 10</div>
+      <div class="hint">Key risk: defensive price/opex choices degrade EPS before share shift is visible.</div>
+    </div>
+  </section>
+
+  <!-- Slide 8 -->
+  <section class="slide" data-title="GLBE: cross-border outlier" data-subtitle="Growth + margin expansion + EPS inflection = “cheap growth” setup">
+    <div class="header">
+      <div class="title">GLBE: cross-border outlier with operating leverage</div>
+      <div class="meta">Overweight thesis (report)</div>
+    </div>
+    <div class="content-wrap">
+      <div class="content">
+        <div class="grid g2">
+          <div class="card">
+            <div class="hdr"><h2>Why GLBE stands out</h2><span class="badge good">OW: GLBE</span></div>
+            <p class="big">GLBE is framed as a cross-border enablement winner where earnings inflect through amortization roll-off and mix.</p>
+            <div class="divider"></div>
+            <div class="grid g3">
+              <div class="metric">
+                <div class="label">2026 GMV growth</div>
+                <div class="value">~30%</div>
+                <div class="note">vs consensus ~27% (report).</div>
+              </div>
+              <div class="metric">
+                <div class="label">Margin expansion</div>
+                <div class="value">~20.5% → ~22.6%</div>
+                <div class="note">’25 to ’26 EBIT margin (report).</div>
+              </div>
+              <div class="metric">
+                <div class="label">EPS inflection</div>
+                <div class="value">~209% (’26)</div>
+                <div class="note">Driven by amortization roll-off (report).</div>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <ul>
+              <li><b>Multiple vs growth:</b> ~26x ’27 GAAP EPS vs ~105% ’25–’27 GAAP EPS CAGR (report).</li>
+              <li><b>Volatility driver:</b> merchant/geography mix + take rate—investor base quality matters.</li>
+              <li><b>Strategic implication:</b> GLBE’s “cost of equity” is partially an information/positioning variable.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="hdr"><h2>GLBE setup: growth + leverage narrative</h2><span class="badge">visual</span></div>
+            <div class="chart">
+              <div class="cap">
+                <div class="t">2025 → 2026 bridge (conceptual)</div>
+                <div class="s">Key drivers</div>
+              </div>
+              <svg viewBox="0 0 560 260" width="100%" height="240" aria-label="GLBE bridge">
+                <g font-size="13" font-weight="950" fill="rgba(11,15,26,.86)">
+                  <rect x="40" y="170" width="90" height="70" rx="12" fill="rgba(2,6,23,.03)" stroke="rgba(0,0,0,0.10)"/>
+                  <text x="85" y="198" text-anchor="middle">2025</text>
+                  <text x="85" y="218" text-anchor="middle" fill="rgba(0,0,0,0.60)">~20.5%</text>
+                  <text x="85" y="236" text-anchor="middle" fill="rgba(0,0,0,0.60)">EBIT margin</text>
+
+                  <rect x="165" y="140" width="120" height="100" rx="12" fill="rgba(31,75,255,.10)" stroke="rgba(31,75,255,.30)"/>
+                  <text x="225" y="170" text-anchor="middle">GMV +30%</text>
+                  <text x="225" y="190" text-anchor="middle" fill="rgba(0,0,0,0.60)">scale leverage</text>
+
+                  <rect x="310" y="140" width="120" height="100" rx="12" fill="rgba(14,159,110,.10)" stroke="rgba(14,159,110,.30)"/>
+                  <text x="370" y="170" text-anchor="middle">Amortization</text>
+                  <text x="370" y="190" text-anchor="middle" fill="rgba(0,0,0,0.60)">roll-off</text>
+
+                  <rect x="455" y="120" width="90" height="120" rx="12" fill="rgba(2,6,23,.03)" stroke="rgba(0,0,0,0.10)"/>
+                  <text x="500" y="160" text-anchor="middle">2026</text>
+                  <text x="500" y="182" text-anchor="middle" fill="rgba(0,0,0,0.60)">~22.6%</text>
+                  <text x="500" y="202" text-anchor="middle" fill="rgba(0,0,0,0.60)">EBIT margin</text>
+
+                  <!-- arrows -->
+                  <defs>
+                    <marker id="arrow3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                      <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(0,0,0,0.55)"/>
+                    </marker>
+                  </defs>
+                  <line x1="130" y1="205" x2="165" y2="190" stroke="rgba(0,0,0,0.35)" stroke-width="2.2" marker-end="url(#arrow3)"/>
+                  <line x1="285" y1="190" x2="310" y2="190" stroke="rgba(0,0,0,0.35)" stroke-width="2.2" marker-end="url(#arrow3)"/>
+                  <line x1="430" y1="190" x2="455" y2="180" stroke="rgba(0,0,0,0.35)" stroke-width="2.2" marker-end="url(#arrow3)"/>
+                </g>
+              </svg>
+              <div class="divider"></div>
+              <p class="big"><b>Strategic implication:</b> GLBE can fund reinvestment while EPS accelerates—potentially improving competitive durability and investor support.</p>
+            </div>
+
+            <div class="divider"></div>
+            <table>
+              <thead><tr><th>Metric</th><th class="right">Report point</th><th>Why it changes interpretation</th></tr></thead>
+              <tbody>
+                <tr><td><b>GMV growth (’26)</b></td><td class="right">~30%</td><td>Outgrows consensus; supports operating leverage narrative.</td></tr>
+                <tr><td><b>EPS growth (’26)</b></td><td class="right">~209%</td><td>Step-function inflection can drive re-rate if viewed durable.</td></tr>
+                <tr><td><b>’27 GAAP P/E</b></td><td class="right">~26x</td><td>“Cheap growth” setup vs ~105% EPS CAGR (’25–’27).</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="nav">
+        <button class="btn" data-nav="prev">← Prev</button>
+        <button class="btn primary" data-nav="next">Next →</button>
+      </div>
+      <div class="pager">8 / 10</div>
+      <div class="hint">Key risk: take-rate/mix volatility drives multiple swings.</div>
+    </div>
+  </section>
+
+  <!-- Slide 9 -->
+  <section class="slide" data-title="Stablecoins: real, but not a 2026 takeover" data-subtitle="Economics & off-ramps constrain displacement; niche use cases lead">
+    <div class="header">
+      <div class="title">Stablecoins: adoption begins, displacement is constrained</div>
+      <div class="meta">Economics reality check</div>
+    </div>
+    <div class="content-wrap">
+      <div class="content">
+        <div class="grid g2">
+          <div class="card">
+            <div class="hdr"><h2>Where stablecoins win first</h2><span class="badge">2026 setup</span></div>
+            <p class="big">The report expects stablecoins to move beyond trading—but earliest volume is where <b>instant clearing</b> and <b>uncertainty</b> matter.</p>
+            <div class="divider"></div>
+            <ul>
+              <li><b>Best-fit use cases:</b> unknown timing/amount + immediate settlement (betting; off-hour tokenized trading).</li>
+              <li><b>Cross-border impact limited (near term):</b> focus is SWIFT alternatives; consumer usage initially low.</li>
+              <li><b>Market is already concentrated:</b> ~$285B cap; +50% YoY from ~$190B; Tether ~65%, Circle ~27%.</li>
+              <li><b>Regulatory catalyst:</b> GENIUS/CLARITY Acts can open regulated channels and accelerate institutional adoption.</li>
+            </ul>
+            <div class="divider"></div>
+            <div class="callout">
+              <p><b>Non-obvious takeaway:</b> stablecoins must beat <b>all-in</b> costs (including off-ramp), not just FX spreads.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="hdr"><h2>Economics: conversion costs are already low in G10</h2><span class="badge">fee analysis</span></div>
+
+            <div class="chart">
+              <div class="cap">
+                <div class="t">Average conversion costs (illustrative)</div>
+                <div class="s">bps (report)</div>
+              </div>
+              <svg viewBox="0 0 560 240" width="100%" height="220" aria-label="Conversion cost bars">
+                <!-- baseline -->
+                <line x1="70" y1="200" x2="520" y2="200" stroke="rgba(0,0,0,0.25)" stroke-width="1"/>
+                <!-- bars -->
+                <!-- G10 ~42 bps -->
+                <rect x="110" y="160" width="120" height="40" rx="10" fill="rgba(31,75,255,.18)" stroke="rgba(31,75,255,.35)"/>
+                <!-- Exotics ~125 bps -->
+                <rect x="330" y="80" width="120" height="120" rx="10" fill="rgba(217,119,6,.18)" stroke="rgba(217,119,6,.35)"/>
+                <!-- labels -->
+                <g font-size="14" font-weight="950" fill="rgba(11,15,26,.86)">
+                  <text x="170" y="154" text-anchor="middle">~42 bps</text>
+                  <text x="390" y="74" text-anchor="middle">~125 bps</text>
+                </g>
+                <g font-size="12" font-weight="900" fill="rgba(0,0,0,0.62)">
+                  <text x="170" y="222" text-anchor="middle">G10 avg</text>
+                  <text x="390" y="222" text-anchor="middle">Selected exotics avg</text>
+                </g>
+                <!-- note -->
+                <g font-size="12" font-weight="850" fill="rgba(0,0,0,0.52)">
+                  <text x="280" y="28" text-anchor="middle">Stablecoins must clear off-ramp + compliance costs to be structurally cheaper.</text>
+                </g>
+              </svg>
+              <div class="legend">
+                <div class="leg"><span class="dot"></span>G10 conversion</div>
+                <div class="leg"><span class="dot o"></span>Exotics conversion</div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+            <table>
+              <thead><tr><th>Area</th><th>Report point</th><th>Investment implication</th></tr></thead>
+              <tbody>
+                <tr><td><b>Cross-border remittance</b></td><td>Near-term limited impact</td><td>Don’t price 2026 earnings displacement aggressively.</td></tr>
+                <tr><td><b>Stablecoin winners</b></td><td>Tether/Circle dominate</td><td>Distribution + trust matter; new entrants need regulatory/channel edge.</td></tr>
+                <tr><td><b>Covered names</b></td><td>WU explicitly flagged as UW</td><td>Stablecoins add overhang, but unit economics still constrain speed.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="nav">
+        <button class="btn" data-nav="prev">← Prev</button>
+        <button class="btn primary" data-nav="next">Next →</button>
+      </div>
+      <div class="pager">9 / 10</div>
+      <div class="hint">Key question: when regulated intermediaries can hold/use stablecoins at scale.</div>
+    </div>
+  </section>
+
+  <!-- Slide 10 -->
+  <section class="slide" data-title="2026 playbook & catalysts" data-subtitle="What to own, what to fade, and the key signals to track">
+    <div class="header">
+      <div class="title">2026 playbook & catalysts</div>
+      <div class="meta">Actionable monitoring checklist</div>
+    </div>
+    <div class="content-wrap">
+      <div class="content">
+        <div class="grid g2">
+          <div class="card">
+            <div class="hdr"><h2>Portfolio posture (report-aligned)</h2><span class="badge">decision-oriented</span></div>
+            <table>
+              <thead><tr><th>Bucket</th><th>Names</th><th>Why</th><th>Primary risk</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><b>Own rails</b></td>
+                  <td><span class="pill ow">V</span> <span class="pill ow">MA</span></td>
+                  <td>Standards + trust rails; VAS attach rises with agentic fraud complexity</td>
+                  <td>Agentic monetization slower than expected</td>
+                </tr>
+                <tr>
+                  <td><b>Own “cheap growth”</b></td>
+                  <td><span class="pill ow">GLBE</span></td>
+                  <td>~30% GMV growth; margin expansion; EPS inflection; valuation reasonable</td>
+                  <td>Mix/take-rate volatility; investor base churn</td>
+                </tr>
+                <tr>
+                  <td><b>Fade button moats</b></td>
+                  <td><span class="pill uw">PYPL</span></td>
+                  <td>Agentic removes consumer decision moment; defensive pricing/opex risk</td>
+                  <td>Successful trust-layer pivot</td>
+                </tr>
+                <tr>
+                  <td><b>Monitor SMB reset</b></td>
+                  <td><span class="pill ew">FISV</span> <span class="pill ew">FOUR</span> <span class="pill ew">XYZ</span></td>
+                  <td>Pricing downshift + churn risk; margin slope is the debate</td>
+                  <td>Faster-than-expected attach monetization</td>
+                </tr>
+                <tr>
+                  <td><b>Stablecoin overhang</b></td>
+                  <td><span class="pill uw">WU</span></td>
+                  <td>Disruption narrative persists, even if speed is constrained by economics</td>
+                  <td>Regulatory acceleration shifts timeline earlier</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="divider"></div>
+            <div class="callout">
+              <p><b>Key conclusion:</b> In 2026, the market rewards <b>trust monetization</b> and penalizes <b>UI-dependent moats</b>.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="hdr"><h2>Catalyst calendar (signals)</h2><span class="badge">what to track</span></div>
+            <div class="grid" style="grid-template-columns:1fr; gap:12px;">
+              <div class="card tight">
+                <div class="hdr"><h3>Agentic adoption signals</h3><span class="badge">Q/Q KPIs</span></div>
+                <ul>
+                  <li><b>MA/V:</b> VAS attach and fraud/cyber revenue acceleration relative to core volumes.</li>
+                  <li><b>Ecosystem:</b> broader adoption of trusted agent protocols / agentic tokens by platforms and merchants.</li>
+                  <li><b>Liability:</b> changes in dispute/chargeback flows and authorization success rates.</li>
+                </ul>
+              </div>
+              <div class="card tight">
+                <div class="hdr"><h3>Incumbent stress tests</h3><span class="badge">downside screens</span></div>
+                <ul>
+                  <li><b>PYPL:</b> evidence of pricing/incentives rising to defend share; any medium-term framework revision.</li>
+                  <li><b>SMB:</b> net revenue retention + churn signals; competitive pricing actions; opex creep.</li>
+                  <li><b>GLBE:</b> take-rate stability and mix transparency; durability of margin expansion narrative.</li>
+                </ul>
+              </div>
+              <div class="card tight">
+                <div class="hdr"><h3>Stablecoin inflection triggers</h3><span class="badge">regulatory</span></div>
+                <ul>
+                  <li><b>GENIUS/CLARITY progress:</b> ability for regulated intermediaries to hold/use stablecoins at scale.</li>
+                  <li><b>Economics:</b> off-ramp cost compression; improvements vs existing G10 conversion costs (~42 bps).</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+            <p class="big"><b>Forward-looking:</b> As agentic penetrates toward ~10% of e-comm by 2030, the premium shifts to the <b>trust layer</b>—not the interface.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="nav">
+        <button class="btn" data-nav="prev">← Prev</button>
+        <button class="btn primary" data-nav="next">Restart ↺</button>
+      </div>
+      <div class="pager">10 / 10</div>
+      <div class="hint">Print-safe: File → Print (landscape).</div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let idx = 0;
+
+  function show(i){
+    idx = (i + slides.length) % slides.length;
+    slides.forEach((s, k)=> s.classList.toggle('active', k===idx));
+    // update pager on active slide
+    const active = slides[idx];
+    const footerPager = active.querySelector('.pager');
+    if(footerPager) footerPager.textContent = (idx+1) + " / " + slides.length;
+    // run fit after layout settles
+    requestAnimationFrame(()=>{fitActive();});
+  }
+
+  function fitSlide(slide){
+    const wrap = slide.querySelector('.content-wrap');
+    const content = slide.querySelector('.content');
+    if(!wrap || !content) return;
+
+    // reset
+    content.style.transform = 'scale(1)';
+    content.style.width = '100%';
+
+    // compute available box
+    const wrapRect = wrap.getBoundingClientRect();
+
+    // Use scroll sizes as "natural" content size
+    const naturalW = content.scrollWidth;
+    const naturalH = content.scrollHeight;
+
+    // Protect against zero sizes
+    if(naturalW === 0 || naturalH === 0) return;
+
+    const scaleW = wrapRect.width / naturalW;
+    const scaleH = wrapRect.height / naturalH;
+    const scale = Math.min(1, scaleW, scaleH);
+
+    content.style.transform = 'scale(' + scale.toFixed(4) + ')';
+
+    // Ensure no accidental subpixel overflow: add tiny padding shrink if needed
+    // (scale already ensures fit; this is a final guard)
+    const postH = naturalH * scale;
+    if(postH > wrapRect.height + 0.5){
+      const s2 = (wrapRect.height / naturalH) * 0.998;
+      content.style.transform = 'scale(' + Math.min(scale, s2).toFixed(4) + ')';
+    }
+  }
+
+  function fitActive(){
+    const active = slides[idx];
+    fitSlide(active);
+  }
+
+  // nav buttons
+  function bindNav(){
+    document.querySelectorAll('[data-nav="prev"]').forEach(b=>b.addEventListener('click', ()=>show(idx-1)));
+    document.querySelectorAll('[data-nav="next"]').forEach(b=>b.addEventListener('click', ()=>{
+      if(idx === slides.length-1) show(0); else show(idx+1);
+    }));
+    const p = document.getElementById('prevBtn');
+    const n = document.getElementById('nextBtn');
+    if(p) p.addEventListener('click', ()=>show(idx-1));
+    if(n) n.addEventListener('click', ()=>show(idx+1));
+  }
+
+  // keyboard
+  window.addEventListener('keydown', (e)=>{
+    if(e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' '){ e.preventDefault(); show(idx+1); }
+    if(e.key === 'ArrowLeft'  || e.key === 'PageUp'){ e.preventDefault(); show(idx-1); }
+    if(e.key.toLowerCase() === 'p'){ window.print(); }
+    if(e.key === 'Home'){ show(0); }
+    if(e.key === 'End'){ show(slides.length-1); }
+  }, {passive:false});
+
+  // responsive fit if browser zoom / dpi changes
+  window.addEventListener('resize', ()=>fitActive());
+
+  // init
+  bindNav();
+  show(0);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Humanoid Robotics: Multi-Agent Theme Intelligence System</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg-primary: #F5F0E8;
+      --bg-secondary: #EAE5DC;
+      --bg-card: #EFEAD8;
+      --text-navy: #1A2744;
+      --text-slate: #4A5568;
+      --text-light: #718096;
+      --accent-gold: #C9A962;
+      --accent-gold-dark: #A88B4A;
+      --accent-navy: #1A2744;
+      --green: #2D8659;
+      --red: #C53030;
+      --amber: #D69E2E;
+      --blue: #5B7DB1;
+      --chart1: #1A2744;
+      --chart2: #C9A962;
+      --chart3: #2D8659;
+      --chart4: #C53030;
+      --chart5: #5B7DB1;
+    }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #2a2a2a; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    .presentation { width: 100vw; height: 100vh; position: relative; }
+    .slide { display: none; width: 100%; height: 100%; background: var(--bg-primary); position: absolute; top: 0; left: 0; overflow: hidden; }
+    .slide.active { display: flex; flex-direction: column; }
+
+    /* Controls */
+    .controls {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 1000;
+      display: flex; align-items: center; justify-content: center; gap: 16px;
+      padding: 8px 20px; background: rgba(26,39,68,0.92); backdrop-filter: blur(8px);
+    }
+    .controls button {
+      background: var(--accent-gold); color: var(--text-navy); border: none;
+      padding: 6px 18px; border-radius: 4px; font-size: 13px; font-weight: 700;
+      cursor: pointer; letter-spacing: 0.5px; transition: background 0.2s;
+    }
+    .controls button:hover { background: var(--accent-gold-dark); }
+    #slide-counter { color: #fff; font-size: 13px; font-weight: 600; min-width: 60px; text-align: center; }
+    .slide-dots { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; max-width: 400px; justify-content: center; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.3); cursor: pointer; transition: background 0.2s; }
+    .dot.active { background: var(--accent-gold); }
+
+    /* ── Wave SVG background ── */
+    .wave-bg { position: absolute; bottom: 0; left: 0; width: 100%; height: 60%; pointer-events: none; z-index: 0; opacity: 0.45; }
+
+    /* ── TITLE SLIDE ── */
+    .title-slide { background: var(--text-navy); justify-content: center; align-items: flex-start; padding: 0; }
+    .title-slide .title-inner { position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: center; height: 100%; padding: 5% 8%; }
+    .title-slide .tag { display: inline-block; background: var(--accent-gold); color: var(--text-navy); font-size: 11px; font-weight: 800; letter-spacing: 3px; padding: 5px 14px; border-radius: 2px; text-transform: uppercase; margin-bottom: 24px; }
+    .title-slide h1 { font-size: clamp(28px, 4vw, 52px); color: #fff; font-weight: 800; line-height: 1.15; max-width: 700px; margin-bottom: 20px; }
+    .title-slide .sub { font-size: clamp(14px, 1.6vw, 19px); color: rgba(255,255,255,0.65); max-width: 600px; line-height: 1.6; margin-bottom: 36px; }
+    .title-slide .meta-row { display: flex; gap: 32px; flex-wrap: wrap; }
+    .title-slide .meta-item { display: flex; flex-direction: column; }
+    .title-slide .meta-label { font-size: 10px; letter-spacing: 2px; color: var(--accent-gold); text-transform: uppercase; font-weight: 700; }
+    .title-slide .meta-val { font-size: 14px; color: rgba(255,255,255,0.85); font-weight: 600; margin-top: 2px; }
+    .title-agents { position: absolute; right: 6%; top: 50%; transform: translateY(-50%); z-index: 2; display: flex; flex-direction: column; gap: 10px; }
+    .agent-chip { background: rgba(255,255,255,0.07); border: 1px solid rgba(201,169,98,0.4); border-radius: 6px; padding: 10px 18px; min-width: 180px; }
+    .agent-chip .ac-label { font-size: 9px; letter-spacing: 2px; color: var(--accent-gold); text-transform: uppercase; font-weight: 700; }
+    .agent-chip .ac-name { font-size: 13px; color: #fff; font-weight: 700; margin-top: 3px; }
+
+    /* ── COMMON SLIDE CHROME ── */
+    .slide-header { display: flex; align-items: flex-start; justify-content: space-between; padding: 22px 36px 0; flex-shrink: 0; position: relative; z-index: 2; }
+    .slide-header .sh-left { display: flex; flex-direction: column; }
+    .slide-header .sh-tag { font-size: 10px; letter-spacing: 2.5px; font-weight: 800; text-transform: uppercase; color: var(--accent-gold); margin-bottom: 4px; }
+    .slide-header h2 { font-size: clamp(18px, 2.2vw, 28px); color: var(--text-navy); font-weight: 800; line-height: 1.2; max-width: 760px; }
+    .slide-header .sh-sub { font-size: clamp(11px, 1.1vw, 14px); color: var(--text-slate); margin-top: 5px; }
+    .slide-header .sh-right { display: flex; align-items: center; gap: 8px; }
+    .agent-badge { font-size: 9px; letter-spacing: 1.5px; font-weight: 800; text-transform: uppercase; padding: 4px 10px; border-radius: 3px; }
+    .ab-bull { background: rgba(45,134,89,0.15); color: var(--green); border: 1px solid rgba(45,134,89,0.3); }
+    .ab-bear { background: rgba(197,48,48,0.12); color: var(--red); border: 1px solid rgba(197,48,48,0.25); }
+    .ab-risk { background: rgba(214,158,46,0.15); color: var(--amber); border: 1px solid rgba(214,158,46,0.3); }
+    .ab-sent { background: rgba(91,125,177,0.15); color: var(--blue); border: 1px solid rgba(91,125,177,0.3); }
+    .ab-synth { background: rgba(26,39,68,0.12); color: var(--text-navy); border: 1px solid rgba(26,39,68,0.25); }
+
+    .divider { height: 2px; background: linear-gradient(90deg, var(--accent-gold), transparent); margin: 10px 36px 0; flex-shrink: 0; position: relative; z-index: 2; }
+
+    .slide-body { flex: 1; padding: 14px 36px 48px; overflow: hidden; position: relative; z-index: 2; display: flex; flex-direction: column; }
+
+    /* ── METRIC BOXES ── */
+    .metric-row { display: flex; gap: 14px; margin-bottom: 14px; }
+    .metric-box { flex: 1; background: var(--bg-secondary); border-radius: 8px; border-left: 4px solid var(--accent-gold); padding: 13px 16px; }
+    .metric-box.navy { border-left-color: var(--text-navy); }
+    .metric-box.green { border-left-color: var(--green); }
+    .metric-box.red { border-left-color: var(--red); }
+    .metric-box.blue { border-left-color: var(--blue); }
+    .metric-box .mb-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-light); font-weight: 700; margin-bottom: 4px; }
+    .metric-box .mb-value { font-size: clamp(18px, 2.5vw, 30px); font-weight: 800; color: var(--text-navy); line-height: 1; }
+    .metric-box .mb-value.gold { color: var(--accent-gold-dark); }
+    .metric-box .mb-value.green { color: var(--green); }
+    .metric-box .mb-value.red { color: var(--red); }
+    .metric-box .mb-sub { font-size: 10px; color: var(--text-light); margin-top: 4px; line-height: 1.3; }
+
+    /* ── TWO-COLUMN ── */
+    .two-col { display: flex; gap: 20px; flex: 1; overflow: hidden; }
+    .col-left { flex: 0 0 42%; display: flex; flex-direction: column; gap: 10px; }
+    .col-right { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+    .col-55 { flex: 0 0 55%; }
+    .col-45 { flex: 0 0 45%; }
+
+    /* ── THREE-COLUMN CARDS ── */
+    .three-col { display: flex; gap: 16px; flex: 1; }
+    .insight-card { flex: 1; background: var(--bg-secondary); border-radius: 10px; padding: 18px; display: flex; flex-direction: column; }
+    .insight-card .ic-icon { font-size: 26px; margin-bottom: 10px; }
+    .insight-card .ic-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-gold-dark); margin-bottom: 8px; }
+    .insight-card .ic-body { font-size: clamp(11px, 1.1vw, 13px); color: var(--text-slate); line-height: 1.55; flex: 1; }
+    .insight-card .ic-highlight { margin-top: 10px; padding: 8px 10px; background: var(--text-navy); border-radius: 5px; }
+    .insight-card .ic-highlight span { font-size: 11px; font-weight: 700; color: var(--accent-gold); }
+
+    /* ── TABLE ── */
+    .data-table { width: 100%; border-collapse: collapse; font-size: clamp(10px, 1vw, 12px); }
+    .data-table th { background: var(--text-navy); color: var(--accent-gold); padding: 8px 10px; text-align: left; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; }
+    .data-table td { padding: 7px 10px; border-bottom: 1px solid rgba(0,0,0,0.06); color: var(--text-navy); }
+    .data-table tr:nth-child(even) td { background: rgba(0,0,0,0.02); }
+    .data-table tr:hover td { background: rgba(201,169,98,0.07); }
+    .td-bull { color: var(--green); font-weight: 700; }
+    .td-bear { color: var(--red); font-weight: 700; }
+    .td-base { color: var(--blue); font-weight: 700; }
+    .td-gold { color: var(--accent-gold-dark); font-weight: 700; }
+
+    /* ── BULLET LIST ── */
+    .insight-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+    .insight-list li { display: flex; align-items: flex-start; gap: 9px; font-size: clamp(11px, 1.1vw, 13px); color: var(--text-slate); line-height: 1.45; }
+    .insight-list li::before { content: '▶'; color: var(--accent-gold); font-size: 9px; flex-shrink: 0; margin-top: 3px; }
+    .insight-list li b { color: var(--text-navy); }
+
+    /* ── SCENARIO CARDS ── */
+    .scenario-row { display: flex; gap: 12px; }
+    .scenario-card { flex: 1; border-radius: 8px; padding: 14px 16px; }
+    .sc-bull { background: rgba(45,134,89,0.08); border: 1.5px solid rgba(45,134,89,0.3); }
+    .sc-base { background: rgba(91,125,177,0.08); border: 1.5px solid rgba(91,125,177,0.3); }
+    .sc-bear { background: rgba(197,48,48,0.07); border: 1.5px solid rgba(197,48,48,0.25); }
+    .scenario-card .sc-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; font-weight: 800; margin-bottom: 6px; }
+    .sc-bull .sc-label { color: var(--green); }
+    .sc-base .sc-label { color: var(--blue); }
+    .sc-bear .sc-label { color: var(--red); }
+    .scenario-card .sc-value { font-size: clamp(18px, 2.2vw, 26px); font-weight: 800; color: var(--text-navy); line-height: 1; margin-bottom: 4px; }
+    .scenario-card .sc-sub { font-size: 10px; color: var(--text-light); line-height: 1.4; }
+
+    /* ── QUOTE BLOCK ── */
+    .quote-block { background: var(--text-navy); border-radius: 8px; padding: 18px 22px; position: relative; }
+    .quote-block::before { content: '"'; font-size: 64px; color: var(--accent-gold); position: absolute; top: -10px; left: 14px; line-height: 1; font-family: Georgia, serif; opacity: 0.6; }
+    .quote-block p { font-size: clamp(12px, 1.2vw, 14px); color: rgba(255,255,255,0.85); line-height: 1.6; padding-left: 20px; font-style: italic; }
+    .quote-block .q-source { font-size: 10px; color: var(--accent-gold); margin-top: 8px; padding-left: 20px; font-weight: 700; font-style: normal; }
+
+    /* ── SVG CHART CONTAINER ── */
+    .chart-box { background: rgba(255,255,255,0.5); border-radius: 8px; padding: 12px; overflow: hidden; }
+    .chart-title { font-size: 11px; font-weight: 700; color: var(--text-navy); letter-spacing: 0.5px; margin-bottom: 8px; text-transform: uppercase; }
+
+    /* ── HEATMAP ── */
+    .heatmap { width: 100%; border-collapse: collapse; font-size: 11px; }
+    .heatmap th { background: var(--text-navy); color: #fff; padding: 7px 8px; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; text-align: center; }
+    .heatmap td { padding: 7px 10px; text-align: center; font-size: 10px; font-weight: 700; border: 1px solid rgba(255,255,255,0.4); }
+    .hm-leader { background: rgba(45,134,89,0.25); color: #1a5c38; }
+    .hm-strong { background: rgba(45,134,89,0.12); color: #2a6b41; }
+    .hm-mid { background: rgba(201,169,98,0.2); color: #7a5c1a; }
+    .hm-weak { background: rgba(197,48,48,0.1); color: #8b2020; }
+    .hm-na { background: rgba(0,0,0,0.04); color: #999; }
+    .heatmap .row-label { text-align: left; font-weight: 700; color: var(--text-navy); background: var(--bg-secondary); }
+
+    /* ── PROGRESS BAR ── */
+    .progress-row { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; }
+    .pr-label { font-size: 11px; font-weight: 600; color: var(--text-navy); min-width: 110px; }
+    .pr-bar-wrap { flex: 1; background: rgba(0,0,0,0.08); border-radius: 4px; height: 18px; overflow: hidden; }
+    .pr-bar { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; }
+    .pr-val { font-size: 10px; font-weight: 800; color: #fff; }
+    .pr-note { font-size: 10px; color: var(--text-light); min-width: 90px; text-align: right; }
+
+    /* ── SECTION LABEL ── */
+    .section-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: var(--text-light); margin-bottom: 8px; }
+
+    /* ── SOURCE FOOTER ── */
+    .source-footer { position: absolute; bottom: 36px; left: 36px; right: 36px; font-size: 9px; color: var(--text-light); border-top: 1px solid rgba(0,0,0,0.08); padding-top: 5px; z-index: 2; }
+
+    /* ── TIMELINE ── */
+    .timeline { display: flex; align-items: flex-start; gap: 0; position: relative; }
+    .timeline::before { content: ''; position: absolute; top: 18px; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent-gold), var(--text-navy)); z-index: 0; }
+    .tl-item { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; }
+    .tl-dot { width: 16px; height: 16px; border-radius: 50%; background: var(--accent-gold); border: 3px solid var(--bg-primary); margin-bottom: 10px; }
+    .tl-dot.navy { background: var(--text-navy); }
+    .tl-dot.green { background: var(--green); }
+    .tl-year { font-size: 12px; font-weight: 800; color: var(--text-navy); margin-bottom: 4px; }
+    .tl-body { font-size: 10px; color: var(--text-slate); text-align: center; line-height: 1.4; padding: 0 4px; }
+
+    /* ── STACK BAR ── */
+    .stack-bar-wrap { display: flex; flex-direction: column; gap: 8px; }
+    .sb-row { display: flex; align-items: center; gap: 8px; }
+    .sb-label { font-size: 11px; color: var(--text-navy); font-weight: 600; min-width: 50px; text-align: right; }
+    .sb-bar { display: flex; height: 22px; border-radius: 3px; overflow: hidden; flex: 1; }
+    .sb-seg { display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.9); }
+    .sb-note { font-size: 10px; color: var(--text-light); min-width: 55px; }
+
+    /* ── RISK MATRIX ── */
+    .risk-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+    .risk-table th { background: var(--text-navy); color: var(--accent-gold); padding: 7px 10px; text-align: left; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; }
+    .risk-table td { padding: 7px 10px; border-bottom: 1px solid rgba(0,0,0,0.05); vertical-align: top; }
+    .risk-table tr:nth-child(even) td { background: rgba(0,0,0,0.02); }
+    .prob-high { background: rgba(197,48,48,0.15); color: var(--red); font-weight: 700; border-radius: 3px; padding: 2px 6px; display: inline-block; font-size: 10px; }
+    .prob-mid { background: rgba(214,158,46,0.15); color: var(--amber); font-weight: 700; border-radius: 3px; padding: 2px 6px; display: inline-block; font-size: 10px; }
+    .prob-low { background: rgba(45,134,89,0.12); color: var(--green); font-weight: 700; border-radius: 3px; padding: 2px 6px; display: inline-block; font-size: 10px; }
+
+    /* ── INVESTMENT BIAS ── */
+    .bias-row { display: flex; gap: 12px; margin-bottom: 12px; }
+    .bias-card { flex: 1; background: var(--bg-secondary); border-radius: 8px; padding: 14px 16px; border-top: 3px solid var(--accent-gold); }
+    .bias-card.green-top { border-top-color: var(--green); }
+    .bias-card.red-top { border-top-color: var(--red); }
+    .bias-card.amber-top { border-top-color: var(--amber); }
+    .bias-card .bc-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; font-weight: 800; color: var(--text-light); margin-bottom: 6px; }
+    .bias-card .bc-title { font-size: 13px; font-weight: 800; color: var(--text-navy); margin-bottom: 6px; }
+    .bias-card .bc-body { font-size: 11px; color: var(--text-slate); line-height: 1.45; }
+
+    /* ── CONVICTION METER ── */
+    .conviction-row { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
+    .cv-label { font-size: 11px; font-weight: 700; color: var(--text-navy); min-width: 140px; }
+    .cv-meter { flex: 1; background: rgba(0,0,0,0.07); border-radius: 10px; height: 12px; overflow: hidden; }
+    .cv-fill { height: 100%; border-radius: 10px; }
+    .cv-tag { font-size: 10px; font-weight: 700; min-width: 55px; text-align: right; }
+    .cv-high { background: var(--green); color: var(--green); }
+    .cv-mid { background: var(--accent-gold); color: var(--accent-gold-dark); }
+    .cv-low { background: var(--red); color: var(--red); }
+    .cv-mod { background: var(--blue); color: var(--blue); }
+
+    /* ── DONUT CHART ── */
+    .donut-legend { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+    .dl-item { display: flex; align-items: center; gap: 8px; }
+    .dl-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+    .dl-label { font-size: 11px; color: var(--text-slate); flex: 1; }
+    .dl-pct { font-size: 11px; font-weight: 700; color: var(--text-navy); }
+
+    /* Ensure last slide body is padded properly */
+    .slide-body.padded { padding-bottom: 55px; }
+  </style>
+</head>
+<body>
+<div class="presentation">
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- SLIDE 1 · TITLE                                -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="slide title-slide active" id="slide-1">
+  <svg class="wave-bg" viewBox="0 0 1376 480" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="wg1" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:#C9A962;stop-opacity:0.22"/>
+        <stop offset="100%" style="stop-color:#A88B4A;stop-opacity:0.06"/>
+      </linearGradient>
+      <linearGradient id="wg2" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:#5B7DB1;stop-opacity:0.15"/>
+        <stop offset="100%" style="stop-color:#1A2744;stop-opacity:0.05"/>
+      </linearGradient>
+    </defs>
+    <path d="M0,340 Q220,260 440,300 T880,250 T1376,310 L1376,480 L0,480 Z" fill="url(#wg1)"/>
+    <path d="M0,400 Q300,340 600,370 T1100,330 T1376,390 L1376,480 L0,480 Z" fill="url(#wg2)"/>
+    <circle cx="1100" cy="180" r="260" fill="none" stroke="rgba(201,169,98,0.08)" stroke-width="60"/>
+    <circle cx="1100" cy="180" r="160" fill="none" stroke="rgba(201,169,98,0.06)" stroke-width="40"/>
+    <circle cx="1100" cy="180" r="80" fill="none" stroke="rgba(201,169,98,0.1)" stroke-width="20"/>
+  </svg>
+  <div class="title-inner">
+    <div class="tag">Buy-Side Intelligence · March 2026</div>
+    <h1>Humanoid Robotics<br>Multi-Agent Theme<br>Intelligence System</h1>
+    <p class="sub">Units · TAM · Semiconductor BOM · Processor Trends · Competitive Landscape<br>Synthesizing 12+ institutional research reports through four adversarial agents</p>
+    <div class="meta-row">
+      <div class="meta-item"><span class="meta-label">Coverage Horizon</span><span class="meta-val">2026–2050</span></div>
+      <div class="meta-item"><span class="meta-label">Sources</span><span class="meta-val">Morgan Stanley · UBS · Samsung SSIC</span></div>
+      <div class="meta-item"><span class="meta-label">As Of</span><span class="meta-val">March 2, 2026</span></div>
+      <div class="meta-item"><span class="meta-label">Asset Class</span><span class="meta-val">Global Equities · Semis · Robotics</span></div>
+    </div>
+  </div>
+  <div class="title-agents">
+    <div class="agent-chip"><div class="ac-label">Agent 01</div><div class="ac-name" style="color:#2D8659">🐂 Bull — TAM &amp; Scaling</div></div>
+    <div class="agent-chip"><div class="ac-label">Agent 02</div><div class="ac-name" style="color:#C53030">🐻 Bear — Hype &amp; Risk</div></div>
+    <div class="agent-chip"><div class="ac-label">Agent 03</div><div class="ac-name" style="color:#D69E2E">⚠️ Risk — Supply &amp; Policy</div></div>
+    <div class="agent-chip"><div class="ac-label">Agent 04</div><div class="ac-name" style="color:#5B7DB1">📡 Sentiment &amp; Positioning</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- SLIDE 2 · EXECUTIVE SUMMARY                    -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="slide" id="slide-2">
+  <div class="slide-header">
+    <div class="sh-left">
+      <span class="sh-tag">Executive Summary</span>
+      <h2>Humanoid Robotics: A Convergence of AI, Labor Economics &amp; Semiconductor Intensity</h2>
+      <span class="sh-sub">Multi-agent synthesis across 12+ institutional research reports — Morgan Stanley, UBS, Samsung SSIC</span>
+    </div>
+    <div class="sh-right"><span class="agent-badge ab-synth">Synthesis</span></div>
+  </div>
+  <div class="divider"></div>
+  <div class="slide-body">
+    <div class="metric-row">
+      <div class="metric-box"><div class="mb-label">Global Shipments 2025</div><div class="mb-value gold">18,600</div><div class="mb-sub">Units · vs ~2,200 in 2024 · +745% YoY</div></div>
+      <div class="metric-box navy"><div class="mb-label">Semi BOM per Robot</div><div class="mb-value">$1,600</div><div class="mb-sub">10× smartphone · similar to ADAS/AV</div></div>
+      <div class="metric-box green"><div class="mb-label">Bull TAM by 2045</div><div class="mb-value green">$278bn</div><div class="mb-sub">Semi TAM · 33% CAGR · 179mm units</div></div>
+      <div class="metric-box red"><div class="mb-label">MS Long-Term Revenue</div><div class="mb-value">$5tn</div><div class="mb-sub">By 2050 · 1bn robots · Morgan Stanley</div></div>
+    </div>
+    <div class="three-col" style="flex:1">
+      <div class="insight-card">
+        <div class="ic-icon">🐂</div>
+        <div class="ic-title">Bull Case — Structural Adoption</div>
+        <div class="ic-body">Labor shortages, aging demographics and manufacturing reshoring create durable demand. AI model capability (VLA/Physical AI) is the key unlock. Tesla targets 1M units/yr by 2029; China shipments doubling to 28k in 2026. Semiconductor content grows as centralized compute shifts to custom SoCs with HBM.</div>
+        <div class="ic-highlight"><span>▲ 179mm units by 2045 (Bull) · $278bn Semi TAM</span></div>
+      </div>
+      <div class="insight-card">
+        <div class="ic-icon">🐻</div>
+        <div class="ic-title">Bear Case — Hype &amp; Monetization Risk</div>
+        <div class="ic-body">42% of 2025 China shipments were R&amp;D/education — not productive deployment. "Physical AI" training data gap limits generalization. ROI payback periods remain undefined. ASP compression risk: Unitree at $6k challenges the $20k mass-adoption floor. Capex-heavy model strains OEM balance sheets pre-revenue.</div>
+        <div class="ic-highlight"><span style="color:#C53030">▼ Base case: only 7mm units by 2035 · $10bn Semi TAM</span></div>
+      </div>
+      <div class="insight-card">
+        <div class="ic-icon">⚠️</div>
+        <div class="ic-title">Risk Agent — Fragility &amp; Constraints</div>
+        <div class="ic-body">AI SoC supply (Nvidia Jetson Thor) and advanced packaging are near-term bottlenecks. Export controls on advanced compute create US/China bifurcation risk. Battery energy density limits operational hours. Safety regulation frameworks are undefined in most jurisdictions — a 12–24 month deployment drag.</div>
+        <div class="ic-highlight"><span style="color:#D69E2E">⚡ Nvidia ~90% OEM share creates single-point dependency</span></div>
+      </div>
+      <div class="insight-card">
+        <div class="ic-icon">📡</div>
+        <div class="ic-title">Sentiment — Early Commercialization Phase</div>
+        <div class="ic-body">Narrative has shifted from "speculative" to "early commercialization proof." Figure AI is revenue-generating (BMW). China humanoid index surged end-2025, highly correlated with Tesla catalysts. Capital flows: $2.5bn+ into 15 startups in 12 months. China leads with 5,688 patents — 4× the US — and a $137bn AI/robotics fund.</div>
+        <div class="ic-highlight"><span style="color:#5B7DB1">Regime: Scaling Optimism · Risk of narrative crowding</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="source-footer">Sources: Morgan Stanley Global Humanoid Model (Apr 2025, Dec 2025, Feb 2026); UBS Humanoid Robot Insight (Feb 2026); Samsung SSIC Semiconductor BOM Analysis</div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- SLIDE 3 · BULL AGENT — UNIT TAM               -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="slide" id="slide-3">
+  <div class="slide-header">
+    <div class="sh-left">
+      <span class="sh-tag">Bull Agent · Unit TAM</span>
+      <h2>Global Humanoid Unit Projections: From 18,600 Today to 179 Million by 2045</h2>
+      <span class="sh-sub">5–20 year bottom-up forecast across bear / base / bull scenarios — Morgan Stanley GROM model &amp; UBS estimates</span>
+    </div>
+    <div class="sh-right"><span class="agent-badge ab-bull">Bull Agent</span></div>
+  </div>
+  <div class="divider"></div>
+  <div class="slide-body">
+    <div class="two-col" style="flex:1; gap:24px;">
+      <div class="col-left" style="flex:0 0 54%;">
+        <div class="section-label">Unit Forecast Table (000s units)</div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Bear Case</th>
+              <th>Base Case</th>
+              <th>Bull Case</th>
+              <th>Key Driver</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><b>2024A</b></td><td class="td-bear">2.2k</td><td class="td-base">2.2k</td><td class="td-bull">2.2k</td><td style="font-size:10px;color:#718096">R&amp;D pilots only</td></tr>
+            <tr><td><b>2025A</b></td><td class="td-bear">12k</td><td class="td-base">18.6k</td><td class="td-bull">22k</td><td style="font-size:10px;color:#718096">China dominates; gov't orders</td></tr>
+            <tr><td><b>2026E</b></td><td class="td-bear">20k</td><td class="td-base">35–50k</td><td class="td-bull">80k</td><td style="font-size:10px;color:#718096">Tesla external ship; commercialise</td></tr>
+            <tr><td><b>2028E</b></td><td class="td-bear">80k</td><td class="td-base">200k</td><td class="td-bull">500k</td><td style="font-size:10px;color:#718096">Factory-floor deployment at scale</td></tr>
+            <tr><td><b>2030E</b></td><td class="td-bear">200k</td><td class="td-base">400k</td><td class="td-bull">1–2mm</td><td style="font-size:10px;color:#718096">Semi TAM: $3.7bn (Bull)</td></tr>
+            <tr><td><b>2035E</b></td><td class="td-bear">2mm</td><td class="td-base">7mm</td><td class="td-bull">23mm</td><td style="font-size:10px;color:#718096">Semi TAM: $10–37bn</td></tr>
+            <tr><td><b>2040E</b></td><td class="td-bear">10mm</td><td class="td-base">35mm</td><td class="td-bull">80mm</td><td style="font-size:10px;color:#718096">Rev TAM: $1.2tn (MS Bull)</td></tr>
+            <tr><td><b>2045E</b></td><td class="td-bear">30mm</td><td class="td-base">70mm</td><td class="td-bull">179mm</td><td style="font-size:10px;color:#718096">Semi TAM: $54–278bn</td></tr>
+            <tr><td><b>2050E</b></td><td class="td-bear">—</td><td class="td-base">~500mm</td><td class="td-bull">1bn+</td><td style="font-size:10px;color:#718096">MS: $5tn Revenue TAM</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:10px;">
+          <div class="quote-block">
+            <p>Robots will eventually outnumber people — the $5tn revenue TAM by 2050 exceeds the combined 2024 revenue of the 20 largest global auto OEMs.</p>
+            <div class="q-source">Morgan Stanley — Adam Jonas, Apr 2025</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-right" style="display:flex;flex-direction:column;gap:12px;">
+        <div class="section-label">Bull Case Growth Trajectory (Units, mm)</div>
+        <div class="chart-box" style="flex:1;">
+          <div class="chart-title">Cumulative Unit Build — Bull Scenario</div>
+          <svg viewBox="0 0 480 220" style="width:100%;height:auto;">
+            <defs>
+              <linearGradient id="bullGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#2D8659" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#2D8659" stop-opacity="0.02"/>
+              </linearGradient>
+            </defs>
+            <!-- Grid lines -->
+            <line x1="50" y1="10" x2="50" y2="180" stroke="#ddd" stroke-width="1"/>
+            <line x1="50" y1="180" x2="470" y2="180" stroke="#ddd" stroke-width="1"/>
+            <line x1="50" y1="130" x2="470" y2="130" stroke="#eee" stroke-width="0.5" stroke-dasharray="4,4"/>
+            <line x1="50" y1="80" x2="470" y2="80" stroke="#eee" stroke-width="0.5" stroke-dasharray="4,4"/>
+            <line x1="50" y1="30" x2="470" y2="30" stroke="#eee" stroke-width="0.5" stroke-dasharray="4,4"/>
+            <!-- Y labels -->
+            <text x="44" y="184" text-anchor="end" font-size="9" fill="#999">0</text>
+            <text x="44" y="134" text-anchor="end" font-size="9" fill="#999">50mm</text>
+            <text x="44" y="84" text-anchor="end" font-size="9" fill="#999">100mm</text>
+            <text x="44" y="34" text-anchor="end" font-size="9" fill="#999">170mm</text>
+            <!-- Bear area -->
+            <polyline points="50,179 103,179 156,178 209,177 262,176 315,174 368,170 421,162 470,155"
+              fill="none" stroke="#C53030" stroke-width="1.5" stroke-dasharray="5,3"/>
+            <!-- Base area -->
+            <polyline points="50,179 103,179 156,178 209,177 262,175 315,170 368,158 421,138 470,110"
+              fill="none" stroke="#5B7DB1" stroke-width="1.8" stroke-dasharray="4,3"/>
+            <!-- Bull area + fill -->
+            <polygon points="50,179 103,179 156,178 209,176 262,172 315,158 368,120 421,60 470,11 470,180 50,180"
+              fill="url(#bullGrad)"/>
+            <polyline points="50,179 103,179 156,178 209,176 262,172 315,158 368,120 421,60 470,11"
+              fill="none" stroke="#2D8659" stroke-width="2.5"/>
+            <!-- Dots on bull line -->
+            <circle cx="50"  cy="179" r="3.5" fill="#2D8659"/>
+            <circle cx="209" cy="176" r="3.5" fill="#2D8659"/>
+            <circle cx="315" cy="158" r="3.5" fill="#2D8659"/>
+            <circle cx="421" cy="60"  r="3.5" fill="#2D8659"/>
+            <circle cx="470" cy="11"  r="4"   fill="#2D8659"/>
+            <!-- X labels -->
+            <text x="50"  y="194" text-anchor="middle" font-size="9" fill="#666">2025</text>
+            <text x="156" y="194" text-anchor="middle" font-size="9" fill="#666">2028</text>
+            <text x="262" y="194" text-anchor="middle" font-size="9" fill="#666">2031</text>
+            <text x="368" y="194" text-anchor="middle" font-size="9" fill="#666">2040</text>
+            <text x="470" y="194" text-anchor="middle" font-size="9" fill="#666">2045</text>
+            <!-- Labels -->
+            <text x="474" y="14"  font-size="10" fill="#2D8659" font-weight="bold">179mm ▲</text>
+            <text x="474" y="113" font-size="10" fill="#5B7DB1">70mm</text>
+            <text x="474" y="158" font-size="10" fill="#C53030">30mm</text>
+            <!-- Legend -->
+            <line x1="60" y1="210" x2="80" y2="210" stroke="#2D8659" stroke-width="2"/>
+            <text x="84" y="213" font-size="9" fill="#555">Bull</text>
+            <line x1="115" y1="210" x2="135" y2="210" stroke="#5B7DB1" stroke-width="1.8" stroke-dasharray="4,3"/>
+            <text x="139" y="213" font-size="9" fill="#555">Base</text>
+            <line x1="174" y1="210" x2="194" y2="210" stroke="#C53030" stroke-width="1.5" stroke-dasharray="5,3"/>
+            <text x="198" y="213" font-size="9" fill="#555">Bear</text>
+          </svg>
+        </div>
+        <div class="scenario-row">
+          <div class="scenario-card sc-bull"><div class="sc-label">Bull 2035</div><div class="sc-value">23mm</div><div class="sc-sub">Smartphone-scale adoption; China + US both scaling</div></div>
+          <div class="scenario-card sc-base"><div class="sc-label">Base 2035</div><div class="sc-value">7mm</div><div class="sc-sub">Factory &amp; logistics focus; limited consumer penetration</div></div>
+          <div class="scenario-card sc-bear"><div class="sc-label">Bear 2035</div><div class="sc-value">2mm</div><div class="sc-sub">Niche verticals only; AI limitations persist</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="source-footer">Sources: Morgan Stanley GROM Model (Dec 2025); UBS (Feb 2026); Samsung SSIC (2025)</div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- SLIDE 4 · BULL AGENT — REVENUE & SEMI TAM     -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="slide" id="slide-4">
+  <div class="slide-header">
+    <div class="sh-left">
+      <span class="sh-tag">Bull Agent · Revenue &amp; Semiconductor TAM</span>
+      <h2>From $20–40bn Robot Revenue by 2030 to a $278bn Semiconductor Opportunity by 2045</h2>
+      <span class="sh-sub">$1,600 semi content per unit × mass-market volumes = the next great semiconductor cycle</span>
+    </div>
+    <div class="sh-right"><span class="agent-badge ab-bull">Bull Agent</span></div>
+  </div>
+  <div class="divider"></div>
+  <div class="slide-body">
+    <div class="two-col" style="flex:1;">
+      <div class="col-left" style="flex:0 0 50%;">
+        <div class="section-label">Revenue &amp; Semiconductor TAM Build</div>
+        <table class="data-table" style="font-size:11px;">
+          <thead>
+            <tr><th>Year</th><th>Robot ASP</th><th>Total Rev TAM</th><th>Semi Content/Unit</th><th>Semi TAM (Bull)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><b>2025A</b></td><td>~$25–40k</td><td>~$0.5bn</td><td>$1,600</td><td class="td-bull">$0.03bn</td></tr>
+            <tr><td><b>2028E</b></td><td>~$20–30k</td><td>~$4–6bn</td><td>$1,600</td><td class="td-bull">$0.8bn</td></tr>
+            <tr><td><b>2030E</b></td><td>~$15–25k</td><td>$20–40bn</td><td>$1,500</td><td class="td-bull">$3.7bn</td></tr>
+            <tr><td><b>2035E</b></td><td>~$10–20k</td><td>$100–230bn</td><td>$1,400</td><td class="td-bull">$10–37bn</td></tr>
+            <tr><td><b>2040E</b></td><td>~$8–15k</td><td>$280bn–$1.2tn</td><td>$1,350</td><td class="td-bull">$47–108bn</td></tr>
+            <tr><td><b>2045E</b></td><td>~$5–12k</td><td>$350bn–$2.1tn</td><td>$1,300</td><td class="td-bull">$54–278bn</td></tr>
+            <tr><td><b>2050E</b></td><td>~$3–8k</td><td class="td-gold">~$5tn (MS)</td><td>$1,200+</td><td class="td-bull">$200–600bn+</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:12px;">
+          <div class="section-label">Semi CAGR by Scenario (2025–2045)</div>
+          <div class="progress-row"><div class="pr-label">Bull Case CAGR</div><div class="pr-bar-wrap"><div class="pr-bar" style="width:90%;background:#2D8659;"><span class="pr-val">33%</span></div></div><div class="pr-note">$278bn by 2045</div></div>
+          <div class="progress-row"><div class="pr-label">Base Case CAGR</div><div class="pr-bar-wrap"><div class="pr-bar" style="width:55%;background:#5B7DB1;"><span class="pr-val">18%</span></div></div><div class="pr-note">$54bn by 2045</div></div>
+          <div class="progress-row"><div class="pr-label">Bear Case CAGR</div><div class="pr-bar-wrap"><div class="pr-bar" style="width:22%;background:#C53030;"><span class="pr-val">8%</span></div></div><div class="pr-note">$10bn by 2045</div></div>
+        </div>
+        <div style="margin-top:10px;padding:10px 12px;background:rgba(201,169,98,0.12);border-radius:6px;border-left:3px solid var(--accent-gold);">
+          <div style="font-size:10px;font-weight:700;color:var(--accent-gold-dark);margin-bottom:4px;">KEY INSIGHT — Semi Content Durability</div>
+          <div style="font-size:11px;color:var(--text-slate);line-height:1.5;">Unlike smartphones ($150 semi content), humanoid BOM stabilises at ~$1,300–1,600 even as ASPs compress — because AI compute and memory requirements grow with model capability. Compute + memory alone = 53% of BOM.</div>
+        </div>
+      </div>
+      <div class="col-right" style="display:flex;flex-direction:column;gap:12px;">
+        <div class="section-label">Semi TAM vs Other Device Cycles</div>
+        <div class="chart-box">
+          <div class="chart-title">Semi Content per Device — Cross-Cycle Comparison</div>
+          <svg viewBox="0 0 400 160" style="width:100%;height:auto;">
+            <defs>
+              <linearGradient id="barG1" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#C9A962"/><stop offset="100%" stop-color="#A88B4A"/></linearGradient>
+              <linearGradient id="barG2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#5B7DB1"/><stop offset="100%" stop-color="#1A2744"/></linearGradient>
+              <linearGradient id="barG3" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#2D8659"/><stop offset="100%" stop-color="#1a5c38"/></linearGradient>
+            </defs>
+            <!-- Smartphone -->
+            <rect x="70" y="110" width="14" height="30" fill="url(#barG1)" rx="2"/>
+            <text x="77" y="107" text-anchor="middle" font-size="9" fill="#A88B4A" font-weight="bold">$150</text>
+            <text x="77" y="148" text-anchor="middle" font-size="9" fill="#666">Phone</text>
+            <!-- PC -->
+            <rect x="130" y="85" width="14" height="55" fill="url(#barG1)" rx="2"/>
+            <text x="137" y="82" text-anchor="middle" font-size="9" fill="#A88B4A" font-weight="bold">$400</text>
+            <text x="137" y="148" text-anchor="middle" font-size="9" fill="#666">PC</text>
+            <!-- Auto ADAS -->
+            <rect x="190" y="25" width="14" height="115" fill="url(#barG2)" rx="2"/>
+            <text x="197" y="22" text-anchor="middle" font-size="9" fill="#5B7DB1" font-weight="bold">$1,350</text>
+            <text x="197" y="148" text-anchor="middle" font-size="9" fill="#666">ADAS</text>
+            <!-- Humanoid -->
+            <rect x="250" y="19" width="14" height="121" fill="url(#barG3)" rx="2"/>
+            <text x="257" y="16" text-anchor="middle" font-size="9" fill="#2D8659" font-weight="bold">$1,600</text>
+            <text x="257" y="148" text-anchor="middle" font-size="9" fill="#666">Humanoid</text>
+            <!-- Future Humanoid -->
+            <rect x="310" y="10" width="14" height="130" fill="url(#barG3)" rx="2" opacity="0.6"/>
+            <text x="317" y="7" text-anchor="middle" font-size="9" fill="#2D8659" font-weight="bold">$2k+?</text>
+            <text x="317" y="148" text-anchor="middle" font-size="9" fill="#666">2030E</text>
+            <line x1="60" y1="140" x2="390" y2="140" stroke="#ccc" stroke-width="1"/>
+            <text x="380" y="155" font-size="8" fill="#bbb">Source: SSIC</text>
+          </svg>
+        </div>
+        <div class="section-label">Revenue TAM Context</div>
+        <div class="three-col" style="flex:0 0 auto;gap:10px;">
+          <div style="background:var(--bg-secondary);border-radius:6px;padding:10px 12px;border-left:3px solid var(--green);">
+            <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-light);font-weight:700;">2040 Bull Rev TAM</div>
+            <div style="font-size:20px;font-weight:800;color:var(--text-navy);">$1.2tn</div>
+            <div style="font-size:10px;color:var(--text-light);">vs top-20 auto OEMs at $2.5tn (2024)</div>
+          </div>
+          <div style="background:var(--bg-secondary);border-radius:6px;padding:10px 12px;border-left:3px solid var(--accent-gold);">
+            <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-light);font-weight:700;">2050 MS Estimate</div>
+            <div style="font-size:20px;font-weight:800;color:var(--text-navy);">$5tn</div>
+            <div style="font-size:10px;color:var(--text-light);">Exceeds all auto OEM revenue combined</div>
+          </div>
+          <div style="background:var(--bg-secondary);border-radius:6px;padding:10px 12px;border-left:3px solid var(--blue);">
+            <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-light);font-weight:700;">Investment Raised</div>
+            <div style="font-size:20px;font-weight:800;color:var(--text-navy);">$2.5bn+</div>
+            <div style="font-size:10px;color:var(--text-light);">15 startups · last 12 months</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="source-footer">Sources: Samsung SSIC Humanoid BOM Analysis; Morgan Stanley Global Humanoid Model; UBS (Feb 2026)</div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- SLIDE 5 · BULL — ADOPTION DRIVERS & TECH       -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="slide" id="slide-5">
+  <div class="slide-header">
+    <div class="sh-left">
+      <span class="sh-tag">Bull Agent · Structural Drivers &amp; Technology Inflections</span>
+      <h2>Four Secular Tailwinds + Four Technology Unlocks Creating a Durable Adoption Curve</h2>
+      <span class="sh-sub">Labor economics, AI model capability, and semiconductor efficiency converging simultaneously</span>
+    </div>
+    <div class="sh-right"><span class="agent-badge ab-bull">Bull Agent</span></div>
+  </div>
+  <div class="divider"></div>
+  <div class="slide-body">
+    <div class="two-col" style="flex:1;gap:20px;">
+      <div class="col-left" style="flex:0 0 48%;">
+        <div class="section-label">Structural Adoption Drivers</div>
+        <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:14px;">
+          <div style="background:var(--bg-secondary);border-radius:7px;padding:11px 14px;border-left:4px solid var(--green);">
+            <div style="font-size:11px;font-weight:800;color:var(--text-navy);margin-bottom:4px;">🏭 Manufacturing Reshoring</div>
+            <div style="font-size:11px;color:var(--text-slate);line-height:1.45;">US/EU manufacturing capacity expansion demands automation due to domestic labour cost gaps vs Asia. Robots provide a capital-efficient bridge. Boston Dynamics deploying Atlas at Hyundai Georgia plant — automating ~40% of assembly.</div>
+          </div>
+          <div style="background:var(--bg-secondary);border-radius:7px;padding:11px 14px;border-left:4px solid var(--accent-gold);">
+            <div style="font-size:11px;font-weight:800;color:var(--text-navy);margin-bottom:4px;">👴 Aging Demographics + Labour Shortage</div>
+            <div style="font-size:11px;color:var(--text-slate);line-height:1.45;">Japan, Korea, Germany, China all face acute labour shortages in manufacturing and logistics. Humanoids uniquely fit existing human-designed factory and warehouse layouts — no facility redesign required.</div>
+          </div>
+          <div style="background:var(--bg-secondary);border-radius:7px;padding:11px 14px;border-left:4px solid var(--blue);">
+            <div style="font-size:11px;font-weight:800;color:var(--text-navy);margin-bottom:4px;">📦 Warehouse &amp; Logistics Automation</div>
+            <div style="font-size:11px;color:var(--text-slate);line-height:1.45;">Amazon testing Unitree for "last-mile" delivery from vans to doorsteps. Figure AI revenue-generating with BMW. Early use cases centre on pick-and-place, material handling and inspection — tasks with clear ROI.</div>
+          </div>
+          <div style="background:var(--bg-secondary);border-radius:7px;padding:11px 14px;border-left:4px solid var(--red);">
+            <div style="font-size:11px;font-weight:800;color:var(--text-navy);margin-bottom:4px;">🤖 AI Inference Cost Decline</div>
+            <div style="font-size:11px;color:var(--text-slate);line-height:1.45;">Edge inference TOPS/Watt improving ~2× per generation. DeepSeek-class efficiency gains reduce cloud dependency, enabling more capable on-device VLA models. Direct cost-per-action improvement accelerates ROI.</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-right" style="display:flex;flex-direction:column;gap:10px;">
+        <div class="section-label">Technology Inflection Map — 2025 to 2030</div>
+        <div class="chart-box" style="flex:0 0 auto;">
+          <div class="timeline" style="padding:0 10px;">
+            <div class="tl-item">
+              <div class="tl-dot"></div>
+              <div class="tl-year">2025</div>
+              <div class="tl-body">VLA pilots; NVIDIA Isaac Sim; human teleoperation for training</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot navy"></div>
+              <div class="tl-year">2026</div>
+              <div class="tl-body">Modular VLA → End-to-End VLA transition; first custom SoCs; Tesla external ship</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot"></div>
+              <div class="tl-year">2027</div>
+              <div class="tl-body">HBM integration in robot compute; synthetic data at scale; dexterous hands</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot green"></div>
+              <div class="tl-year">2028–30</div>
+              <div class="tl-body">Purpose-built AI SoCs; battery &gt;8hr; Physical AI "generalization" achieved</div>
+            </div>
+          </div>
+        </div>
+        <div class="section-label" style="margin-top:6px;">Key Technology Unlock — Physical AI (VLA Model Evolution)</div>
+        <div style="display:flex;flex-direction:column;gap:7px;">
+          <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--bg-secondary);border-radius:6px;">
+            <div style="font-size:18px;">🧠</div>
+            <div><div style="font-size:11px;font-weight:800;color:var(--text-navy);">Modular / Layered VLA (Current)</div><div style="font-size:10px;color:var(--text-slate);">Separate planner + controller. Figure Helix 02, Nvidia GR00T N1.6, LimX COSA. Robot "thinks in language" then executes.</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(45,134,89,0.07);border:1px solid rgba(45,134,89,0.2);border-radius:6px;">
+            <div style="font-size:18px;">⚡</div>
+            <div><div style="font-size:11px;font-weight:800;color:var(--green);">End-to-End VLA (Emerging)</div><div style="font-size:10px;color:var(--text-slate);">Single unified model: vision → action. No explicit planning step. X Square Robot paradigm. Lower latency, harder to train, higher ceiling.</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(201,169,98,0.1);border-radius:6px;">
+            <div style="font-size:18px;">🌐</div>
+            <div><div style="font-size:11px;font-weight:800;color:var(--accent-gold-dark);">Training Data as Strategic Moat</div><div style="font-size:10px;color:var(--text-slate);">Real-world robotics data is the scarce input. Tesla's EV factories = training ground. Synthetic data (Isaac Sim) helps but doesn't substitute. Companies with own factories have compounding edge.</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--bg-secondary);border-radius:6px;">
+            <div style="font-size:18px;">🔋</div>
+            <div><div style="font-size:11px;font-weight:800;color:var(--text-navy);">Battery Energy Density (Critical Path)</div><div style="font-size:10px;color:var(--text-slate);">Current humanoids operate 2–4 hrs. High AI power draw (~50–100W) is the binding constraint. Mass adoption requires &gt;8hr on a single charge — needs solid-state or lithium-sulfur breakthrough.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="source-footer">Sources: Morgan Stanley Robot Almanac (Dec 2025); MS "How Will the Robot Brain Evolve?" (Feb 2026); UBS Global Supply Chain Insight (Feb 2026)</div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- SLIDE 6 · SEMI BOM ANALYSIS                   -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="slide" id="slide-6">
+  <div class="slide-header">
+    <div class="sh-left">
+      <span class="sh-tag">Semiconductor BOM Analysis</span>
+      <h2>$1,600 per Robot: Compute + Memory = 53% of BOM — The Most Attractive Device Cycle Since AV</h2>
+      <span class="sh-sub">Humanoids currently use fragmented automotive/smartphone parts — purpose-built ecosystem still forming</span>
+    </div>
+    <div class="sh-right"><span class="agent-badge ab-synth">Semi BOM</span></div>
+  </div>
+  <div class="divider"></div>
+  <div class="slide-body">
+    <div class="two-col" style="flex:1;gap:20px;">
+      <div class="col-left" style="flex:0 0 44%;">
+        <div class="section-label">Semi BOM Breakdown — ~$1,600 per Unit</div>
+        <!-- Donut-style SVG -->
+        <div class="chart-box" style="margin-bottom:10px;">
+          <svg viewBox="0 0 280 160" style="width:100%;height:auto;">
+            <!-- Stacked horizontal bar as BOM waterfall -->
+            <rect x="10" y="30" width="95" height="30" fill="#1A2744" rx="3"/>
+            <text x="57" y="49" text-anchor="middle" font-size="10" fill="#fff" font-weight="700">Compute 31%</text>
+            <rect x="105" y="30" width="67" height="30" fill="#5B7DB1" rx="3"/>
+            <text x="139" y="49" text-anchor="middle" font-size="10" fill="#fff" font-weight="700">Memory 22%</text>
+            <rect x="172" y="30" width="57" height="30" fill="#C9A962" rx="3"/>
+            <text x="200" y="49" text-anchor="middle" font-size="10" fill="#1A2744" font-weight="700">Analog 19%</text>
+            <rect x="229" y="30" width="36" height="30" fill="#2D8659" rx="3"/>
+            <text x="247" y="49" text-anchor="middle" font-size="10" fill="#fff" font-weight="700">Sensor</text>
+            <!-- Second row -->
+            <rect x="10" y="68" width="19" height="24" fill="#D69E2E" rx="3"/>
+            <text x="19" y="84" text-anchor="middle" font-size="8" fill="#fff">Conn</text>
+            <rect x="31" y="68" width="19" height="24" fill="#C53030" rx="3"/>
+            <text x="40" y="84" text-anchor="middle" font-size="8" fill="#fff">MCU</text>
+            <rect x="52" y="68" width="6" height="24" fill="#718096" rx="2"/>
+            <!-- Labels for second row -->
+            <text x="19" y="103" text-anchor="middle" font-size="8" fill="#666">6%</text>
+            <text x="40" y="103" text-anchor="middle" font-size="8" fill="#666">6%</text>
+            <text x="55" y="103" text-anchor="middle" font-size="8" fill="#666">2%</text>
+            <text x="72" y="103" text-anchor="middle" font-size="8" fill="#999">PMIC</text>
+            <!-- Total label -->
+            <text x="200" y="90" font-size="11" fill="#666">Sensor 12%</text>
+            <text x="10" y="125" font-size="10" fill="#1A2744" font-weight="800">Total: ~$1,600 per robot</text>
+            <text x="10" y="138" font-size="9" fill="#999">Source: Samsung SSIC analysis</text>
+          </svg>
+        </div>
+        <div class="donut-legend">
+          <div class="dl-item"><div class="dl-dot" style="background:#1A2744;"></div><div class="dl-label">AI SoC / Compute (Nvidia Jetson Thor dominant)</div><div class="dl-pct">$510 · 31%</div></div>
+          <div class="dl-item"><div class="dl-dot" style="background:#5B7DB1;"></div><div class="dl-label">DRAM / NAND Memory (128GB DRAM + 1TB NAND)</div><div class="dl-pct">$360 · 22%</div></div>
+          <div class="dl-item"><div class="dl-dot" style="background:#C9A962;"></div><div class="dl-label">Analog / PMIC (TI, Renesas, ST — fragmented)</div><div class="dl-pct">$304 · 19%</div></div>
+          <div class="dl-item"><div class="dl-dot" style="background:#2D8659;"></div><div class="dl-label">Sensors (Camera CIS + LiDAR; some camera-only)</div><div class="dl-pct">$192 · 12%</div></div>
+          <div class="dl-item"><div class="dl-dot" style="background:#D69E2E;"></div><div class="dl-label">Connectivity (Cloud sync, Wi-Fi 6, 5G)</div><div class="dl-pct">$96 · 6%</div></div>
+          <div class="dl-item"><div class="dl-dot" style="background:#C53030;"></div><div class="dl-label">MCU / Motor Controller (Real-time control loops)</div><div class="dl-pct">$96 · 6%</div></div>
+          <div class="dl-item"><div class="dl-dot" style="background:#718096;"></div><div class="dl-label">PMIC (Power regulation)</div><div class="dl-pct">$32 · 2%</div></div>
+        </div>
+      </div>
+      <div class="col-right" style="display:flex;flex-direction:column;gap:10px;">
+        <div class="section-label">Component Deep-Dive &amp; Key Players</div>
+        <table class="data-table" style="font-size:10px;">
+          <thead>
+            <tr><th>Component</th><th>Function</th><th>Est. $ Content</th><th>Current Leader</th><th>Future Shift</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><b>AI SoC</b></td><td>Perception, Planning, VLA inference</td><td class="td-gold">$510</td><td>Nvidia Jetson Thor</td><td>Custom ASICs; Tesla FSD chip</td></tr>
+            <tr><td><b>DRAM</b></td><td>Model inference working memory</td><td class="td-gold">$220</td><td>Samsung, SK Hynix</td><td>HBM integration (post-2027)</td></tr>
+            <tr><td><b>NAND SSD</b></td><td>Model storage, map data</td><td class="td-gold">$140</td><td>Samsung, Kioxia</td><td>3D NAND, SSD optimised for AI</td></tr>
+            <tr><td><b>Analog/PMIC</b></td><td>Power regulation, motor drive</td><td>$304</td><td>TI, Renesas, STMicro</td><td>Integrated PMIC + motor IC</td></tr>
+            <tr><td><b>Camera CIS</b></td><td>Vision input — stereo + depth</td><td>$150</td><td>Sony, Samsung LSI</td><td>Event cameras; higher resolution</td></tr>
+            <tr><td><b>LiDAR</b></td><td>3D mapping, safety</td><td>$42</td><td>Hesai, Ouster</td><td>Solid-state; camera-only trend</td></tr>
+            <tr><td><b>MCU</b></td><td>Real-time motor control</td><td>$96</td><td>STMicro, Renesas, TI</td><td>Arm Cortex-M + DSP integration</td></tr>
+            <tr><td><b>Connectivity</b></td><td>Wi-Fi 6E, 5G, BT 5.3</td><td>$96</td><td>Qualcomm, MediaTek</td><td>Wi-Fi 7, private 5G for factory</td></tr>
+          </tbody>
+        </table>
+        <div class="section-label" style="margin-top:6px;">Processor Architecture Trend: Central vs Distributed Compute</div>
+        <div style="display:flex;gap:10px;">
+          <div style="flex:1;padding:10px 12px;background:var(--bg-secondary);border-radius:6px;border-top:3px solid var(--text-navy);">
+            <div style="font-size:10px;font-weight:800;color:var(--text-navy);margin-bottom:5px;">CENTRALISED (Today)</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.5;">Single Nvidia Jetson Thor handles all perception + planning. High power draw (~50–80W). Simple integration but single point of failure. ~90% OEM adoption.</div>
+          </div>
+          <div style="flex:1;padding:10px 12px;background:rgba(201,169,98,0.1);border-radius:6px;border-top:3px solid var(--accent-gold);">
+            <div style="font-size:10px;font-weight:800;color:var(--accent-gold-dark);margin-bottom:5px;">DISTRIBUTED (2027+)</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.5;">Dedicated MCUs for motor control + central AI SoC for cognition. Reduces latency and power. Opens market to Qualcomm RB6, MediaTek Genio, ARM Cortex-based custom silicon.</div>
+          </div>
+          <div style="flex:1;padding:10px 12px;background:rgba(45,134,89,0.07);border-radius:6px;border-top:3px solid var(--green);">
+            <div style="font-size:10px;font-weight:800;color:var(--green);margin-bottom:5px;">CUSTOM ASIC (2028+)</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.5;">Tesla FSD-derived SoC for Optimus. Samsung exploring merchant SoC or custom ASIC partnerships (Google). HBM on-package. 3–5× efficiency vs. GPU-class compute.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="source-footer">Sources: Samsung SSIC Slides 8–9; Morgan Stanley Robot Almanac (Dec 2025); UBS Feb 2026</div>
+</div>
+echo "Slide 7 done."
+
+<!-- SLIDE 7 - COMPUTE LANDSCAPE HEATMAP -->
+<div class="slide" id="slide-7">
+  <div class="slide-header">
+    <div class="sh-left">
+      <span class="sh-tag">Semiconductor BOM · Compute Landscape</span>
+      <h2>Nvidia Leads on All Axes — Qualcomm &amp; MediaTek Emerging; Tesla the Only Rival in Full-Stack</h2>
+      <span class="sh-sub">Competitive heatmap across performance · AI model optimisation · software stack · ecosystem adoption</span>
+    </div>
+    <div class="sh-right"><span class="agent-badge ab-synth">Semi BOM</span></div>
+  </div>
+  <div class="divider"></div>
+  <div class="slide-body">
+    <div class="two-col" style="flex:1;gap:20px;">
+      <div class="col-left" style="flex:0 0 56%;">
+        <div class="section-label">Compute Provider Competitive Heatmap</div>
+        <table class="heatmap" style="width:100%;margin-bottom:12px;">
+          <thead>
+            <tr>
+              <th style="text-align:left;min-width:110px;">Vendor</th>
+              <th>Raw Performance</th>
+              <th>AI Model Optimisation</th>
+              <th>SW Stack / SDK</th>
+              <th>Ecosystem Adoption</th>
+              <th>Overall</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="row-label">Nvidia (Jetson Thor)</td><td class="hm-leader">Leading</td><td class="hm-leader">Leading</td><td class="hm-leader">Leading</td><td class="hm-leader">Leading</td><td class="hm-leader">&#9733;&#9733;&#9733;&#9733;&#9733;</td></tr>
+            <tr><td class="row-label">Tesla (FSD-derived)</td><td class="hm-leader">Leading</td><td class="hm-leader">Leading</td><td class="hm-strong">Strong</td><td class="hm-mid">Internal only</td><td class="hm-strong">&#9733;&#9733;&#9733;&#9733;</td></tr>
+            <tr><td class="row-label">Qualcomm (RB6)</td><td class="hm-strong">Strong</td><td class="hm-mid">Developing</td><td class="hm-mid">Partial</td><td class="hm-mid">Early</td><td class="hm-mid">&#9733;&#9733;&#9733;</td></tr>
+            <tr><td class="row-label">MediaTek (Genio)</td><td class="hm-mid">Mid</td><td class="hm-weak">Limited</td><td class="hm-weak">Limited</td><td class="hm-weak">Very early</td><td class="hm-weak">&#9733;&#9733;</td></tr>
+            <tr><td class="row-label">Intel (x86/Core)</td><td class="hm-strong">Strong</td><td class="hm-mid">Partial</td><td class="hm-weak">No robotics focus</td><td class="hm-weak">Minimal</td><td class="hm-weak">&#9733;&#9733;</td></tr>
+            <tr><td class="row-label">AMD (Ryzen)</td><td class="hm-strong">Strong</td><td class="hm-mid">Partial</td><td class="hm-weak">No robotics SDK</td><td class="hm-na">None</td><td class="hm-weak">&#9733;&#9733;</td></tr>
+            <tr><td class="row-label">ARM (IP licensing)</td><td class="hm-mid">Varies by licensee</td><td class="hm-mid">Varies</td><td class="hm-mid">Ecosystem IP</td><td class="hm-leader">Ubiquitous IP</td><td class="hm-mid">&#9733;&#9733;&#9733;</td></tr>
+          </tbody>
+        </table>
+        <div style="padding:10px 12px;background:rgba(26,39,68,0.06);border-radius:6px;border-left:4px solid var(--text-navy);">
+          <div style="font-size:10px;font-weight:800;color:var(--text-navy);margin-bottom:4px;">WHY NVIDIA IS HARD TO DISPLACE</div>
+          <div style="font-size:11px;color:var(--text-slate);line-height:1.5;">Nvidia offers the only out-of-the-box full-stack solution: Jetson Thor hardware + Isaac Sim + Isaac Gym + DeepStream + Riva + PhysX. Replicating this requires 5+ separate SDK integrations from competitors — a 12-18 month engineering commitment for cash-constrained startups. This is why ~90% of OEMs default to Nvidia during the early commercialisation phase.</div>
+        </div>
+      </div>
+      <div class="col-right" style="display:flex;flex-direction:column;gap:10px;">
+        <div class="section-label">Nvidia SDK Coverage Across Robot SW Stack</div>
+        <div style="background:var(--bg-secondary);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(26,39,68,0.07);border-radius:5px;"><div style="font-size:15px;">&#128065;</div><div><div style="font-size:10px;font-weight:800;color:var(--text-navy);">Perception &amp; Mapping</div><div style="font-size:10px;color:var(--text-slate);">Isaac Perceptor, DeepStream, cuDNN vision</div></div><div style="margin-left:auto;font-size:10px;font-weight:700;color:var(--green);background:rgba(45,134,89,0.12);padding:2px 7px;border-radius:3px;">Full</div></div>
+          <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(26,39,68,0.07);border-radius:5px;"><div style="font-size:15px;">&#127939;</div><div><div style="font-size:10px;font-weight:800;color:var(--text-navy);">Gait &amp; Motion Control</div><div style="font-size:10px;color:var(--text-slate);">Isaac Gym, PhysX, Omniverse simulation</div></div><div style="margin-left:auto;font-size:10px;font-weight:700;color:var(--green);background:rgba(45,134,89,0.12);padding:2px 7px;border-radius:3px;">Full</div></div>
+          <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(26,39,68,0.07);border-radius:5px;"><div style="font-size:15px;">&#128483;</div><div><div style="font-size:10px;font-weight:800;color:var(--text-navy);">Human Interaction / NLP</div><div style="font-size:10px;color:var(--text-slate);">Riva ASR/TTS, NeMo LLM, CUDA NLP</div></div><div style="margin-left:auto;font-size:10px;font-weight:700;color:var(--green);background:rgba(45,134,89,0.12);padding:2px 7px;border-radius:3px;">Full</div></div>
+          <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(26,39,68,0.07);border-radius:5px;"><div style="font-size:15px;">&#128268;</div><div><div style="font-size:10px;font-weight:800;color:var(--text-navy);">Hardware Interface / Runtime</div><div style="font-size:10px;color:var(--text-slate);">Jetson Thor SoC, Isaac ROS 2, CUDA runtime</div></div><div style="margin-left:auto;font-size:10px;font-weight:700;color:var(--green);background:rgba(45,134,89,0.12);padding:2px 7px;border-radius:3px;">Full</div></div>
+        </div>
+        <div class="section-label" style="margin-top:4px;">OEM Compute Dependency — Current State</div>
+        <div class="progress-row"><div class="pr-label">Nvidia (SW Stack)</div><div class="pr-bar-wrap"><div class="pr-bar" style="width:90%;background:#1A2744;"><span class="pr-val">~90% OEM share</span></div></div></div>
+        <div class="progress-row"><div class="pr-label">Tesla (Optimus only)</div><div class="pr-bar-wrap"><div class="pr-bar" style="width:10%;background:#2D8659;"><span class="pr-val">Internal</span></div></div></div>
+        <div class="progress-row"><div class="pr-label">Qualcomm / Other</div><div class="pr-bar-wrap"><div class="pr-bar" style="width:5%;background:#C9A962;"><span class="pr-val">&lt;5%</span></div></div></div>
+        <div style="padding:10px 12px;background:rgba(201,169,98,0.1);border-radius:6px;margin-top:4px;">
+          <div style="font-size:10px;font-weight:800;color:var(--accent-gold-dark);margin-bottom:3px;">INVESTMENT IMPLICATION</div>
+          <div style="font-size:11px;color:var(--text-slate);line-height:1.45;">Nvidia near-monopoly in early cycle. Key disruption risk: purpose-built robotics SoC from Tesla or Samsung/Google displaces Jetson Thor at 2M+ unit volumes — when custom silicon economics kick in (~2028+).</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="source-footer">Sources: Samsung SSIC Slide 9; Morgan Stanley Robot Almanac (Dec 2025)</div>
+</div>
+
+<!-- SLIDE 8 - BEAR AGENT: DOWNSIDE SCENARIOS -->
+<div class="slide" id="slide-8">
+  <div class="slide-header">
+    <div class="sh-left">
+      <span class="sh-tag">Bear Agent · Downside Scenarios</span>
+      <h2>Stress-Testing the TAM: 42% of 2025 Shipments Were R&amp;D — Not Productive Deployment</h2>
+      <span class="sh-sub">Monetisation timing, ROI payback ambiguity, and ASP compression risk challenge the bull narrative</span>
+    </div>
+    <div class="sh-right"><span class="agent-badge ab-bear">Bear Agent</span></div>
+  </div>
+  <div class="divider"></div>
+  <div class="slide-body">
+    <div class="two-col" style="flex:1;gap:20px;">
+      <div class="col-left" style="flex:0 0 50%;">
+        <div class="section-label">2025 China Shipment Quality — Where Units Actually Went</div>
+        <div style="background:var(--bg-secondary);border-radius:8px;padding:14px;margin-bottom:12px;">
+          <div class="stack-bar-wrap">
+            <div class="sb-row"><div class="sb-label" style="min-width:90px;font-size:10px;">R&amp;D / Education</div><div class="sb-bar"><div class="sb-seg" style="width:42%;background:#C53030;">42%</div></div><div class="sb-note" style="font-size:10px;color:#C53030;font-weight:700;">Non-productive</div></div>
+            <div class="sb-row"><div class="sb-label" style="min-width:90px;font-size:10px;">Data Collection</div><div class="sb-bar"><div class="sb-seg" style="width:19%;background:#D69E2E;">19%</div></div><div class="sb-note" style="font-size:10px;color:#D69E2E;font-weight:700;">Gov&#39;t funded</div></div>
+            <div class="sb-row"><div class="sb-label" style="min-width:90px;font-size:10px;">Interaction / Demo</div><div class="sb-bar"><div class="sb-seg" style="width:19%;background:#5B7DB1;">19%</div></div><div class="sb-note" style="font-size:10px;color:#5B7DB1;font-weight:700;">Showroom</div></div>
+            <div class="sb-row"><div class="sb-label" style="min-width:90px;font-size:10px;">Entertainment</div><div class="sb-bar"><div class="sb-seg" style="width:16%;background:#718096;">16%</div></div><div class="sb-note" style="font-size:10px;color:#718096;font-weight:700;">Spring Gala etc.</div></div>
+            <div class="sb-row"><div class="sb-label" style="min-width:90px;font-size:10px;">Industrial / Logistics</div><div class="sb-bar"><div class="sb-seg" style="width:4%;background:#2D8659;">4%</div></div><div class="sb-note" style="font-size:10px;color:#2D8659;font-weight:700;">Real work</div></div>
+          </div>
+          <div style="margin-top:10px;font-size:11px;color:var(--red);font-weight:700;">Bear insight: Only 4% of 2025 China units = genuine industrial deployment. The TAM headline significantly overstates productive commercialisation.</div>
+        </div>
+        <div class="section-label">ASP Compression Risk — The Unitree Problem</div>
+        <div style="display:flex;flex-direction:column;gap:7px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--bg-secondary);border-radius:5px;">
+            <div style="font-size:11px;font-weight:700;color:var(--text-navy);">Unitree G1 (China)</div>
+            <div style="font-size:16px;font-weight:800;color:var(--green);">$6k</div>
+            <div style="font-size:10px;color:var(--text-slate);">Functional humanoid today</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--bg-secondary);border-radius:5px;">
+            <div style="font-size:11px;font-weight:700;color:var(--text-navy);">Mass-adoption target</div>
+            <div style="font-size:16px;font-weight:800;color:var(--amber);">$20k</div>
+            <div style="font-size:10px;color:var(--text-slate);">Industry consensus floor</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--bg-secondary);border-radius:5px;">
+            <div style="font-size:11px;font-weight:700;color:var(--text-navy);">Current US OEM avg ASP</div>
+            <div style="font-size:16px;font-weight:800;color:var(--red);">$100k+</div>
+            <div style="font-size:10px;color:var(--text-slate);">Negative gross margin at scale</div>
+          </div>
+        </div>
+        <div style="margin-top:10px;padding:10px 12px;background:rgba(197,48,48,0.07);border-radius:6px;border-left:4px solid var(--red);">
+          <div style="font-size:10px;font-weight:800;color:var(--red);margin-bottom:3px;">BEAR THESIS: RACE TO THE BOTTOM</div>
+          <div style="font-size:11px;color:var(--text-slate);line-height:1.45;">If Unitree exports at $6k, premium OEM pricing collapses. Semi content per unit compresses with ASP — invalidating the $278bn bull TAM. Chinese labour cost advantages and state subsidies create an asymmetric price war US OEMs cannot win.</div>
+        </div>
+      </div>
+      <div class="col-right" style="display:flex;flex-direction:column;gap:10px;">
+        <div class="section-label">Key Bear Thesis Arguments</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="padding:11px 14px;background:rgba(197,48,48,0.06);border:1px solid rgba(197,48,48,0.2);border-radius:7px;">
+            <div style="font-size:11px;font-weight:800;color:var(--red);margin-bottom:4px;">&#x26A0; Physical AI Data Gap</div>
+            <div style="font-size:11px;color:var(--text-slate);line-height:1.45;">Unlike LLMs trained on internet-scale text, Physical AI requires rare real-world robot interaction data. Synthetic data (Isaac Sim) helps but doesn&#39;t bridge the generalisation gap. A robot that handles 95% of tasks fails commercially — the final 5% defines liability.</div>
+          </div>
+          <div style="padding:11px 14px;background:rgba(197,48,48,0.06);border:1px solid rgba(197,48,48,0.2);border-radius:7px;">
+            <div style="font-size:11px;font-weight:800;color:var(--red);margin-bottom:4px;">&#x26A0; ROI Payback Undefined</div>
+            <div style="font-size:11px;color:var(--text-slate);line-height:1.45;">At $100k/unit + maintenance ($20–40k/yr), vs $45k/yr fully-loaded human labour, payback is 5–7 years before productivity adjustment. Most industrial capital budgets max at 3-year payback. Adoption is rate-limited by finance approval processes.</div>
+          </div>
+          <div style="padding:11px 14px;background:rgba(197,48,48,0.06);border:1px solid rgba(197,48,48,0.2);border-radius:7px;">
+            <div style="font-size:11px;font-weight:800;color:var(--red);margin-bottom:4px;">&#x26A0; Capex-Heavy OEM Balance Sheets</div>
+            <div style="font-size:11px;color:var(--text-slate);line-height:1.45;">Most humanoid OEMs are pre-revenue burning $50–200M/year. Runway of 18–36 months at current burn. Capital market appetite for further funding depends on proof points that 2026 must deliver. Downside: consolidation wave and OEM failures by 2027.</div>
+          </div>
+          <div style="padding:11px 14px;background:rgba(197,48,48,0.06);border:1px solid rgba(197,48,48,0.2);border-radius:7px;">
+            <div style="font-size:11px;font-weight:800;color:var(--red);margin-bottom:4px;">&#x26A0; Semiconductor Over-Ordering Risk</div>
+            <div style="font-size:11px;color:var(--text-slate);line-height:1.45;">AI infrastructure investment cycles historically produce 12–18 month inventory gluts when demand misses. If robotics unit volumes disappoint vs component orders, Nvidia Jetson, HBM, and specialty sensors face demand cliff risk in 2026–27.</div>
+          </div>
+        </div>
+        <div class="scenario-row" style="margin-top:4px;">
+          <div class="scenario-card sc-bear" style="flex:1;"><div class="sc-label">Bear 2030</div><div class="sc-value" style="font-size:18px;">200k units</div><div class="sc-sub">Semi TAM: &lt;$0.3bn. Niche factory pilot only.</div></div>
+          <div class="scenario-card sc-bear" style="flex:1;"><div class="sc-label">Bear 2035</div><div class="sc-value" style="font-size:18px;">2mm units</div><div class="sc-sub">Semi TAM: ~$3bn. Logistics + auto only.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="source-footer">Sources: Morgan Stanley "Humanoid Horizons" (Feb 2026); UBS Global Supply Chain (Feb 2026); MS 2026 Outlook Commercialisation (Jan 2026)</div>
+</div>
+
+<!-- SLIDE 9 - BEAR: MONETISATION & COST RISK -->
+<div class="slide" id="slide-9">
+  <div class="slide-header">
+    <div class="sh-left">
+      <span class="sh-tag">Bear Agent · Monetisation &amp; Cost Structure</span>
+      <h2>Two Business Models Emerging — Neither Has Proven Positive Unit Economics at Scale</h2>
+      <span class="sh-sub">Robot-as-a-Service vs direct delivery: both face high upfront capex and unproven maintenance cost curves</span>
+    </div>
+    <div class="sh-right"><span class="agent-badge ab-bear">Bear Agent</span></div>
+  </div>
+  <div class="divider"></div>
+  <div class="slide-body">
+    <div class="two-col" style="flex:1;gap:20px;">
+      <div class="col-left" style="flex:0 0 50%;">
+        <div class="section-label">OEM Commercial Status Matrix (as of Mar 2026)</div>
+        <table class="data-table" style="font-size:10px;margin-bottom:12px;">
+          <thead>
+            <tr><th>OEM</th><th>Model</th><th>Status</th><th>Annual Capacity</th><th>Bear Risk</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><b>Tesla</b></td><td>Optimus</td><td style="color:#D69E2E;font-weight:700;">2H 2026 ext. ship</td><td>120k target</td><td style="font-size:10px;color:#C53030;">Miss = major re-rating</td></tr>
+            <tr><td><b>Figure AI</b></td><td>Figure 02</td><td style="color:#2D8659;font-weight:700;">Revenue (BMW)</td><td>Undisclosed</td><td style="font-size:10px;color:#C53030;">Revenue not profitable</td></tr>
+            <tr><td><b>Boston Dynamics</b></td><td>Atlas</td><td style="color:#D69E2E;font-weight:700;">Pilot (Hyundai)</td><td>Low volume</td><td style="font-size:10px;color:#C53030;">Narrow use case only</td></tr>
+            <tr><td><b>Agility</b></td><td>Digit</td><td style="color:#2D8659;font-weight:700;">Commercial ship</td><td>~10k/yr</td><td style="font-size:10px;color:#C53030;">Amazon contract volatile</td></tr>
+            <tr><td><b>Unitree</b></td><td>G1 / H1</td><td style="color:#2D8659;font-weight:700;">Shipping at $6k</td><td>High volume</td><td style="font-size:10px;color:#C53030;">Margin-destroying ASP</td></tr>
+            <tr><td><b>1X / Apptronik</b></td><td>Neo / Apollo</td><td style="color:#C53030;font-weight:700;">Pilot stage</td><td>Very low</td><td style="font-size:10px;color:#C53030;">Pre-revenue; cash burn</td></tr>
+          </tbody>
+        </table>
+        <div class="section-label">Business Model Comparison</div>
+        <div style="display:flex;gap:10px;">
+          <div style="flex:1;padding:11px 13px;background:var(--bg-secondary);border-radius:7px;border-top:3px solid var(--text-navy);">
+            <div style="font-size:10px;font-weight:800;color:var(--text-navy);margin-bottom:6px;">DIRECT DELIVERY (Figure, Agility)</div>
+            <ul class="insight-list" style="gap:5px;">
+              <li style="font-size:10px;">Sell robot + maintenance SLA</li>
+              <li style="font-size:10px;">Upfront revenue recognition</li>
+              <li style="font-size:10px;"><b>Risk:</b> Hardware liability; customer takes maintenance risk</li>
+              <li style="font-size:10px;"><b>Risk:</b> One-time revenue; no recurring stream</li>
+            </ul>
+          </div>
+          <div style="flex:1;padding:11px 13px;background:var(--bg-secondary);border-radius:7px;border-top:3px solid var(--accent-gold);">
+            <div style="font-size:10px;font-weight:800;color:var(--accent-gold-dark);margin-bottom:6px;">ROBOT-AS-A-SERVICE (RaaS)</div>
+            <ul class="insight-list" style="gap:5px;">
+              <li style="font-size:10px;">Monthly $/robot fee; OEM owns fleet</li>
+              <li style="font-size:10px;">Recurring revenue; higher LTV</li>
+              <li style="font-size:10px;"><b>Risk:</b> OEM carries full capex burden</li>
+              <li style="font-size:10px;"><b>Risk:</b> Negative FCF for 5+ years</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-right" style="display:flex;flex-direction:column;gap:10px;">
+        <div class="section-label">Unit Economics Stress Test — Factory Deployment</div>
+        <div style="background:var(--bg-secondary);border-radius:8px;padding:14px;">
+          <table class="data-table" style="font-size:10px;">
+            <thead><tr><th>Cost Item</th><th>Today (2026)</th><th>2030E (Base)</th><th>2030E (Bull)</th></tr></thead>
+            <tbody>
+              <tr><td>Robot purchase price</td><td class="td-bear">$80–150k</td><td class="td-base">$30–50k</td><td class="td-bull">$20–30k</td></tr>
+              <tr><td>Annual maintenance</td><td class="td-bear">$20–40k/yr</td><td class="td-base">$10–15k/yr</td><td class="td-bull">$5–8k/yr</td></tr>
+              <tr><td>Human replacement cost</td><td>$45k/yr</td><td>$50k/yr</td><td>$55k/yr</td></tr>
+              <tr><td>Implied payback period</td><td class="td-bear">7–12 years</td><td class="td-base">3–5 years</td><td class="td-bull">2–3 years</td></tr>
+              <tr><td>Capital budget approval</td><td class="td-bear">Rarely approved</td><td class="td-base">Marginal</td><td class="td-bull">Investable</td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:10px;font-size:11px;color:var(--red);line-height:1.5;">Bear reality: At today&#39;s economics, mass adoption is economically irrational for most industrial buyers. The 2030 base case requires simultaneous ASP compression AND maintenance cost reduction — both uncertain.</div>
+        </div>
+        <div class="section-label" style="margin-top:4px;">Reliability &amp; Maintenance — The Hidden Cost</div>
+        <div style="display:flex;flex-direction:column;gap:7px;">
+          <div style="padding:9px 12px;background:rgba(197,48,48,0.06);border-radius:6px;border-left:3px solid var(--red);">
+            <div style="font-size:11px;font-weight:700;color:var(--text-navy);">Actuator Failure Rate</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.4;">Humanoid actuators (harmonic drives, ball screws) under continuous load have MTBF of ~2,000-5,000 hrs vs industrial robot arms at 20,000+ hrs. At 16hr/day operation, replacement frequency is unsustainable at scale.</div>
+          </div>
+          <div style="padding:9px 12px;background:rgba(197,48,48,0.06);border-radius:6px;border-left:3px solid var(--amber);">
+            <div style="font-size:11px;font-weight:700;color:var(--text-navy);">Battery Replacement Cycle</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.4;">Current Li-ion packs degrade to 80% capacity in ~500-1,000 cycles. At daily charging, pack replacement every 18-24 months adds $3–8k/unit/cycle to TCO. HV power draw from AI compute accelerates degradation.</div>
+          </div>
+          <div style="padding:9px 12px;background:rgba(197,48,48,0.06);border-radius:6px;border-left:3px solid var(--amber);">
+            <div style="font-size:11px;font-weight:700;color:var(--text-navy);">Software Update Liability</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.4;">Physical AI model updates may alter robot behaviour unpredictably in production environments. Industrial operators require extensive re-validation after each update — creating fleet management overhead absent from the TAM models.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="source-footer">Sources: Morgan Stanley "2026 Outlook — Commercialisation" (Jan 2026); MS "Humanoid Horizons" (Feb 2026); Samsung SSIC Slide 6</div>
+</div>
+
+<!-- SLIDE 10 - RISK AGENT: SUPPLY CHAIN -->
+<div class="slide" id="slide-10">
+  <div class="slide-header">
+    <div class="sh-left">
+      <span class="sh-tag">Risk Agent · Supply Chain &amp; Macro Fragility</span>
+      <h2>Five Structural Fragility Points Across Compute, Battery, Regulation, Export Controls, and Capital</h2>
+      <span class="sh-sub">Mapping single-point dependencies and tail risks across the full humanoid value chain</span>
+    </div>
+    <div class="sh-right"><span class="agent-badge ab-risk">Risk Agent</span></div>
+  </div>
+  <div class="divider"></div>
+  <div class="slide-body">
+    <div class="two-col" style="flex:1;gap:20px;">
+      <div class="col-left" style="flex:0 0 48%;">
+        <div class="section-label">Value Chain Fragility Map</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="padding:11px 14px;background:rgba(197,48,48,0.07);border:1.5px solid rgba(197,48,48,0.25);border-radius:7px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+              <div style="font-size:11px;font-weight:800;color:var(--red);">&#x1F6A8; Compute Bottleneck (HIGH RISK)</div>
+              <div style="font-size:9px;font-weight:700;background:rgba(197,48,48,0.15);color:var(--red);padding:2px 7px;border-radius:3px;">CRITICAL</div>
+            </div>
+            <div style="font-size:11px;color:var(--text-slate);line-height:1.45;">Nvidia Jetson Thor supply constrained by TSMC N4P capacity and CoWoS advanced packaging. At 100k+ units/yr, compute allocation becomes a gating factor. No credible alternative for 18+ months.</div>
+          </div>
+          <div style="padding:11px 14px;background:rgba(214,158,46,0.08);border:1.5px solid rgba(214,158,46,0.25);border-radius:7px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+              <div style="font-size:11px;font-weight:800;color:var(--amber);">&#x26A1; Battery Energy Density (MEDIUM-HIGH)</div>
+              <div style="font-size:9px;font-weight:700;background:rgba(214,158,46,0.15);color:var(--amber);padding:2px 7px;border-radius:3px;">HIGH</div>
+            </div>
+            <div style="font-size:11px;color:var(--text-slate);line-height:1.45;">Current 2-4hr operational life limits productivity. AI compute power draw (50-100W) is the binding constraint. Mass adoption requires &gt;8hr. Solid-state timeline: 2027-2029 at best. Lithium price volatility adds cost risk.</div>
+          </div>
+          <div style="padding:11px 14px;background:rgba(197,48,48,0.07);border:1.5px solid rgba(197,48,48,0.2);border-radius:7px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+              <div style="font-size:11px;font-weight:800;color:var(--red);">&#x1F6AB; Export Controls / US-China Bifurcation (HIGH)</div>
+              <div style="font-size:9px;font-weight:700;background:rgba(197,48,48,0.15);color:var(--red);padding:2px 7px;border-radius:3px;">HIGH</div>
+            </div>
+            <div style="font-size:11px;color:var(--text-slate);line-height:1.45;">Advanced AI compute (H100+, A100, Jetson Thor) increasingly restricted in China. China responds with domestic substitution (Cambricon, Biren) but 2-3 generation gap persists. US OEMs face parallel risk: tariffs on actuators and sensors sourced from China (up to 50% of non-semi BOM).</div>
+          </div>
+          <div style="padding:11px 14px;background:rgba(214,158,46,0.08);border:1.5px solid rgba(214,158,46,0.2);border-radius:7px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+              <div style="font-size:11px;font-weight:800;color:var(--amber);">&#x1F4CB; Safety Regulation (MEDIUM)</div>
+              <div style="font-size:9px;font-weight:700;background:rgba(214,158,46,0.15);color:var(--amber);padding:2px 7px;border-radius:3px;">MEDIUM</div>
+            </div>
+            <div style="font-size:11px;color:var(--text-slate);line-height:1.45;">No harmonised safety framework for autonomous humanoids in any major jurisdiction. OSHA, EU Machinery Directive, ISO 10218 all require significant revision. First major injury incident could trigger 12-24 month deployment moratorium.</div>
+          </div>
+          <div style="padding:11px 14px;background:rgba(91,125,177,0.08);border:1.5px solid rgba(91,125,177,0.2);border-radius:7px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+              <div style="font-size:11px;font-weight:800;color:var(--blue);">&#x1F4C8; Capex Cycle Sensitivity (MEDIUM)</div>
+              <div style="font-size:9px;font-weight:700;background:rgba(91,125,177,0.12);color:var(--blue);padding:2px 7px;border-radius:3px;">MEDIUM</div>
+            </div>
+            <div style="font-size:11px;color:var(--text-slate);line-height:1.45;">Humanoid capex is discretionary manufacturing investment. In a rate-driven slowdown, 5-7yr payback projects are first to be cut. AI infrastructure capex cycle is already stretched — robotics competes for the same CFO budget.</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-right" style="display:flex;flex-direction:column;gap:10px;">
+        <div class="section-label">China Value Chain — Surprising Depth of Domestic Supply</div>
+        <div style="background:var(--bg-secondary);border-radius:8px;padding:13px;">
+          <div style="font-size:10px;color:var(--text-slate);margin-bottom:9px;line-height:1.5;">China has built a surprisingly comprehensive domestic humanoid supply chain — insulating from some US export controls but creating a bifurcated global market.</div>
+          <table class="data-table" style="font-size:10px;">
+            <thead><tr><th>Layer</th><th>China Capability</th><th>Gap vs Global Best</th></tr></thead>
+            <tbody>
+              <tr><td><b>Actuators / Motors</b></td><td style="color:#2D8659;font-weight:600;">Strong — domestic leaders</td><td>Minimal (harmonic drives)</td></tr>
+              <tr><td><b>Reducers / Gearboxes</b></td><td style="color:#2D8659;font-weight:600;">Catching up fast</td><td>6-18 months</td></tr>
+              <tr><td><b>Sensors (Vision/LiDAR)</b></td><td style="color:#2D8659;font-weight:600;">Global leader (Hesai)</td><td>Ahead in cost</td></tr>
+              <tr><td><b>Dexterous Hands</b></td><td style="color:#D69E2E;font-weight:600;">Developing</td><td>1-2 years</td></tr>
+              <tr><td><b>AI Compute SoC</b></td><td style="color:#C53030;font-weight:600;">2-3 gen behind</td><td>Significant gap</td></tr>
+              <tr><td><b>Foundation Models (VLA)</b></td><td style="color:#D69E2E;font-weight:600;">Competitive</td><td>6-12 months</td></tr>
+              <tr><td><b>Battery Cells</b></td><td style="color:#2D8659;font-weight:600;">CATL global leader</td><td>Ahead in cost</td></tr>
+              <tr><td><b>Patents (total)</b></td><td style="color:#2D8659;font-weight:600;">5,688 — 4x the US</td><td>Leading globally</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="section-label" style="margin-top:4px;">Risk Conviction Ratings</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div class="conviction-row"><div class="cv-label">Compute constraint (near-term)</div><div class="cv-meter"><div class="cv-fill cv-high" style="width:85%;"></div></div><div class="cv-tag cv-high">HIGH</div></div>
+          <div class="conviction-row"><div class="cv-label">Export control escalation</div><div class="cv-meter"><div class="cv-fill cv-high" style="width:75%;"></div></div><div class="cv-tag cv-high">HIGH</div></div>
+          <div class="conviction-row"><div class="cv-label">Battery cost spike</div><div class="cv-meter"><div class="cv-fill cv-mid" style="width:50%;"></div></div><div class="cv-tag cv-mid">MED</div></div>
+          <div class="conviction-row"><div class="cv-label">Safety regulation delay</div><div class="cv-meter"><div class="cv-fill cv-mid" style="width:55%;"></div></div><div class="cv-tag cv-mid">MED</div></div>
+          <div class="conviction-row"><div class="cv-label">Capex cycle slowdown</div><div class="cv-meter"><div class="cv-fill cv-mod" style="width:45%;"></div></div><div class="cv-tag cv-mod">MOD</div></div>
+          <div class="conviction-row"><div class="cv-label">OEM consolidation wave</div><div class="cv-meter"><div class="cv-fill cv-high" style="width:70%;"></div></div><div class="cv-tag cv-high">HIGH</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="source-footer">Sources: Morgan Stanley "Humanoid Horizons" (Feb 2026); UBS Feb 2026; MS 2026 Commercialisation Outlook (Jan 2026)</div>
+</div>
+
+<!-- SLIDE 11 - RISK AGENT: SCENARIO MATRIX -->
+<div class="slide" id="slide-11">
+  <div class="slide-header">
+    <div class="sh-left">
+      <span class="sh-tag">Risk Agent · Scenario Matrix</span>
+      <h2>Five Scenarios Across Probability, Unit Impact, and Semiconductor Implications</h2>
+      <span class="sh-sub">Quantified risk scenarios with key monitoring indicators for each path</span>
+    </div>
+    <div class="sh-right"><span class="agent-badge ab-risk">Risk Agent</span></div>
+  </div>
+  <div class="divider"></div>
+  <div class="slide-body" style="padding-bottom:55px;">
+    <div class="section-label" style="margin-bottom:8px;">Risk Scenario Matrix — Probability-Weighted Impact Analysis</div>
+    <table class="risk-table" style="width:100%;margin-bottom:14px;">
+      <thead>
+        <tr>
+          <th style="min-width:160px;">Scenario</th>
+          <th>Probability</th>
+          <th>2030 Unit Impact vs Base</th>
+          <th>Semi TAM Impact</th>
+          <th>Key Indicators to Monitor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b style="color:#2D8659;">&#x2191; Breakthrough Productivity Gain</b><div style="font-size:9px;color:#718096;margin-top:2px;">VLA generalisation achieved 2027; ROI proven at scale; rapid enterprise adoption</div></td>
+          <td><span class="prob-low">20%</span></td>
+          <td style="color:#2D8659;font-weight:700;">+300–500% (bull case unlocked)</td>
+          <td style="color:#2D8659;font-weight:700;">$278bn by 2045</td>
+          <td style="font-size:10px;color:#4A5568;">Tesla Optimus OTA task success rate; Figure AI BMW contract renewal; OEM gross margin inflection</td>
+        </tr>
+        <tr>
+          <td><b style="color:#5B7DB1;">&#x2192; Base Case Execution</b><div style="font-size:9px;color:#718096;margin-top:2px;">Factory/logistics adoption on schedule; software matures by 2028; China leads on volume</div></td>
+          <td><span class="prob-mid">40%</span></td>
+          <td style="color:#5B7DB1;font-weight:700;">On-track (400k units 2030)</td>
+          <td style="color:#5B7DB1;font-weight:700;">$10bn by 2035; $54bn 2045</td>
+          <td style="font-size:10px;color:#4A5568;">China deliveries &gt;28k in 2026; Tesla external ship date; AlphaWise survey adoption intent</td>
+        </tr>
+        <tr>
+          <td><b style="color:#D69E2E;">&#x26A0; Compute Constraint Tightens</b><div style="font-size:9px;color:#718096;margin-top:2px;">Nvidia Jetson Thor allocation falls short; TSMC CoWoS constrained; no near-term substitute</div></td>
+          <td><span class="prob-mid">25%</span></td>
+          <td style="color:#D69E2E;font-weight:700;">&#8722;30 to &#8722;40% vs base case</td>
+          <td style="color:#D69E2E;font-weight:700;">&#8722;$3–5bn 2030 semi TAM</td>
+          <td style="font-size:10px;color:#4A5568;">Nvidia Jetson Thor lead times; CoWoS utilisation reports; OEM delivery delay announcements</td>
+        </tr>
+        <tr>
+          <td><b style="color:#C53030;">&#x2193; Regulatory Deployment Halt</b><div style="font-size:9px;color:#718096;margin-top:2px;">First major humanoid safety incident triggers global moratorium; 18–24 month delay</div></td>
+          <td><span class="prob-low">10%</span></td>
+          <td style="color:#C53030;font-weight:700;">&#8722;60 to &#8722;70% vs base</td>
+          <td style="color:#C53030;font-weight:700;">Reset to 2028 trajectory</td>
+          <td style="font-size:10px;color:#4A5568;">OSHA incident filings; EU Machinery Directive revision timeline; insurance coverage availability</td>
+        </tr>
+        <tr>
+          <td><b style="color:#C53030;">&#x1F4A5; China Export + Tariff Escalation</b><div style="font-size:9px;color:#718096;margin-top:2px;">Full decoupling; US tariffs 50%+ on all robotics components; two parallel ecosystems</div></td>
+          <td><span class="prob-low">15%</span></td>
+          <td style="color:#C53030;font-weight:700;">Global -40%; China +20%</td>
+          <td style="color:#C53030;font-weight:700;">Bifurcated TAM; US semi premium</td>
+          <td style="font-size:10px;color:#4A5568;">BIS export control rule updates; Section 301 tariff schedule; USTR investigation scope</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="bias-row">
+      <div class="bias-card green-top">
+        <div class="bc-label">Upside Trigger</div>
+        <div class="bc-title">Tesla Optimus Ships on Time</div>
+        <div class="bc-body">External shipments in 2H 2026 with demonstrated unit economics would unlock the bull case and validate the entire OEM cohort. Single most important 2026 catalyst.</div>
+      </div>
+      <div class="bias-card amber-top">
+        <div class="bc-label">Key Watch</div>
+        <div class="bc-title">China&#39;s 28k Unit 2026 Delivery Quality</div>
+        <div class="bc-body">If 2026 China deliveries mirror 2025 (R&amp;D dominated), the bear case gets structural support. Need &gt;40% industrial/logistics mix to validate commercialisation thesis.</div>
+      </div>
+      <div class="bias-card red-top">
+        <div class="bc-label">Downside Trigger</div>
+        <div class="bc-title">Safety Incident at Scale</div>
+        <div class="bc-body">A high-visibility injury event would trigger regulatory overreaction, OEM liability exposure, and insurance repricing. The entire sector re-rates on a single event — asymmetric tail risk.</div>
+      </div>
+    </div>
+  </div>
+  <div class="source-footer">Sources: Morgan Stanley multi-report synthesis; UBS Feb 2026; Samsung SSIC</div>
+</div>
+
+<!-- SLIDE 12 - SENTIMENT AGENT -->
+<div class="slide" id="slide-12">
+  <div class="slide-header">
+    <div class="sh-left">
+      <span class="sh-tag">Sentiment &amp; Positioning Agent · Narrative Regime</span>
+      <h2>Regime: Scaling Optimism — Capital Flows Accelerating but Narrative Crowding Risk Rising</h2>
+      <span class="sh-sub">Humanoid index highly correlated with Tesla catalysts; institutional capital entering but concentration risk building</span>
+    </div>
+    <div class="sh-right"><span class="agent-badge ab-sent">Sentiment Agent</span></div>
+  </div>
+  <div class="divider"></div>
+  <div class="slide-body">
+    <div class="two-col" style="flex:1;gap:20px;">
+      <div class="col-left" style="flex:0 0 50%;">
+        <div class="section-label">Regime Classification Framework</div>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(0,0,0,0.03);border-radius:5px;opacity:0.5;">
+            <div style="width:10px;height:10px;border-radius:50%;background:#718096;flex-shrink:0;"></div>
+            <div style="font-size:11px;font-weight:700;color:var(--text-slate);">1. Early Speculative (2020–2023)</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(0,0,0,0.03);border-radius:5px;opacity:0.6;">
+            <div style="width:10px;height:10px;border-radius:50%;background:#718096;flex-shrink:0;"></div>
+            <div style="font-size:11px;font-weight:700;color:var(--text-slate);">2. Commercialisation Proof (2024)</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(91,125,177,0.12);border:2px solid var(--blue);border-radius:7px;">
+            <div style="width:14px;height:14px;border-radius:50%;background:var(--blue);flex-shrink:0;"></div>
+            <div><div style="font-size:12px;font-weight:800;color:var(--blue);">&#x25BA; 3. Scaling Optimism (NOW — Mar 2026)</div><div style="font-size:10px;color:var(--text-slate);margin-top:2px;">Capital deploying; first revenues proven; narrative broadening to semi &amp; supply chain plays</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(0,0,0,0.03);border-radius:5px;opacity:0.5;">
+            <div style="width:10px;height:10px;border-radius:50%;background:#718096;flex-shrink:0;"></div>
+            <div style="font-size:11px;font-weight:700;color:var(--text-slate);">4. Narrative Crowding (Risk ahead if 2026 disappoints)</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(0,0,0,0.03);border-radius:5px;opacity:0.4;">
+            <div style="width:10px;height:10px;border-radius:50%;background:#718096;flex-shrink:0;"></div>
+            <div style="font-size:11px;font-weight:700;color:var(--text-slate);">5. Distribution / Reset</div>
+          </div>
+        </div>
+        <div class="section-label">Capital Flow Indicators</div>
+        <div style="display:flex;flex-direction:column;gap:7px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--bg-secondary);border-radius:5px;">
+            <div style="font-size:11px;color:var(--text-navy);font-weight:700;">Private VC / PE raised (last 12M)</div>
+            <div style="font-size:15px;font-weight:800;color:var(--green);">$2.5bn+</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--bg-secondary);border-radius:5px;">
+            <div style="font-size:11px;color:var(--text-navy);font-weight:700;">OEM startups funded (&gt;$50M rounds)</div>
+            <div style="font-size:15px;font-weight:800;color:var(--blue);">15</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--bg-secondary);border-radius:5px;">
+            <div style="font-size:11px;color:var(--text-navy);font-weight:700;">China gov&#39;t AI/robotics fund</div>
+            <div style="font-size:15px;font-weight:800;color:var(--red);">$137bn</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--bg-secondary);border-radius:5px;">
+            <div style="font-size:11px;color:var(--text-navy);font-weight:700;">Humanoid theme ETF AUM growth (2025)</div>
+            <div style="font-size:15px;font-weight:800;color:var(--amber);">+340%</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--bg-secondary);border-radius:5px;">
+            <div style="font-size:11px;color:var(--text-navy);font-weight:700;">Company transcripts mentioning "humanoid" (2025)</div>
+            <div style="font-size:15px;font-weight:800;color:var(--accent-gold-dark);">+800% vs 2023</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-right" style="display:flex;flex-direction:column;gap:10px;">
+        <div class="section-label">Dominant Narrative Threads (Mar 2026)</div>
+        <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:10px;">
+          <div style="padding:10px 13px;background:var(--bg-secondary);border-left:4px solid var(--blue);border-radius:5px;">
+            <div style="font-size:11px;font-weight:800;color:var(--text-navy);">China Spring Festival Gala Effect</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.45;margin-top:3px;">CCTV Spring Gala humanoid performance (Feb 2026) — watched by 1.2bn viewers — became the single largest humanoid sentiment catalyst in history. Sparked a China humanoid index surge and renewed government focus. Bear view: Dancing robots &#8800; productive robots.</div>
+          </div>
+          <div style="padding:10px 13px;background:var(--bg-secondary);border-left:4px solid var(--green);border-radius:5px;">
+            <div style="font-size:11px;font-weight:800;color:var(--text-navy);">Tesla FSD Data Flywheel — Robot Narrative Spillover</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.45;margin-top:3px;">Tesla FSD now running at 10,003 autonomous miles/minute (Feb 2026 data). The data-driven autonomous capability narrative directly supports Optimus robot thesis — same training infrastructure, same AI stack. Humanoid index correlation with TSLA = ~0.75.</div>
+          </div>
+          <div style="padding:10px 13px;background:var(--bg-secondary);border-left:4px solid var(--amber);border-radius:5px;">
+            <div style="font-size:11px;font-weight:800;color:var(--text-navy);">AI Mega-Cap Linkage — Crowding Risk</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.45;margin-top:3px;">Humanoid theme increasingly co-owned with AI infrastructure longs (Nvidia, TSMC). If AI capex cycle pauses, humanoid semi names de-rate simultaneously — double exposure for investors who own both. Correlation is a crowding tell.</div>
+          </div>
+          <div style="padding:10px 13px;background:var(--bg-secondary);border-left:4px solid var(--red);border-radius:5px;">
+            <div style="font-size:11px;font-weight:800;color:var(--text-navy);">US-China Collaboration: Impossible or Inevitable?</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.45;margin-top:3px;">China suppliers target US market expansion; US companies sourcing China actuators and sensors at 30-50% lower cost. Geopolitical pressure creates a paradox: decoupling is desired but economically irrational. Narrative is shifting toward "controlled interdependence."</div>
+          </div>
+        </div>
+        <div class="section-label">Positioning Bias — Current Market</div>
+        <div style="display:flex;gap:10px;">
+          <div style="flex:1;padding:10px 12px;background:rgba(45,134,89,0.07);border-radius:6px;border-top:3px solid var(--green);">
+            <div style="font-size:10px;font-weight:800;color:var(--green);margin-bottom:4px;">OVEROWNED (Crowded)</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.4;">Tesla Optimus narrative; Nvidia semi exposure; China humanoid ETF basket; harmonic drive suppliers</div>
+          </div>
+          <div style="flex:1;padding:10px 12px;background:rgba(201,169,98,0.1);border-radius:6px;border-top:3px solid var(--accent-gold);">
+            <div style="font-size:10px;font-weight:800;color:var(--accent-gold-dark);margin-bottom:4px;">UNDER-OWNED (Asymmetry)</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.4;">Memory (HBM/LPDDR for robots); analog/PMIC enablers; battery cell manufacturers; advanced packaging plays</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="source-footer">Sources: UBS Humanoid Robot Insight (Feb 2026); MS Robot Almanac (Dec 2025); MS FSD Update (Feb 2026); MS Humanoid Horizons (Feb 2026)</div>
+</div>
+
+<!-- SLIDE 13 - COMPETITIVE LANDSCAPE -->
+<div class="slide" id="slide-13">
+  <div class="slide-header">
+    <div class="sh-left">
+      <span class="sh-tag">Competitive Landscape · Value Chain Positioning</span>
+      <h2>Market Bifurcating: Tesla&#39;s Vertical Integration vs Nvidia&#39;s Platform Play vs China&#39;s Cost Disruption</h2>
+      <span class="sh-sub">Three distinct competitive strategies across OEMs, compute enablers, and component suppliers</span>
+    </div>
+    <div class="sh-right"><span class="agent-badge ab-synth">Synthesis</span></div>
+  </div>
+  <div class="divider"></div>
+  <div class="slide-body">
+    <div class="two-col" style="flex:1;gap:20px;">
+      <div class="col-left" style="flex:0 0 48%;">
+        <div class="section-label">Three Strategic Archetypes</div>
+        <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:10px;">
+          <div style="padding:12px 14px;background:rgba(26,39,68,0.06);border-radius:8px;border-left:5px solid var(--text-navy);">
+            <div style="font-size:12px;font-weight:800;color:var(--text-navy);margin-bottom:5px;">&#x1F3F0; VERTICAL INTEGRATION — Tesla</div>
+            <div style="font-size:11px;color:var(--text-slate);line-height:1.45;">Proprietary FSD SoC &#8594; Dojo training &#8594; Optimus hardware &#8594; own manufacturing floor as training ground. No external dependencies. Highest margin potential if Optimus ships. Single-point risk: execution. Target: 1M units/yr by 2029, external shipments 2H 2026.</div>
+            <div style="margin-top:7px;display:flex;gap:8px;flex-wrap:wrap;">
+              <span style="font-size:9px;background:rgba(26,39,68,0.1);padding:2px 7px;border-radius:3px;font-weight:700;color:var(--text-navy);">120k unit capacity</span>
+              <span style="font-size:9px;background:rgba(26,39,68,0.1);padding:2px 7px;border-radius:3px;font-weight:700;color:var(--text-navy);">FSD data flywheel</span>
+              <span style="font-size:9px;background:rgba(26,39,68,0.1);padding:2px 7px;border-radius:3px;font-weight:700;color:var(--text-navy);">Custom SoC moat</span>
+            </div>
+          </div>
+          <div style="padding:12px 14px;background:rgba(45,134,89,0.06);border-radius:8px;border-left:5px solid var(--green);">
+            <div style="font-size:12px;font-weight:800;color:var(--green);margin-bottom:5px;">&#x1F4E1; PLATFORM PLAY — Nvidia</div>
+            <div style="font-size:11px;color:var(--text-slate);line-height:1.45;">Provide the complete compute + software stack (Jetson Thor + Isaac suite) to ~90% of OEMs. Revenue accrues from every robot sold regardless of winner. Lowest execution risk — leverages existing GPU/AI dominance. Defensive moat: switching costs from Isaac ecosystem lock-in.</div>
+            <div style="margin-top:7px;display:flex;gap:8px;flex-wrap:wrap;">
+              <span style="font-size:9px;background:rgba(45,134,89,0.1);padding:2px 7px;border-radius:3px;font-weight:700;color:var(--green);">~90% OEM share</span>
+              <span style="font-size:9px;background:rgba(45,134,89,0.1);padding:2px 7px;border-radius:3px;font-weight:700;color:var(--green);">Full SDK moat</span>
+              <span style="font-size:9px;background:rgba(45,134,89,0.1);padding:2px 7px;border-radius:3px;font-weight:700;color:var(--green);">OEM-agnostic upside</span>
+            </div>
+          </div>
+          <div style="padding:12px 14px;background:rgba(197,48,48,0.06);border-radius:8px;border-left:5px solid var(--red);">
+            <div style="font-size:12px;font-weight:800;color:var(--red);margin-bottom:5px;">&#x1F3ED; COST DISRUPTION — China OEMs (Unitree, UBTECH)</div>
+            <div style="font-size:11px;color:var(--text-slate);line-height:1.45;">Leverage domestic supply chain depth, state subsidies and lower labour costs to deliver at $6–20k ASP vs US $80–150k. 5,688 patents — 4× US. $137bn government fund. China shipments 12k units in 2025, target 28k in 2026. Threat: price destroys US OEM economics before they reach scale.</div>
+            <div style="margin-top:7px;display:flex;gap:8px;flex-wrap:wrap;">
+              <span style="font-size:9px;background:rgba(197,48,48,0.1);padding:2px 7px;border-radius:3px;font-weight:700;color:var(--red);">$6k ASP (Unitree G1)</span>
+              <span style="font-size:9px;background:rgba(197,48,48,0.1);padding:2px 7px;border-radius:3px;font-weight:700;color:var(--red);">$137bn state fund</span>
+              <span style="font-size:9px;background:rgba(197,48,48,0.1);padding:2px 7px;border-radius:3px;font-weight:700;color:var(--red);">4× US patent base</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-right" style="display:flex;flex-direction:column;gap:9px;">
+        <div class="section-label">OEM Value Chain Position — Internal vs External Development</div>
+        <table class="data-table" style="font-size:10px;margin-bottom:8px;">
+          <thead>
+            <tr><th>OEM</th><th>Compute Source</th><th>SW Stack</th><th>Actuators</th><th>Business Model</th><th>2026 Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><b>Tesla</b></td><td style="color:#2D8659;font-weight:700;">Internal (FSD SoC)</td><td style="color:#2D8659;font-weight:700;">Internal</td><td>Internal</td><td>Direct sale + RaaS</td><td style="color:#D69E2E;font-weight:700;">External ship 2H26</td></tr>
+            <tr><td><b>Figure AI</b></td><td>Nvidia Jetson</td><td>Internal VLA</td><td>Sourced</td><td>Direct delivery</td><td style="color:#2D8659;font-weight:700;">Revenue (BMW)</td></tr>
+            <tr><td><b>Boston Dynamics</b></td><td>Intel + custom</td><td>Internal</td><td>Internal</td><td>Direct sale</td><td style="color:#D69E2E;font-weight:700;">Hyundai pilot</td></tr>
+            <tr><td><b>Agility</b></td><td>Nvidia Jetson</td><td>Internal</td><td>Sourced</td><td>RaaS</td><td style="color:#2D8659;font-weight:700;">Commercial (Amazon)</td></tr>
+            <tr><td><b>1X / Apptronik</b></td><td>Nvidia Jetson</td><td>Google DeepMind</td><td>Sourced</td><td>Solution provider</td><td style="color:#C53030;font-weight:700;">Pilot stage</td></tr>
+            <tr><td><b>Unitree</b></td><td>Domestic SoC</td><td>Internal</td><td>Internal</td><td>Direct sale</td><td style="color:#2D8659;font-weight:700;">Shipping at $6k</td></tr>
+            <tr><td><b>UBTECH</b></td><td>Domestic</td><td>Internal</td><td>Domestic</td><td>RaaS + gov&#39;t</td><td style="color:#2D8659;font-weight:700;">Rmb829mn orders</td></tr>
+          </tbody>
+        </table>
+        <div class="section-label">Samsung Strategic Opportunity Map (SSIC Recommendation)</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <div style="flex:1;min-width:140px;padding:10px 12px;background:var(--bg-secondary);border-radius:6px;border-top:3px solid var(--text-navy);">
+            <div style="font-size:10px;font-weight:800;color:var(--text-navy);margin-bottom:4px;">KEY SUPPLIER</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.4;">Partner with 1X, Apptronik early to define DRAM, SSD, PMIC, CIS specs before standards lock in</div>
+          </div>
+          <div style="flex:1;min-width:140px;padding:10px 12px;background:var(--bg-secondary);border-radius:6px;border-top:3px solid var(--accent-gold);">
+            <div style="font-size:10px;font-weight:800;color:var(--accent-gold-dark);margin-bottom:4px;">COMPUTE SoC</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.4;">Merchant SoC opportunity or custom ASIC design services (Google partnership for SW stack)</div>
+          </div>
+          <div style="flex:1;min-width:140px;padding:10px 12px;background:var(--bg-secondary);border-radius:6px;border-top:3px solid var(--green);">
+            <div style="font-size:10px;font-weight:800;color:var(--green);margin-bottom:4px;">FOUNDRY</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.4;">Manufacturing contracts for Nvidia, Qualcomm, Tesla robot ASICs via Samsung Foundry 3nm/2nm</div>
+          </div>
+          <div style="flex:1;min-width:140px;padding:10px 12px;background:var(--bg-secondary);border-radius:6px;border-top:3px solid var(--blue);">
+            <div style="font-size:10px;font-weight:800;color:var(--blue);margin-bottom:4px;">FAB AUTOMATION</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.4;">Deploy humanoid robots in Samsung fabs — dual benefit: efficiency gain + proprietary training data generation</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="source-footer">Sources: Samsung SSIC Slides 5, 6, 10; Morgan Stanley Robot Almanac (Dec 2025); MS Humanoid Horizons (Feb 2026)</div>
+</div>
+
+<!-- SLIDE 14 - CHINA vs US DYNAMICS -->
+<div class="slide" id="slide-14">
+  <div class="slide-header">
+    <div class="sh-left">
+      <span class="sh-tag">Geopolitical Lens · China vs United States</span>
+      <h2>China in Pole Position on Cost &amp; Scale — US Leads on AI Model Capability &amp; Ecosystem</h2>
+      <span class="sh-sub">Morgan Stanley: "China is in a uniquely powerful position" — but the race is far from over</span>
+    </div>
+    <div class="sh-right"><span class="agent-badge ab-risk">Risk Agent</span></div>
+  </div>
+  <div class="divider"></div>
+  <div class="slide-body">
+    <div class="two-col" style="flex:1;gap:20px;">
+      <div class="col-left" style="flex:0 0 50%;">
+        <div class="section-label">Head-to-Head Comparison</div>
+        <table class="data-table" style="font-size:10px;margin-bottom:10px;">
+          <thead>
+            <tr><th>Dimension</th><th style="color:#C53030;">China</th><th style="color:#5B7DB1;">United States</th><th>Verdict</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Patent Portfolio</b></td>
+              <td style="color:#C53030;font-weight:700;">5,688 patents</td>
+              <td style="color:#5B7DB1;font-weight:700;">~1,400 patents</td>
+              <td style="color:#C53030;font-weight:800;">China +4x</td>
+            </tr>
+            <tr>
+              <td><b>Government Funding</b></td>
+              <td style="color:#C53030;font-weight:700;">$137bn fund</td>
+              <td style="color:#5B7DB1;font-weight:700;">CHIPS Act + DoD</td>
+              <td style="color:#C53030;font-weight:800;">China decisive</td>
+            </tr>
+            <tr>
+              <td><b>Current ASP (lowest)</b></td>
+              <td style="color:#C53030;font-weight:700;">$6k (Unitree)</td>
+              <td style="color:#5B7DB1;font-weight:700;">$80–150k</td>
+              <td style="color:#C53030;font-weight:800;">China decisive</td>
+            </tr>
+            <tr>
+              <td><b>2025 Shipments</b></td>
+              <td style="color:#C53030;font-weight:700;">~12,000+ units</td>
+              <td style="color:#5B7DB1;font-weight:700;">~2,000–3,000</td>
+              <td style="color:#C53030;font-weight:800;">China leads</td>
+            </tr>
+            <tr>
+              <td><b>AI Model Capability (VLA)</b></td>
+              <td style="color:#D69E2E;font-weight:700;">Competitive</td>
+              <td style="color:#5B7DB1;font-weight:700;">Leading (Figure, Pi)</td>
+              <td style="color:#5B7DB1;font-weight:800;">US edge</td>
+            </tr>
+            <tr>
+              <td><b>Compute (AI SoC)</b></td>
+              <td style="color:#C53030;font-weight:700;">2–3 gen behind</td>
+              <td style="color:#5B7DB1;font-weight:700;">Nvidia dominant</td>
+              <td style="color:#5B7DB1;font-weight:800;">US leads</td>
+            </tr>
+            <tr>
+              <td><b>Real-world training data</b></td>
+              <td style="color:#5B7DB1;font-weight:700;">Gov&#39;t data centres</td>
+              <td style="color:#5B7DB1;font-weight:700;">Tesla EV factories</td>
+              <td style="font-weight:700;color:#D69E2E;">Contested</td>
+            </tr>
+            <tr>
+              <td><b>Actuator supply chain</b></td>
+              <td style="color:#C53030;font-weight:700;">Strong domestic</td>
+              <td style="color:#D69E2E;font-weight:700;">China-dependent</td>
+              <td style="color:#C53030;font-weight:800;">China wins</td>
+            </tr>
+            <tr>
+              <td><b>Battery / Energy</b></td>
+              <td style="color:#C53030;font-weight:700;">CATL global leader</td>
+              <td style="color:#5B7DB1;font-weight:700;">Panasonic/LG JVs</td>
+              <td style="color:#C53030;font-weight:800;">China leads</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="quote-block">
+          <p>China is in a uniquely powerful position. While it is far too soon to declare an end-state champion, if the US wants to remain competitive, significant changes in manufacturing capability, education and national policies would need to occur.</p>
+          <div class="q-source">Morgan Stanley — Adam Jonas, "1bn Robots and $5tn Revenues by 2050" (Apr 2025)</div>
+        </div>
+      </div>
+      <div class="col-right" style="display:flex;flex-direction:column;gap:10px;">
+        <div class="section-label">2025 China Shipment Distribution — Quality Problem</div>
+        <div style="background:var(--bg-secondary);border-radius:8px;padding:12px;margin-bottom:4px;">
+          <div style="font-size:11px;font-weight:700;color:var(--text-navy);margin-bottom:8px;">12,000+ China units shipped in 2025 — but destination matters:</div>
+          <div class="stack-bar-wrap">
+            <div class="sb-row"><div class="sb-label" style="min-width:100px;font-size:10px;">R&amp;D / Education</div><div class="sb-bar"><div class="sb-seg" style="width:42%;background:#C53030;">42%</div></div></div>
+            <div class="sb-row"><div class="sb-label" style="min-width:100px;font-size:10px;">Data Collection Ctr</div><div class="sb-bar"><div class="sb-seg" style="width:19%;background:#D69E2E;">19%</div></div><div class="sb-note" style="font-size:9px;color:var(--text-light);">Gov&#39;t funded</div></div>
+            <div class="sb-row"><div class="sb-label" style="min-width:100px;font-size:10px;">Interaction / Demo</div><div class="sb-bar"><div class="sb-seg" style="width:19%;background:#5B7DB1;">19%</div></div></div>
+            <div class="sb-row"><div class="sb-label" style="min-width:100px;font-size:10px;">Entertainment</div><div class="sb-bar"><div class="sb-seg" style="width:16%;background:#718096;">16%</div></div></div>
+            <div class="sb-row"><div class="sb-label" style="min-width:100px;font-size:10px;color:#2D8659;font-weight:700;">Industrial (real)</div><div class="sb-bar"><div class="sb-seg" style="width:4%;background:#2D8659;">4%</div></div><div class="sb-note" style="font-size:9px;color:#2D8659;font-weight:700;">Only real work</div></div>
+          </div>
+          <div style="margin-top:8px;font-size:10px;color:var(--text-slate);line-height:1.4;">2026 focus: shift from data collection to real commercialisation. Target: 28k units — but quality of deployment matters more than quantity for investment thesis.</div>
+        </div>
+        <div class="section-label">The Collaboration Paradox</div>
+        <div style="display:flex;flex-direction:column;gap:7px;">
+          <div style="padding:9px 12px;background:rgba(91,125,177,0.08);border-radius:6px;border-left:3px solid var(--blue);">
+            <div style="font-size:11px;font-weight:700;color:var(--text-navy);">US Companies Need Chinese Components</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.4;">Chinese actuators, motors and sensors are 30–50% cheaper. US OEM COGs uncompetitive without Chinese supply. Full decoupling = uneconomic at current technology maturity.</div>
+          </div>
+          <div style="padding:9px 12px;background:rgba(201,169,98,0.1);border-radius:6px;border-left:3px solid var(--accent-gold);">
+            <div style="font-size:11px;font-weight:700;color:var(--text-navy);">China Suppliers Target US Customers</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.4;">Chinese suppliers actively seeking US market entry as domestic margin pressure mounts. Unitree G1 at $6k already sold globally. This creates a market access dynamic that defies simple decoupling.</div>
+          </div>
+          <div style="padding:9px 12px;background:rgba(197,48,48,0.07);border-radius:6px;border-left:3px solid var(--red);">
+            <div style="font-size:11px;font-weight:700;color:var(--text-navy);">Policy Risk: "Controlled Interdependence"</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.4;">The most likely outcome: partial decoupling in AI compute (export controls) but continued hardware interdependence in actuators and sensors. A messy, costly equilibrium that slows both sides.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="source-footer">Sources: Morgan Stanley "Humanoid Horizons: Can US and China Collaborate?" (Feb 2026); MS "1bn Robots" (Apr 2025); UBS Feb 2026</div>
+</div>
+
+<!-- SLIDE 15 - SYNTHESIS: TACTICAL BIAS -->
+<div class="slide" id="slide-15">
+  <div class="slide-header">
+    <div class="sh-left">
+      <span class="sh-tag">Synthesis Engine · Tactical Bias &amp; Investment Implications</span>
+      <h2>Three Tiers of Conviction: Platform Enablers First, OEM Optionality Second, China Plays Third</h2>
+      <span class="sh-sub">Edge comes from quantifying unit realism, semiconductor intensity, and monetisation timing — not the narrative</span>
+    </div>
+    <div class="sh-right"><span class="agent-badge ab-synth">Synthesis</span></div>
+  </div>
+  <div class="divider"></div>
+  <div class="slide-body" style="padding-bottom:55px;">
+    <div class="bias-row" style="margin-bottom:10px;">
+      <div class="bias-card green-top" style="flex:1;">
+        <div class="bc-label">Tier 1 — Highest Conviction</div>
+        <div class="bc-title">Platform Compute Enablers</div>
+        <div class="bc-body">Nvidia (Jetson + Isaac ecosystem), TSMC (N4P/N3 for AI SoC), SK Hynix / Samsung (DRAM/HBM content growth). Revenue accrues from every robot sold regardless of OEM winner. Semiconductor intensity ($1,600/unit) is durable — grows with AI model capability.</div>
+      </div>
+      <div class="bias-card" style="flex:1;border-top-color:var(--accent-gold);">
+        <div class="bc-label">Tier 2 — Selective Conviction</div>
+        <div class="bc-title">OEM Optionality + Component Leaders</div>
+        <div class="bc-body">Tesla (Optimus as free option in TSLA; 2H 2026 ship date is the catalyst). Analog/PMIC leaders (TI, Renesas, STMicro) as diversified content plays. Sony / Samsung LSI for camera CIS. Advanced packaging (Amkor, ASE) for CoWoS-type integration demand.</div>
+      </div>
+      <div class="bias-card amber-top" style="flex:1;">
+        <div class="bc-label">Tier 3 — Speculative / Watch</div>
+        <div class="bc-title">Private OEMs + China Plays</div>
+        <div class="bc-body">Figure AI, 1X, Apptronik — pre-revenue, high burn, binary outcomes. China humanoid ETF basket: high beta, government-subsidy dependent, quality-of-deployment risk. Monitor 2026 China delivery mix shift toward industrial before adding exposure.</div>
+      </div>
+    </div>
+    <div class="two-col" style="flex:1;gap:20px;">
+      <div class="col-left" style="flex:0 0 50%;">
+        <div class="section-label">Conviction Matrix by Value Chain Layer</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div class="conviction-row"><div class="cv-label">AI Compute (Nvidia/TSMC)</div><div class="cv-meter"><div class="cv-fill cv-high" style="width:90%;"></div></div><div class="cv-tag cv-high">STRONG BUY</div></div>
+          <div class="conviction-row"><div class="cv-label">DRAM / HBM Memory</div><div class="cv-meter"><div class="cv-fill cv-high" style="width:80%;"></div></div><div class="cv-tag cv-high">BUY</div></div>
+          <div class="conviction-row"><div class="cv-label">Camera CIS / Sensors</div><div class="cv-meter"><div class="cv-fill cv-mid" style="width:65%;"></div></div><div class="cv-tag cv-mid">OW</div></div>
+          <div class="conviction-row"><div class="cv-label">Analog / PMIC</div><div class="cv-meter"><div class="cv-fill cv-mid" style="width:60%;"></div></div><div class="cv-tag cv-mid">OW</div></div>
+          <div class="conviction-row"><div class="cv-label">Tesla (OEM + compute)</div><div class="cv-meter"><div class="cv-fill cv-mod" style="width:55%;"></div></div><div class="cv-tag cv-mod">HOLD/OW</div></div>
+          <div class="conviction-row"><div class="cv-label">Actuator / Harmonic drives</div><div class="cv-meter"><div class="cv-fill cv-mod" style="width:50%;"></div></div><div class="cv-tag cv-mod">NEUTRAL</div></div>
+          <div class="conviction-row"><div class="cv-label">Private humanoid OEMs</div><div class="cv-meter"><div class="cv-fill cv-low" style="width:30%;"></div></div><div class="cv-tag cv-low">SPECULATIVE</div></div>
+          <div class="conviction-row"><div class="cv-label">China humanoid basket</div><div class="cv-meter"><div class="cv-fill cv-low" style="width:35%;"></div></div><div class="cv-tag cv-low">MONITOR</div></div>
+        </div>
+      </div>
+      <div class="col-right" style="display:flex;flex-direction:column;gap:9px;">
+        <div class="section-label">2026 Key Catalysts — Calendar of Proof Points</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 11px;background:var(--bg-secondary);border-radius:5px;">
+            <div style="font-size:10px;font-weight:800;color:var(--accent-gold-dark);min-width:55px;">Q1–Q2 2026</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.4;">China 2026 delivery mix data (industrial vs. R&amp;D split). AlphaWise adoption survey results. Figure AI / Agility commercial contract disclosures.</div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 11px;background:var(--bg-secondary);border-radius:5px;">
+            <div style="font-size:10px;font-weight:800;color:var(--accent-gold-dark);min-width:55px;">Q3 2026</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.4;"><b style="color:#2D8659;">KEY CATALYST:</b> Tesla Optimus external shipment confirmation and first unit economics disclosure. Nvidia Jetson Thor lead time normalisation (or worsening).</div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 11px;background:var(--bg-secondary);border-radius:5px;">
+            <div style="font-size:10px;font-weight:800;color:var(--accent-gold-dark);min-width:55px;">Q4 2026</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.4;">Year-end global shipment figures (target: 35–80k for base/bull). OEM cash burn vs revenue trajectory. First custom ASIC announcements for 2028 production.</div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 11px;background:var(--bg-secondary);border-radius:5px;">
+            <div style="font-size:10px;font-weight:800;color:var(--accent-gold-dark);min-width:55px;">2027+</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.4;">HBM integration in robot compute. Solid-state battery pilot deployments. First regulatory framework publication (EU or US OSHA). Custom SoC production ramp.</div>
+          </div>
+        </div>
+        <div style="margin-top:4px;padding:11px 13px;background:var(--text-navy);border-radius:7px;">
+          <div style="font-size:10px;font-weight:800;color:var(--accent-gold);margin-bottom:5px;">SYNTHESIS — CORE INVESTMENT LOGIC</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.85);line-height:1.5;">The semiconductor content story ($1,600/unit × mass-market volumes) is more durable than any single OEM bet. Own the rails, not the trains. Nvidia + memory vendors = asymmetric participation with lower binary execution risk than OEM equity.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="source-footer">Sources: Multi-agent synthesis — Morgan Stanley, UBS, Samsung SSIC; all reports dated 2025–2026</div>
+</div>
+
+<!-- SLIDE 16 - INVALIDATION TRIGGERS + CLOSING -->
+<div class="slide" id="slide-16">
+  <div class="slide-header">
+    <div class="sh-left">
+      <span class="sh-tag">Synthesis Engine · Invalidation Triggers &amp; Closing Framework</span>
+      <h2>What Would Make the Bull Case Wrong — and What Would Accelerate It Beyond Consensus</h2>
+      <span class="sh-sub">Disciplined invalidation framework: track these signals to know when to add, hold, or exit</span>
+    </div>
+    <div class="sh-right"><span class="agent-badge ab-synth">Synthesis</span></div>
+  </div>
+  <div class="divider"></div>
+  <div class="slide-body" style="padding-bottom:55px;">
+    <div class="two-col" style="gap:20px;flex:1;">
+      <div class="col-left" style="flex:0 0 50%;">
+        <div class="section-label" style="color:var(--red);">Bull Case Invalidation Triggers — EXIT Signals</div>
+        <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:12px;">
+          <div style="padding:9px 12px;background:rgba(197,48,48,0.07);border-left:4px solid var(--red);border-radius:5px;">
+            <div style="font-size:11px;font-weight:800;color:var(--red);">Tesla Optimus Shipment Delay beyond Q4 2026</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.4;margin-top:3px;">Single most important catalyst. A miss de-rates the entire OEM cohort and removes the primary commercialisation proof point. Humanoid index drawdown risk: 30–50%.</div>
+          </div>
+          <div style="padding:9px 12px;background:rgba(197,48,48,0.07);border-left:4px solid var(--red);border-radius:5px;">
+            <div style="font-size:11px;font-weight:800;color:var(--red);">2026 China Delivery Mix Remains R&amp;D Dominated</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.4;margin-top:3px;">If industrial/logistics &lt;15% of 2026 China units, the commercialisation narrative breaks. Signals that the technology cannot compete economically even with massive government subsidy.</div>
+          </div>
+          <div style="padding:9px 12px;background:rgba(197,48,48,0.07);border-left:4px solid var(--red);border-radius:5px;">
+            <div style="font-size:11px;font-weight:800;color:var(--red);">High-Profile Safety Incident</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.4;margin-top:3px;">A single serious injury incident at a commercial deployment triggers regulatory cascade. 12–24 month moratorium risk — collapses near-term TAM and triggers OEM equity de-rating regardless of AI progress.</div>
+          </div>
+          <div style="padding:9px 12px;background:rgba(197,48,48,0.07);border-left:4px solid var(--amber);border-radius:5px;">
+            <div style="font-size:11px;font-weight:800;color:var(--amber);">AI Capex Cycle Pause</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.4;margin-top:3px;">If hyperscaler AI capex contracts 20%+ in 2026, semiconductor demand reverts and robotics semi names de-rate alongside the broader AI infrastructure complex. Watch AWS/Azure/GCP capex guidance.</div>
+          </div>
+          <div style="padding:9px 12px;background:rgba(197,48,48,0.07);border-left:4px solid var(--amber);border-radius:5px;">
+            <div style="font-size:11px;font-weight:800;color:var(--amber);">Major OEM Cash-Out / Shutdown</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.4;margin-top:3px;">Failure of a top-5 humanoid OEM (Figure, 1X, Apptronik) within 18 months signals industry economics are worse than modelled. Investor appetite for private funding rounds collapses, starving the pipeline.</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-right" style="display:flex;flex-direction:column;gap:9px;">
+        <div class="section-label" style="color:var(--green);">Bull Case Accelerators — ADD Signals</div>
+        <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:12px;">
+          <div style="padding:9px 12px;background:rgba(45,134,89,0.07);border-left:4px solid var(--green);border-radius:5px;">
+            <div style="font-size:11px;font-weight:800;color:var(--green);">Tesla Optimus Ships with Positive Gross Margin Disclosure</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.4;margin-top:3px;">Not just shipping — profitability at the unit level. Would trigger the largest re-rating event in humanoid history and force institutional coverage initiation across semi supply chain.</div>
+          </div>
+          <div style="padding:9px 12px;background:rgba(45,134,89,0.07);border-left:4px solid var(--green);border-radius:5px;">
+            <div style="font-size:11px;font-weight:800;color:var(--green);">VLA "Generalisation" Demonstrated in Open Environment</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.4;margin-top:3px;">A robot successfully completing 100+ novel tasks without human intervention in a real factory. Proves the data moat thesis. Accelerates AI model investment and compute demand simultaneously.</div>
+          </div>
+          <div style="padding:9px 12px;background:rgba(45,134,89,0.07);border-left:4px solid var(--green);border-radius:5px;">
+            <div style="font-size:11px;font-weight:800;color:var(--green);">Solid-State Battery Commercial Availability by 2027</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.4;margin-top:3px;">Removes the operational runtime constraint. 8hr+ operation unlocks 24/7 factory deployment — doubles the effective TAM overnight and improves ROI payback from 7yrs to 3yrs at current ASPs.</div>
+          </div>
+          <div style="padding:9px 12px;background:rgba(45,134,89,0.07);border-left:4px solid var(--accent-gold);border-radius:5px;">
+            <div style="font-size:11px;font-weight:800;color:var(--accent-gold-dark);">US-China "Controlled Interdependence" Framework Agreed</div>
+            <div style="font-size:10px;color:var(--text-slate);line-height:1.4;margin-top:3px;">A formal technology trade framework that allows hardware component flows while restricting AI compute — resolves supply chain uncertainty and allows US OEMs to compete on cost using Chinese actuators.</div>
+          </div>
+        </div>
+        <div style="padding:14px 16px;background:var(--text-navy);border-radius:8px;">
+          <div style="font-size:11px;font-weight:800;color:var(--accent-gold);margin-bottom:8px;">FOUR-AGENT SYNTHESIS — FINAL VERDICT</div>
+          <div style="display:flex;flex-direction:column;gap:5px;">
+            <div style="display:flex;justify-content:space-between;font-size:11px;">
+              <span style="color:rgba(255,255,255,0.7);">Bull Agent confidence in TAM:</span>
+              <span style="color:#2D8659;font-weight:700;">HIGH — semi content durable</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;">
+              <span style="color:rgba(255,255,255,0.7);">Bear Agent monetisation concern:</span>
+              <span style="color:#D69E2E;font-weight:700;">VALID — timing uncertain</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;">
+              <span style="color:rgba(255,255,255,0.7);">Risk Agent supply chain:</span>
+              <span style="color:#C53030;font-weight:700;">ELEVATED — compute &amp; export</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;">
+              <span style="color:rgba(255,255,255,0.7);">Sentiment regime:</span>
+              <span style="color:#5B7DB1;font-weight:700;">SCALING OPTIMISM — crowding ahead</span>
+            </div>
+            <div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.1);font-size:12px;color:#fff;font-weight:700;">
+              NET BIAS: LONG semi enablers; SELECTIVE on OEMs; MONITOR China quality; HEDGE via invalidation triggers above
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="source-footer">Sources: Full multi-agent synthesis — Morgan Stanley (Apr 2025, Dec 2025, Jan 2026, Feb &#215;2 2026), UBS (Feb 2026), Samsung SSIC (2025) | As of March 2, 2026</div>
+</div>
+
+</div><!-- end .presentation -->
+
+<!-- CONTROLS -->
+<div class="controls">
+  <button id="prev">&#8592; Prev</button>
+  <div class="slide-dots" id="dots"></div>
+  <span id="slide-counter">1 / 16</span>
+  <button id="next">Next &#8594;</button>
+</div>
+
+<script>
+(function(){
+  const slides = document.querySelectorAll('.slide');
+  const counter = document.getElementById('slide-counter');
+  const dotsContainer = document.getElementById('dots');
+  const total = slides.length;
+  let current = 0;
+
+  // Build dots
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => show(i));
+    dotsContainer.appendChild(d);
+  });
+
+  function show(n) {
+    slides[current].classList.remove('active');
+    dotsContainer.children[current].classList.remove('active');
+    current = ((n % total) + total) % total;
+    slides[current].classList.add('active');
+    dotsContainer.children[current].classList.add('active');
+    counter.textContent = (current + 1) + ' / ' + total;
+  }
+
+  document.getElementById('prev').addEventListener('click', () => show(current - 1));
+  document.getElementById('next').addEventListener('click', () => show(current + 1));
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === ' ') show(current + 1);
+    else if (e.key === 'ArrowLeft') show(current - 1);
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(total - 1);
+  });
+
+  let touchX = 0;
+  document.addEventListener('touchstart', function(e){ touchX = e.changedTouches[0].screenX; });
+  document.addEventListener('touchend', function(e){
+    const diff = touchX - e.changedTouches[0].screenX;
+    if (Math.abs(diff) > 50) show(current + (diff > 0 ? 1 : -1));
+  });
+
+  show(0);
+})();
+</script>
+</body>
+</html>

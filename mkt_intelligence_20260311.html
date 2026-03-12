@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Infrastructure Full-Stack Cycle — Market Intelligence Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700;800;900&family=DM+Sans:wght@300;400;500;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:          #f5ede0;
+  --surface:     #ffffff;
+  --surface2:    #f0e8d8;
+  --border:      #e0d4c0;
+  --border2:     #ccc0a8;
+  --text:        #1c1a14;
+  --text2:       #4a4438;
+  --dim:         #8a7d6a;
+  --teal:        #1e6464;
+  --teal-light:  #e8f3f0;
+  --teal-dark:   #154848;
+  --amber:       #c96a14;
+  --amber-light: #fdf0e0;
+
+  /* Domain colors */
+  --d1: #1e6464; --d1bg: #e8f3f0;  /* AI Infra / Compute */
+  --d2: #c96a14; --d2bg: #fdf0e0;  /* Macro / Energy */
+  --d3: #6b4ca8; --d3bg: #f0ecf8;  /* Policy / Power Architecture */
+  --d4: #1a6b3c; --d4bg: #e8f5ec;  /* Markets / Cloud */
+  --d5: #8a4020; --d5bg: #faeae0;  /* Risk / Credit */
+
+  --font-display: 'Libre Franklin', sans-serif;
+  --font-body:    'DM Sans', sans-serif;
+  --font-ui:      'Syne', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 14px; overflow: hidden; }
+
+/* ── PROGRESS ── */
+#progress-wrap { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: var(--border); z-index: 100; }
+#progress { height: 100%; width: 0; background: var(--teal); transition: width 0.3s ease; }
+
+/* ── NAV ── */
+#nav {
+  position: fixed; bottom: 0; left: 0; right: 0; height: 38px;
+  background: var(--surface); border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px; z-index: 100;
+  font-family: var(--font-ui); font-size: 10px; color: var(--dim);
+  letter-spacing: 0.12em; text-transform: uppercase;
+}
+#nav button {
+  background: none; border: 1px solid var(--border2); color: var(--text2);
+  padding: 4px 14px; cursor: pointer; font-family: var(--font-ui);
+  font-size: 10px; letter-spacing: 0.1em; border-radius: 2px;
+  text-transform: uppercase; transition: all 0.2s;
+}
+#nav button:hover { border-color: var(--teal); color: var(--teal); }
+
+/* ── SLIDE ENGINE ── */
+.slide { position: fixed; inset: 3px 0 38px 0; display: none; overflow: hidden; background: var(--bg); }
+.slide.active { display: flex; }
+.slide-inner { width: 100%; height: 100%; display: flex; flex-direction: column; padding: 24px 44px 18px; }
+
+/* ── HEADER ── */
+.slide-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px; flex-shrink: 0;
+  padding-bottom: 10px; border-bottom: 1px solid var(--border);
+}
+.domain-tag { font-family: var(--font-ui); font-size: 10px; font-weight: 600; letter-spacing: 0.16em; color: var(--teal); text-transform: uppercase; }
+.slide-num  { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.1em; color: var(--dim); text-transform: uppercase; }
+
+/* ── TITLE ── */
+.slide-title { font-family: var(--font-display); font-size: 26px; font-weight: 800; line-height: 1.15; color: var(--text); margin-bottom: 14px; flex-shrink: 0; }
+
+/* ── CONTENT ── */
+.slide-content { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 9px; }
+.slide-content::-webkit-scrollbar { width: 4px; }
+.slide-content::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* ── GRIDS ── */
+.two-col   { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+/* Featured 60/40 layout */
+.featured-layout { display: grid; grid-template-columns: 1.5fr 1fr; gap: 12px; flex: 1; min-height: 0; }
+.right-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; align-content: start; }
+
+/* ── FEATURED CARD ── */
+.featured-card {
+  background: var(--teal-dark); border-radius: 8px;
+  padding: 18px 20px; display: flex; flex-direction: column; gap: 14px;
+}
+.featured-card .card-eyebrow { color: rgba(255,255,255,0.5); }
+.featured-card .statement { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: #fff; line-height: 1.45; }
+.featured-card .body { font-size: 13px; line-height: 1.65; color: rgba(255,255,255,0.7); }
+
+/* ── STAT CARD ── */
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 13px 15px; }
+.stat-eyebrow { font-family: var(--font-ui); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: var(--teal); text-transform: uppercase; margin-bottom: 3px; }
+.stat-value   { font-family: var(--font-display); font-size: 28px; font-weight: 800; color: var(--text); line-height: 1; margin-bottom: 4px; }
+.stat-detail  { font-size: 12.5px; line-height: 1.55; color: var(--text2); }
+
+/* ── STANDARD CARD ── */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 13px 15px; }
+.card-eyebrow { font-family: var(--font-ui); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: var(--teal); text-transform: uppercase; margin-bottom: 6px; }
+.card p  { font-size: 14px; line-height: 1.6; color: var(--text2); }
+.card ul { padding-left: 16px; }
+.card ul li { font-size: 13.5px; line-height: 1.65; color: var(--text2); margin-bottom: 3px; }
+.card-accent { border-left: 3px solid var(--teal); border-radius: 0 6px 6px 0; }
+
+/* ── INSIGHT CARDS ── */
+.insight-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 9px; }
+.insight-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 13px 15px; }
+.insight-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 5px; line-height: 1.25; }
+.insight-card p { font-size: 13px; line-height: 1.6; color: var(--text2); }
+
+/* ── INLINE HIGHLIGHTS ── */
+.hl-teal  { color: var(--teal);  font-weight: 600; }
+.hl-amber { color: var(--amber); font-weight: 600; }
+
+/* ── STAT ROW ── */
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px,1fr)); gap: 9px; flex-shrink: 0; }
+.stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 11px 13px; text-align: center; }
+.stat-box .val { font-family: var(--font-display); font-size: 24px; font-weight: 800; color: var(--teal); line-height: 1; }
+.stat-box .lbl { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.1em; color: var(--dim); margin-top: 3px; text-transform: uppercase; }
+
+/* ── TABLE ── */
+.tbl-wrap { overflow-x: auto; border-radius: 6px; border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; background: var(--surface); }
+th { background: var(--teal-dark); color: rgba(255,255,255,0.8); font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 8px 11px; text-align: left; }
+td { border-bottom: 1px solid var(--border); padding: 8px 11px; color: var(--text2); vertical-align: top; line-height: 1.5; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--surface2); }
+
+/* ── PILLS ── */
+.pill { display: inline-block; padding: 2px 8px; border-radius: 2px; font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.08em; font-weight: 700; text-transform: uppercase; }
+.pill-teal   { background: var(--teal-light);  color: var(--teal); }
+.pill-amber  { background: var(--amber-light); color: var(--amber); }
+.pill-green  { background: #e8f5ec; color: #1a6b3c; }
+.pill-red    { background: #faeaea; color: #8a1c1c; }
+.pill-purple { background: #f0ecf8; color: #6b4ca8; }
+
+/* ── QUOTE ── */
+.quote-block { background: var(--teal-light); border-left: 3px solid var(--teal); border-radius: 0 6px 6px 0; padding: 11px 15px; }
+.quote-source { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.12em; color: var(--teal); text-transform: uppercase; margin-bottom: 4px; }
+.quote-text   { font-size: 13.5px; line-height: 1.6; color: var(--text); font-style: italic; }
+
+/* ── CHAIN ── */
+.chain { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding: 9px 13px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; }
+.chain-node  { font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.05em; padding: 3px 9px; border-radius: 3px; }
+.chain-arrow { color: var(--dim); font-size: 13px; }
+
+/* ── SCENARIO CARDS ── */
+.scenario-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 13px 15px; }
+.scenario-label { font-family: var(--font-display); font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 7px; }
+.scenario-card ul { padding-left: 15px; }
+.scenario-card li { font-size: 13px; line-height: 1.6; color: var(--text2); margin-bottom: 3px; }
+.scenario-card .conf { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.1em; margin-top: 7px; text-transform: uppercase; }
+
+/* ── TITLE SLIDE ── */
+.title-slide .slide-inner { justify-content: center; align-items: flex-start; padding: 56px 64px; }
+.title-eyebrow { font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.2em; color: var(--teal); text-transform: uppercase; margin-bottom: 16px; font-weight: 600; }
+.title-main { font-family: var(--font-display); font-size: 52px; font-weight: 900; line-height: 1.0; color: var(--text); margin-bottom: 10px; max-width: 780px; }
+.title-sub  { font-family: var(--font-display); font-size: 22px; font-weight: 600; color: var(--dim); margin-bottom: 32px; }
+.title-rule { width: 48px; height: 3px; background: var(--teal); margin-bottom: 28px; border-radius: 2px; }
+.title-meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; max-width: 820px; }
+.title-meta-item { display: flex; flex-direction: column; gap: 4px; }
+.title-meta-label { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.14em; color: var(--dim); text-transform: uppercase; }
+.title-meta-value { font-family: var(--font-body); font-size: 13.5px; font-weight: 500; color: var(--text); }
+</style>
+</head>
+<body>
+
+<div id="progress-wrap"><div id="progress"></div></div>
+
+<!-- ═══════════════════════════════════
+     01 · TITLE
+════════════════════════════════════ -->
+<div class="slide title-slide active" id="slide-1">
+  <div class="slide-inner">
+    <div class="title-eyebrow">Cross-Report Synthesis · 35+ Source Files · March 2026</div>
+    <h1 class="title-main">AI Infrastructure<br>Full-Stack Cycle</h1>
+    <div class="title-sub">Market Intelligence Report</div>
+    <div class="title-rule"></div>
+    <div class="title-meta-grid">
+      <div class="title-meta-item">
+        <span class="title-meta-label">Core Thesis</span>
+        <span class="title-meta-value" style="color:var(--teal)">Bottlenecks have rotated beyond GPUs into optics, power, and packaging</span>
+      </div>
+      <div class="title-meta-item">
+        <span class="title-meta-label">Key Sources</span>
+        <span class="title-meta-value">Bernstein · Goldman · JPM · BofA · OFC 2026 · Oracle</span>
+      </div>
+      <div class="title-meta-item">
+        <span class="title-meta-label">Confidence</span>
+        <span class="title-meta-value">High — Power / Optical / Cloud &nbsp;·&nbsp; Medium — CPO timing / Oil duration</span>
+      </div>
+      <div class="title-meta-item">
+        <span class="title-meta-label">Macro Overlay</span>
+        <span class="title-meta-value" style="color:var(--amber)">Iran / Hormuz = deployment friction, not demand destruction</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     02 · EXECUTIVE SUMMARY
+════════════════════════════════════ -->
+<div class="slide" id="slide-2">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Executive Summary</span>
+      <span class="slide-num">Slide 2 / 18</span>
+    </div>
+    <h2 class="slide-title">The deck resolves into four institutional calls, not a list of themes.</h2>
+    <div class="slide-content">
+      <div class="featured-layout">
+        <div class="featured-card">
+          <div class="card-eyebrow">Deck Answer</div>
+          <div class="statement">AI is now a full physical-infrastructure cycle. The investable surface area has rotated well beyond semiconductors into optics, power, cooling, packaging, and generation.</div>
+          <div class="body">Seven independent reports — Bernstein, OFC 2026, Broadcom, Goldman Innolight, JPM Mitsubishi, Nvidia GTC, and Oracle — all converge on the same conclusion through different analytical lenses. That level of cross-domain fact convergence is the strongest evidence quality indicator in this dataset. The transition is staged, not sudden: coexistence first, redistribution medium-term.</div>
+        </div>
+        <div class="right-grid">
+          <div class="stat-card">
+            <div class="stat-eyebrow">Call One</div>
+            <div class="stat-value">Physical</div>
+            <div class="stat-detail">Power, optics, packaging, and generation now sit on the <span class="hl-teal">same critical path</span> as compute.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Call Two</div>
+            <div class="stat-value">Staged</div>
+            <div class="stat-detail">Near-term pluggable and EML earnings risk is <span class="hl-amber">overstated</span>. CPO disruption is real but lagged to <span class="hl-amber">2030</span>.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Call Three</div>
+            <div class="stat-value">Layered</div>
+            <div class="stat-detail">Software outcome is <span class="hl-teal">layer-specific</span>. Infra and data win. Generic SaaS is exposed.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Call Four</div>
+            <div class="stat-value">Friction</div>
+            <div class="stat-detail">Macro energy risk delays deployment and alters returns on capital — it does <span class="hl-amber">not</span> break secular AI demand.</div>
+          </div>
+        </div>
+      </div>
+      <div class="insight-grid">
+        <div class="insight-card">
+          <div class="insight-title">800 VDC is moving from concept to modeled architecture reality</div>
+          <p>Bernstein models <span class="hl-amber">10%</span> of 2027 AI training additions at 800 VDC, rising to <span class="hl-amber">80%</span> in 2028 and <span class="hl-amber">100%</span> from 2029 onward.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">1.6T is the next real optical volume node</div>
+          <p>Goldman models above-800G module growth of <span class="hl-amber">+101%</span> in 2026E, with units reaching <span class="hl-amber">52M → 80M → 94M</span> through 2028E.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">Oracle proved AI cloud monetization is live</div>
+          <p>OCI grew <span class="hl-amber">+84%</span> YoY. RPO reached <span class="hl-amber">$553B</span> (+325% YoY). FY27 revenue target raised to <span class="hl-amber">$90B</span>.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">Private-credit stress is an early-warning signal</div>
+          <p>Software-linked loan markdowns and tighter bank financing produced redemption caps at <span class="hl-amber">Cliffwater ($33B)</span> and <span class="hl-amber">Morgan Stanley ($8B)</span> vehicles.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     03 · 800 VDC POWER ARCHITECTURE
+════════════════════════════════════ -->
+<div class="slide" id="slide-3">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Power Architecture · Bernstein</span>
+      <span class="slide-num">Slide 3 / 18</span>
+    </div>
+    <h2 class="slide-title">800 VDC is a share-shift cycle, not a rising tide — legacy AC vendors face structural pressure.</h2>
+    <div class="slide-content">
+      <div class="featured-layout">
+        <div class="featured-card">
+          <div class="card-eyebrow">Bernstein Thesis</div>
+          <div class="statement">The data-center power train is being fundamentally redesigned. 800 VDC strips legacy AC equipment and redistributes TAM toward DC-native, thermal, and automation vendors.</div>
+          <div class="body">Net AI electrical TAM impact reaches <span style="color:rgba(255,200,100,0.9);font-weight:600">–$0.65B per GW</span> by 2030, equivalent to –12% versus an all-in $5.5B/GW baseline. This is not a uniformly rising-tide cycle. Vendors anchored only to legacy AC distribution face medium-term revenue pressure even as overall AI capex grows.</div>
+        </div>
+        <div class="right-grid">
+          <div class="stat-card">
+            <div class="stat-eyebrow">2027 Adoption</div>
+            <div class="stat-value"><span class="hl-amber">10%</span></div>
+            <div class="stat-detail">of AI training additions adopt 800 VDC in 2027</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">2028 Adoption</div>
+            <div class="stat-value"><span class="hl-amber">80%</span></div>
+            <div class="stat-detail">of AI training additions at 800 VDC by 2028</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">AC PDU Decline</div>
+            <div class="stat-value"><span style="color:var(--d5)">–40%</span></div>
+            <div class="stat-detail">AC PDUs by 2030 · UPS for IT loads <span style="color:var(--d5);font-weight:600">–60%</span> · Transformers <span style="color:var(--d5);font-weight:600">–80%</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Growth Pools</div>
+            <div class="stat-value"><span class="hl-teal">DC+</span></div>
+            <div class="stat-detail">800 VDC sidecar racks · DC breakers · solid-state transformers · liquid cooling · automation</div>
+          </div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card card-accent" style="border-left-color:var(--d4)">
+          <div class="card-eyebrow">Beneficiaries</div>
+          <ul>
+            <li><strong>Schneider / Vertiv / Eaton:</strong> liquid cooling, CDU cross-sell, automation attach</li>
+            <li><strong>ABB / Siemens:</strong> DC heritage and solid-state transformer positioning (if pivot executes)</li>
+            <li>DC power conversion, thermal management, cross-system controls vendors</li>
+          </ul>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--d5)">
+          <div class="card-eyebrow">At Risk</div>
+          <ul>
+            <li>Legacy AC-only electrical suppliers: PDU, UPS, conventional transformer vendors</li>
+            <li>Switchgear: <span class="hl-amber">–25%</span> TAM by 2030 per Bernstein model</li>
+            <li>Vendors without credible DC / SST product roadmap by 2026 capex cycle</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     04 · RACK DENSITY ROADMAP
+════════════════════════════════════ -->
+<div class="slide" id="slide-4">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Compute Platforms · Nvidia GTC</span>
+      <span class="slide-num">Slide 4 / 18</span>
+    </div>
+    <h2 class="slide-title">Rubin → Feynman makes HVDC and CPO non-optional, not aspirational.</h2>
+    <div class="slide-content">
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th>Platform</th><th>Networking</th><th>HBM</th><th>Rack Power</th><th>Power Architecture</th><th>Optical Direction</th><th>Investment Signal</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Rubin</strong></td>
+              <td><span class="pill pill-teal">800G</span></td>
+              <td>288 GB HBM4</td>
+              <td><span class="hl-amber">180–220 kW</span></td>
+              <td>HVDC noted</td>
+              <td>Pluggables / 1.6T dominant</td>
+              <td>800G pluggable cycle in full swing now</td>
+            </tr>
+            <tr>
+              <td><strong>Rubin Ultra</strong></td>
+              <td><span class="pill pill-teal">800G</span></td>
+              <td>Larger HBM footprint</td>
+              <td><span class="hl-amber">~900 kW</span></td>
+              <td>HVDC explicit</td>
+              <td>Pluggables / 1.6T</td>
+              <td>Liquid cooling non-optional at 900 kW rack</td>
+            </tr>
+            <tr>
+              <td><strong>Feynman</strong></td>
+              <td><span class="pill pill-amber">1.6T</span></td>
+              <td>HBM5 direction</td>
+              <td>Next-gen density</td>
+              <td>HVDC remains</td>
+              <td><strong>CPO noted</strong></td>
+              <td>CPO transitions from roadmap to product reality</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="two-col">
+        <div class="card card-accent" style="border-left-color:var(--d1)">
+          <div class="card-eyebrow">What the Roadmap Tells the Market</div>
+          <ul>
+            <li>Power density and interconnect density are rising <em>together</em> — not sequentially</li>
+            <li><span class="hl-teal">800G → 1.6T</span> networking transition is embedded in the product trajectory, not a market narrative</li>
+            <li>Feynman's CPO entry gives All Ring / TSMC CoWoS sustained capex visibility to 2027+</li>
+            <li>No version of Feynman deployment exists without HVDC-class power and CPO-capable optics</li>
+          </ul>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--d2)">
+          <div class="card-eyebrow">Near-Term Investment Read-Through</div>
+          <ul>
+            <li>800G EML and pluggable suppliers: strong through full Rubin Ultra cycle</li>
+            <li>1.6T components: next real volume inflection aligned with Feynman timing</li>
+            <li><span class="hl-amber">900 kW+</span> rack power forces CDU, DC conversion — liquid cooling is now infrastructure, not premium</li>
+            <li>CoWoS and advanced packaging: confirmed bottleneck through 2027+ regardless of CPO pace</li>
+          </ul>
+        </div>
+      </div>
+      <div class="quote-block">
+        <div class="quote-source">Seven-Source Convergence</div>
+        <div class="quote-text">Bernstein (electrical), OFC (I/O wall), and GTC (platform roadmap) all describe the same reality through different lenses: every new generation of compute platform forces a denser physical infrastructure stack.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     05 · OPTICAL INTERCONNECTS
+════════════════════════════════════ -->
+<div class="slide" id="slide-5">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Optical Networking · Goldman · OFC 2026 · Broadcom</span>
+      <span class="slide-num">Slide 5 / 18</span>
+    </div>
+    <h2 class="slide-title">The optical transition is staged across three lanes — all are monetizable simultaneously.</h2>
+    <div class="slide-content">
+      <div class="stat-row" style="grid-template-columns:repeat(5,1fr)">
+        <div class="stat-box"><div class="val">+109%</div><div class="lbl">Innolight 2025 NI YoY</div></div>
+        <div class="stat-box"><div class="val">+53%</div><div class="lbl">Innolight NI CAGR 2025–28E</div></div>
+        <div class="stat-box"><div class="val">+101%</div><div class="lbl">Above-800G Growth 2026E</div></div>
+        <div class="stat-box"><div class="val">52M</div><div class="lbl">Above-800G Units 2026E</div></div>
+        <div class="stat-box"><div class="val">94M</div><div class="lbl">Above-800G Units 2028E</div></div>
+      </div>
+      <div class="featured-layout">
+        <div class="featured-card">
+          <div class="card-eyebrow">Goldman CPO Framing — Critical</div>
+          <div class="statement">CPO is mainly for link regimes pluggables cannot efficiently serve. That makes it a new market first — not immediate cannibalization of existing suppliers.</div>
+          <div class="body">Existing module suppliers (Innolight, Eoptolink) can still participate in the CPO era through optical engines, FAUs, external laser systems, and optical circuit switching. The Broadcom 3nm 400G/lane PAM-4 DSP confirms 1.6T pluggables remain a live commercial signal now, not just a roadmap item. OFC 2026 independently confirms copper is hitting physical limits at ~200G/lane, making the optical complexity transition structurally unavoidable.</div>
+        </div>
+        <div class="right-grid">
+          <div class="stat-card">
+            <div class="stat-eyebrow">Stage 1 · Now</div>
+            <div class="stat-value">800G</div>
+            <div class="stat-detail">Pluggables and 1.6T remain strong through Rubin Ultra cycle. <span class="hl-teal">Innolight, Mitsubishi</span> are the volume beneficiaries.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Stage 2 · Near</div>
+            <div class="stat-value">400G/lane</div>
+            <div class="stat-detail">Broadcom's 3nm DSP enables <span class="hl-amber">1.6T pluggables → 3.2T modules → 204.8T switches</span>.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Stage 3 · Medium</div>
+            <div class="stat-value">CPO</div>
+            <div class="stat-detail">For scale-up traffic beyond pluggable practicality. <span class="hl-teal">New TAM</span>, not displacement — per Goldman framing.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">OFC Signal</div>
+            <div class="stat-value">~200G</div>
+            <div class="stat-detail">Copper physical limit per lane. Optics must move compute-adjacent — <span class="hl-amber">architecturally unavoidable</span>.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     06 · EML vs CPO TIMING
+════════════════════════════════════ -->
+<div class="slide" id="slide-6">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Key Tension · EML vs CPO · JPM Mitsubishi</span>
+      <span class="slide-num">Slide 6 / 18</span>
+    </div>
+    <h2 class="slide-title">CPO disruption is architecturally real but economically lagged — the coexistence window is wider than the market prices.</h2>
+    <div class="slide-content">
+      <div class="stat-row" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat-box"><div class="val">~50%</div><div class="lbl">Mitsubishi Global EML Share (DC)</div></div>
+        <div class="stat-box"><div class="val">+49%</div><div class="lbl">EML Orders YoY (Latest 3Q)</div></div>
+        <div class="stat-box"><div class="val">~2028</div><div class="lbl">3.2T / 400Gbps EML Ramp</div></div>
+        <div class="stat-box"><div class="val">2030+</div><div class="lbl">Full-Scale CPO Uptake (JPM)</div></div>
+      </div>
+      <div class="two-col">
+        <div class="card card-accent" style="border-left-color:var(--d1)">
+          <div class="card-eyebrow">Mitsubishi Capacity Expansion (JPM)</div>
+          <ul>
+            <li><span class="hl-teal">5×</span> capacity growth FY2020 → FY2024 already executed</li>
+            <li><span class="hl-teal">3×</span> additional capacity growth FY2025 → FY2028 planned</li>
+            <li><span class="hl-amber">20×</span> total capacity FY2020 → FY2029 — aggressive conviction</li>
+            <li>200Gbps demand for 1.6T applications is rising <em>now</em></li>
+            <li>400Gbps / 3.2T for EML expected to ramp ~2028</li>
+          </ul>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--d3)">
+          <div class="card-eyebrow">Four-Source Synthesis on CPO Timing</div>
+          <ul>
+            <li><span class="pill pill-teal">Goldman</span>&ensp;CPO creates a new pool — additive, not cannibalistic</li>
+            <li><span class="pill pill-teal">OFC 2026</span>&ensp;CPO strategically real and architecturally required</li>
+            <li><span class="pill pill-amber">Broadcom</span>&ensp;400G/lane pluggables are commercially live <em>now</em></li>
+            <li><span class="pill pill-purple">JPM Mitsubishi</span>&ensp;EML economically strong through 2029; CPO from 2030</li>
+          </ul>
+        </div>
+      </div>
+      <div class="insight-grid">
+        <div class="insight-card">
+          <div class="insight-title">What this means for EML / pluggable holders</div>
+          <p>Near-term earnings risk from CPO narratives is <span class="hl-teal">overstated</span>. Mitsubishi's <span class="hl-amber">20×</span> capacity expansion plan implies management has high conviction on a long EML demand window. The market is pricing disruption sooner than evidence supports.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">The monitoring trigger that changes the view</div>
+          <p>Watch for <span class="hl-teal">customer design wins shifting from 1.6T pluggables to CPO</span>, comments on optical-engine volume ramps, and 2027–2028 capex mix disclosures from hyperscalers. These are the leading indicators of actual displacement timing.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">Correct trade: own the coexistence window</div>
+          <p>The analytically correct position is to own the EML / pluggable cycle through the Rubin Ultra phase while monitoring CPO optical-engine design wins as the future displacement signal — not pricing CPO disruption at current valuations.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     07 · PACKAGING / CoWoS
+════════════════════════════════════ -->
+<div class="slide" id="slide-7">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Advanced Packaging · TSMC / ASE / All Ring</span>
+      <span class="slide-num">Slide 7 / 18</span>
+    </div>
+    <h2 class="slide-title">Packaging is a confirmed bottleneck already generating returns — the question is whether expansion removes or merely reduces the constraint.</h2>
+    <div class="slide-content">
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th>Vendor</th><th>Role</th><th>2025 Capacity</th><th>2026E Capacity</th><th>2027E Capacity</th><th>Growth Factor</th><th>Investment View</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>TSMC CoWoS</strong></td>
+              <td>Advanced packaging / HBM stacking</td>
+              <td>75 kwpm</td>
+              <td>135 kwpm</td>
+              <td><span class="hl-amber">220 kwpm</span></td>
+              <td><span class="hl-teal">~3×</span> in 2 years</td>
+              <td><span class="pill pill-teal">Structural beneficiary</span></td>
+            </tr>
+            <tr>
+              <td><strong>ASE / SPIL</strong></td>
+              <td>OSAT / AI packaging overflow</td>
+              <td>5 kwpm</td>
+              <td>15 kwpm</td>
+              <td><span class="hl-amber">30 kwpm</span></td>
+              <td><span class="hl-teal">6×</span> in 2 years</td>
+              <td><span class="pill pill-teal">Bottleneck persistence play</span></td>
+            </tr>
+            <tr>
+              <td><strong>All Ring Tech</strong></td>
+              <td>Packaging equipment tools</td>
+              <td colspan="3">CoWoS revenue forecast: <span class="hl-amber">+24% / +23% YoY</span> in 2026E / 2027E<br>Goldman upgraded to Buy · TP <span class="hl-amber">NT$800</span> from NT$365</td>
+              <td>CPO capex = incremental upside</td>
+              <td><span class="pill pill-amber">High-beta beneficiary</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="two-col">
+        <div class="card card-accent" style="border-left-color:var(--d1)">
+          <div class="card-eyebrow">Why Packaging Stays Critical</div>
+          <ul>
+            <li>Advanced AI chips require CoWoS for HBM-on-logic integration — not optional at current densities</li>
+            <li>CPO optical engines require co-packaging precision that only advanced OSAT can deliver</li>
+            <li>Even before CPO becomes a major revenue line, packaging intensity remains a strong capex vector</li>
+            <li>Goldman's All Ring upgrade explicitly links <span class="hl-amber">2027 upside</span> to CPO demand on top of CoWoS base</li>
+          </ul>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--d5)">
+          <div class="card-eyebrow">Key Risk to Monitor</div>
+          <ul>
+            <li>Over-ordering / inventory build if hyperscaler capex revises down from current levels</li>
+            <li>TSMC near-doubles CoWoS capacity (<span class="hl-amber">75 → 220 kwpm</span>) in 2 years — if AI demand misses, utilization risk emerges</li>
+            <li>All Ring is high-beta: CPO capex timing uncertainty adds volatility to the thesis</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     08 · ORACLE CLOUD
+════════════════════════════════════ -->
+<div class="slide" id="slide-8">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Cloud / Software · Oracle</span>
+      <span class="slide-num">Slide 8 / 18</span>
+    </div>
+    <h2 class="slide-title">Oracle is the cleanest proof point that AI infrastructure demand is monetizing now, not eventually.</h2>
+    <div class="slide-content">
+      <div class="stat-row" style="grid-template-columns:repeat(6,1fr)">
+        <div class="stat-box"><div class="val">$17.2B</div><div class="lbl">Revenue (+22% YoY)</div></div>
+        <div class="stat-box"><div class="val">$1.79</div><div class="lbl">Non-GAAP EPS (+21.8%)</div></div>
+        <div class="stat-box"><div class="val" style="color:var(--amber)">+84%</div><div class="lbl">OCI / IaaS Growth YoY</div></div>
+        <div class="stat-box"><div class="val" style="color:var(--amber)">$553B</div><div class="lbl">RPO (+325% YoY, +$29B q/q)</div></div>
+        <div class="stat-box"><div class="val">$90B</div><div class="lbl">FY27 Revenue Target</div></div>
+        <div class="stat-box"><div class="val" style="color:var(--amber)">+531%</div><div class="lbl">Multicloud DB Revenue YoY</div></div>
+      </div>
+      <div class="featured-layout">
+        <div class="featured-card">
+          <div class="card-eyebrow">What Oracle Proves</div>
+          <div class="statement">Infrastructure cloud is monetizing AI demand right now. The RPO of $553B (+325%) is a multi-year contracted backlog — structural, not cyclical. This weakens the simple claim that AI destroys all software economics.</div>
+          <div class="body">Oracle's multicloud footprint exiting Q3: <span style="color:rgba(255,200,100,0.9);font-weight:600">33 Microsoft regions, 14 Google regions, 8 AWS regions</span> (22 AWS expected by FQ4 exit). AI capacity was delivered in F3Q at 32% gross margin — below blended Oracle margins, but improving. Capex held steady at $50B for FY26, signalling management conviction without acceleration risk.</div>
+        </div>
+        <div class="right-grid">
+          <div class="stat-card">
+            <div class="stat-eyebrow">Multicloud Traction</div>
+            <div class="stat-value">33</div>
+            <div class="stat-detail">Oracle regions inside <span class="hl-teal">Azure</span> alone. The multicloud DB bet is working.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">AI Capacity Margin</div>
+            <div class="stat-value"><span class="hl-amber">32%</span></div>
+            <div class="stat-detail">Gross margin on AI infrastructure delivery in F3Q. Watch for normalization as utilization rises.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Capex Discipline</div>
+            <div class="stat-value">$50B</div>
+            <div class="stat-detail">FY26 capex held steady — not increased. Management is monetizing backlog before adding more supply.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">RPO Conversion</div>
+            <div class="stat-value"><span class="hl-teal">$553B</span></div>
+            <div class="stat-detail">Backlog grew +$29B in one quarter. Years of contracted revenue ahead regardless of new bookings pace.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     09 · SOFTWARE BIFURCATION
+════════════════════════════════════ -->
+<div class="slide" id="slide-9">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Software Stack · Oracle vs Patel</span>
+      <span class="slide-num">Slide 9 / 18</span>
+    </div>
+    <h2 class="slide-title">AI reshapes software unevenly — the deeper in the stack, the more durable; the closer to the application surface, the more exposed.</h2>
+    <div class="slide-content">
+      <div class="two-col">
+        <div class="card card-accent" style="border-left-color:var(--d4)">
+          <div class="card-eyebrow">Infrastructure &amp; Data Layer — Strengthening</div>
+          <ul>
+            <li>OCI: <span class="hl-amber">+84% YoY</span> — AI demand monetizing through cloud infra now</li>
+            <li>Multicloud database: <span class="hl-amber">+531% YoY</span> — data attachment strategy working</li>
+            <li>Patel: data and compute engines retain strategic value versus generic SaaS</li>
+            <li>Closed models dominate production workloads; cloud inference dominant over local</li>
+            <li>Energy, water, and compute remain gating resources — scale moat strengthens</li>
+          </ul>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--d5)">
+          <div class="card-eyebrow">Generic Application SaaS — Exposed</div>
+          <ul>
+            <li>Agent-native workflows can replace traditional SaaS app logic via file-system / CRUD abstractions</li>
+            <li>Bloomberg: private-credit markdowns on <span class="hl-amber">software-linked loans</span> already visible in Q1</li>
+            <li>CRM, SAP, high-multiple SaaS incumbents face moat-compression risk</li>
+            <li>Generic SaaS survives only with differentiated workflow, proprietary data, or distribution moat</li>
+            <li>Fortinet holds ground via hardware/software security control-plane differentiation</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th>Stack Layer</th><th>Direction</th><th>Key Names</th><th>Time Horizon</th><th>Monitor</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Cloud infra / IaaS</td>
+              <td><span class="pill pill-green">Strengthening</span></td>
+              <td>ORCL (OCI), AWS, Azure, GCP</td>
+              <td>Near → Structural</td>
+              <td>OCI growth, RPO conversion pace</td>
+            </tr>
+            <tr>
+              <td>Data / compute engines</td>
+              <td><span class="pill pill-green">Strengthening</span></td>
+              <td>Oracle DB, Snowflake, Databricks</td>
+              <td>Near → Medium</td>
+              <td>Consumption growth, AI workload mix</td>
+            </tr>
+            <tr>
+              <td>Differentiated enterprise SaaS</td>
+              <td><span class="pill pill-purple">Mixed</span></td>
+              <td>Fortinet, vertical SaaS with deep data moats</td>
+              <td>Near Term</td>
+              <td>NRR, pricing power, AI feature monetization</td>
+            </tr>
+            <tr>
+              <td>Generic application SaaS</td>
+              <td><span class="pill pill-red">At Risk</span></td>
+              <td>CRM, SAP, horizontal SaaS incumbents</td>
+              <td>Medium → Structural</td>
+              <td>Agent adoption in enterprise workflows, NRR inflection</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     10 · AI SELF-POWERING
+════════════════════════════════════ -->
+<div class="slide" id="slide-10">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Power Generation · Industrials · BofA Dongfang</span>
+      <span class="slide-num">Slide 10 / 18</span>
+    </div>
+    <h2 class="slide-title">Gas turbines are now on the AI infrastructure critical path — not a separate macro trade.</h2>
+    <div class="slide-content">
+      <div class="featured-layout">
+        <div class="featured-card">
+          <div class="card-eyebrow">The Structural Shift</div>
+          <div class="statement">Seven major U.S. tech companies signed agreements to supply their own power for AI data centers. AI has pulled the power-generation complex into the same capex cycle as compute.</div>
+          <div class="body">Siemens Energy booked <span style="color:rgba(255,200,100,0.9);font-weight:600">13GW gas-turbine orders</span> in 26Q1 versus <span style="color:rgba(255,200,100,0.9);font-weight:600">26GW for all of FY25</span> — pace is accelerating. Overseas lead times now exceed 2 years. BofA highlights Dongfang Electric as an emerging-market supplier positioned to capture export substitution as Western suppliers hit capacity constraints. Grid constraints and energy disruptions don't just affect macro — they affect when and at what cost AI data centers can actually be built.</div>
+        </div>
+        <div class="right-grid">
+          <div class="stat-card">
+            <div class="stat-eyebrow">Siemens 26Q1 Orders</div>
+            <div class="stat-value"><span class="hl-amber">13 GW</span></div>
+            <div class="stat-detail">Gas-turbine orders in one quarter — vs <span class="hl-teal">26GW</span> for full FY25.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Lead Times</div>
+            <div class="stat-value">2 yrs+</div>
+            <div class="stat-detail">Overseas gas-turbine lead times exceed <span class="hl-amber">2 years</span> — creating EM export opportunity.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Self-Power Signatories</div>
+            <div class="stat-value"><span class="hl-teal">7</span></div>
+            <div class="stat-detail">Major U.S. tech companies committed to self-powering AI data centers.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Beneficiary</div>
+            <div class="stat-value">Dongfang</div>
+            <div class="stat-detail">BofA: overseas inquiries rising as Western turbine suppliers hit capacity limits.</div>
+          </div>
+        </div>
+      </div>
+      <div class="chain">
+        <span class="chain-node" style="background:var(--d1bg);color:var(--d1)">AI Compute Density ↑</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node" style="background:var(--surface2);color:var(--text2)">Grid Capacity Constraints</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node" style="background:var(--d2bg);color:var(--d2)">Hyperscalers Self-Power</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node" style="background:var(--d2bg);color:var(--d2)">Gas Turbine Orders ↑</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node" style="background:var(--d4bg);color:var(--d4)">Dongfang / Siemens Beneficiaries</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     11 · MACRO OVERLAY
+════════════════════════════════════ -->
+<div class="slide" id="slide-11">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Macro Overlay · Iran / Hormuz · BofA / JPM</span>
+      <span class="slide-num">Slide 11 / 18</span>
+    </div>
+    <h2 class="slide-title">The right question is not whether AI demand survives — it does. The question is whether physical deployment stays on schedule and at acceptable returns.</h2>
+    <div class="slide-content">
+      <div class="two-col">
+        <div class="card card-accent" style="border-left-color:var(--d2)">
+          <div class="card-eyebrow">How Macro Transmits into Tech (BofA)</div>
+          <ul>
+            <li>Physical disruptions at Hormuz → shipping cost and insurance premia rise</li>
+            <li>CPI at <span class="hl-amber">2.5%</span>; core PCE near <span class="hl-amber">40bp</span> — Fed stays on hold; no capex financing cost relief</li>
+            <li>Higher energy = higher data-center opex (cooling power, generation fuel)</li>
+            <li>Grid constraints worsen as energy infrastructure prioritization shifts</li>
+            <li>JPM: SPR releases are "almost useless" as a logistics fix — six policy options, none solve the routing / insurance confidence problem immediately</li>
+          </ul>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--d1)">
+          <div class="card-eyebrow">What Changes vs What Doesn't</div>
+          <ul>
+            <li><span class="pill pill-teal">Unchanged</span>&ensp;Underlying AI demand is secular and not oil-price sensitive</li>
+            <li><span class="pill pill-teal">Unchanged</span>&ensp;Oracle RPO of <span class="hl-amber">$553B</span> is contracted backlog — not revocable on oil price</li>
+            <li><span class="pill pill-teal">Unchanged</span>&ensp;Hyperscaler capex budgets largely committed through 2026</li>
+            <li><span class="pill pill-amber">Changes</span>&ensp;Build timing may slip if fuel, logistics, or power procurement delays project starts</li>
+            <li><span class="pill pill-amber">Changes</span>&ensp;Construction cost inflation raised by energy, materials, shipping inputs</li>
+            <li><span class="pill pill-amber">Changes</span>&ensp;Return-on-capital calculations shift as power opex becomes more expensive</li>
+          </ul>
+        </div>
+      </div>
+      <div class="insight-grid">
+        <div class="insight-card">
+          <div class="insight-title">Bull case: Brent normalizes to $65–70</div>
+          <p>Morgan Stanley de-escalation path. Oil retraces; AI build pace is unaffected; deployment costs normalize. AI infra beneficiaries rerate across the full stack.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">Bear case: Brent sustained at $120–130</div>
+          <p>Prolonged Hormuz closure. Fuel and logistics constrain build pace. Power scarcity worsens. Capital-intensive builds see schedule slippage and return compression.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">Right analytical frame</div>
+          <p>Deployment bottlenecks, not demand destruction. Build timing and infrastructure availability are now key return variables the market has historically underweighted in tech capex models.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     12 · SEVEN-SOURCE CONVERGENCE
+════════════════════════════════════ -->
+<div class="slide" id="slide-12">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Cross-Report Synthesis · Convergence Analysis</span>
+      <span class="slide-num">Slide 12 / 18</span>
+    </div>
+    <h2 class="slide-title">Seven independent reports describe the same reality through different lenses — that convergence is the dataset's strongest evidence quality signal.</h2>
+    <div class="slide-content">
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th>Source</th><th>Analytical Lens</th><th>Core Insight</th><th>Domain</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Bernstein</strong></td>
+              <td>Electrical architecture</td>
+              <td>800 VDC strips legacy AC; DC-native, thermal, automation pools gain</td>
+              <td><span class="pill pill-teal">Power</span></td>
+            </tr>
+            <tr>
+              <td><strong>OFC 2026</strong></td>
+              <td>I/O wall thesis</td>
+              <td>Copper physical limits at ~200G/lane; optics must move compute-adjacent</td>
+              <td><span class="pill pill-teal">Optical</span></td>
+            </tr>
+            <tr>
+              <td><strong>Broadcom</strong></td>
+              <td>Product launch</td>
+              <td>3nm 400G/lane DSP is live: 1.6T → 3.2T modules → 204.8T switches</td>
+              <td><span class="pill pill-teal">Optical</span></td>
+            </tr>
+            <tr>
+              <td><strong>Goldman (Innolight)</strong></td>
+              <td>Module unit growth</td>
+              <td>Above-800G units: 52M → 80M → 94M; CPO additive, not cannibalistic</td>
+              <td><span class="pill pill-teal">Optical</span></td>
+            </tr>
+            <tr>
+              <td><strong>JPM (Mitsubishi)</strong></td>
+              <td>EML capacity demand</td>
+              <td>~50% EML share, orders +49%, 20× capacity expansion 2020–2029</td>
+              <td><span class="pill pill-teal">Optical</span></td>
+            </tr>
+            <tr>
+              <td><strong>Nvidia GTC</strong></td>
+              <td>Platform roadmap</td>
+              <td>Rubin → Feynman forces HVDC and CPO — density trajectory is non-negotiable</td>
+              <td><span class="pill pill-amber">Compute</span></td>
+            </tr>
+            <tr>
+              <td><strong>Oracle</strong></td>
+              <td>Cloud monetization</td>
+              <td>OCI +84%, RPO $553B, $90B FY27 target — infra cloud capturing AI demand now</td>
+              <td><span class="pill pill-purple">Software</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="quote-block">
+        <div class="quote-source">Synthesis Bottom Line</div>
+        <div class="quote-text">"Best-positioned companies are those that benefit from densification rather than from legacy volume stability. The densification thesis — across optics, power, packaging, and generation — is the single most consistently supported investment theme across all seven converging source reports in this dataset."</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     13 · COMPANY BENEFICIARY MATRIX
+════════════════════════════════════ -->
+<div class="slide" id="slide-13">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Company Matrix · Beneficiaries &amp; Risks</span>
+      <span class="slide-num">Slide 13 / 18</span>
+    </div>
+    <h2 class="slide-title">The full-stack value chain — who captures densification and who gets displaced.</h2>
+    <div class="slide-content">
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th>Company</th><th>Role in Chain</th><th>View</th><th>Horizon</th><th>Key Monitor</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Broadcom</strong></td>
+              <td>Optical DSP / networking silicon</td>
+              <td><span class="pill pill-green">High-conviction beneficiary</span></td>
+              <td>Near → Medium</td>
+              <td>BCM83640 design wins; 400G/lane adoption; 3.2T milestones</td>
+            </tr>
+            <tr>
+              <td><strong>Innolight</strong></td>
+              <td>Optical modules / SiPh</td>
+              <td><span class="pill pill-green">High-conviction beneficiary</span></td>
+              <td>Near → Medium</td>
+              <td>1.6T mix; SiPh ramp; CPO attachment strategy</td>
+            </tr>
+            <tr>
+              <td><strong>Mitsubishi Electric</strong></td>
+              <td>EML / optical devices (~50% share)</td>
+              <td><span class="pill pill-teal">Beneficiary now · CPO timing risk</span></td>
+              <td>Near → Medium</td>
+              <td>EML orders; 200Gbps/400Gbps share; CPO commercialization pace</td>
+            </tr>
+            <tr>
+              <td><strong>TSMC</strong></td>
+              <td>Foundry / CoWoS</td>
+              <td><span class="pill pill-green">Structural beneficiary</span></td>
+              <td>Near → Medium</td>
+              <td>CoWoS kwpm adds; advanced packaging pricing; AI mix</td>
+            </tr>
+            <tr>
+              <td><strong>All Ring Tech</strong></td>
+              <td>Packaging equipment</td>
+              <td><span class="pill pill-amber">High-beta · Goldman Buy NT$800</span></td>
+              <td>Medium</td>
+              <td>CoWoS tool orders; CPO capex timing; customer visibility</td>
+            </tr>
+            <tr>
+              <td><strong>Oracle</strong></td>
+              <td>Cloud / AI infra / database</td>
+              <td><span class="pill pill-green">Beneficiary — infra + data layer</span></td>
+              <td>Near → Medium</td>
+              <td>OCI growth; RPO conversion; AI capacity margins; multicloud regions</td>
+            </tr>
+            <tr>
+              <td><strong>Schneider / Vertiv / Eaton</strong></td>
+              <td>Power / thermal / automation</td>
+              <td><span class="pill pill-teal">Beneficiaries of redesign</span></td>
+              <td>Medium</td>
+              <td>CDU growth; DC/sidecar offerings; automation attach rates</td>
+            </tr>
+            <tr>
+              <td><strong>Dongfang Electric</strong></td>
+              <td>Gas turbine / baseload power</td>
+              <td><span class="pill pill-teal">Beneficiary of AI power scarcity</span></td>
+              <td>Medium</td>
+              <td>Overseas order book; turbine lead times; self-gen project wins</td>
+            </tr>
+            <tr>
+              <td><strong>Generic SaaS</strong></td>
+              <td>Application software layer</td>
+              <td><span class="pill pill-red">Structural risk</span></td>
+              <td>Medium → Structural</td>
+              <td>Net retention; AI feature monetization; workflow replacement rates</td>
+            </tr>
+            <tr>
+              <td><strong>Legacy AC-only electricals</strong></td>
+              <td>Legacy distribution equipment</td>
+              <td><span class="pill pill-red">TAM compression risk</span></td>
+              <td>Medium → Long</td>
+              <td>Revenue tied to legacy AC gear; DC product roadmap; SST investment</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     14 · BULL / BASE / BEAR SCENARIOS
+════════════════════════════════════ -->
+<div class="slide" id="slide-14">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Scenario Framework</span>
+      <span class="slide-num">Slide 14 / 18</span>
+    </div>
+    <h2 class="slide-title">Three scenarios — the key variable in all of them is deployment timing, not the secular demand signal.</h2>
+    <div class="slide-content">
+      <div class="three-col" style="flex:1;min-height:0">
+        <div class="scenario-card" style="border-top:3px solid var(--d4)">
+          <div class="scenario-label" style="color:var(--d4)">Bull Case</div>
+          <ul>
+            <li>Oil shock fades; Brent normalizes toward <span class="hl-teal">$65–70</span></li>
+            <li>Rubin Ultra / 1.6T ramp stays on schedule</li>
+            <li>Oracle-style AI monetization broadens across hyperscalers</li>
+            <li>CoWoS expansion proceeds cleanly without re-constraint</li>
+          </ul>
+          <div style="font-size:12px;color:var(--dim);margin-top:8px;line-height:1.5">Evidence: MS de-escalation path · BofA limited macro hit · Goldman optical growth · Oracle OCI/RPO</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:6px">AI infra beneficiaries broadly rerate; software infra multiple support improves.</div>
+          <div class="conf" style="color:var(--d4)">Key risk: market crowding / valuation stretch</div>
+        </div>
+        <div class="scenario-card" style="border-top:3px solid var(--amber)">
+          <div class="scenario-label" style="color:var(--amber)">Base Case</div>
+          <ul>
+            <li>Disruption persists but does not spiral; Brent elevated but not crisis</li>
+            <li>Optics and packaging stay tight; 800 VDC is a <span class="hl-amber">2027+</span> volume theme</li>
+            <li>SaaS bifurcation continues; credit stress contained but visible</li>
+            <li>Deployment friction rises modestly, AI capex is not derailed</li>
+          </ul>
+          <div style="font-size:12px;color:var(--dim);margin-top:8px;line-height:1.5">Evidence: Goldman Hormuz tracker · Oracle · Goldman Innolight · JPM Mitsubishi · Bernstein timing</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:6px">Winners broaden into optics, packaging, cooling, power.</div>
+          <div class="conf" style="color:var(--amber)">Key risk: margin dilution, energy inflation, execution</div>
+        </div>
+        <div class="scenario-card" style="border-top:3px solid var(--d5)">
+          <div class="scenario-label" style="color:var(--d5)">Bear Case</div>
+          <ul>
+            <li>Prolonged Hormuz disruption pushes Brent toward <span style="color:var(--d5);font-weight:600">$120–130</span></li>
+            <li>Fuel and logistics constrain AI build pace materially</li>
+            <li>CPO / optical transitions slip unevenly; enterprise SW spend weakens</li>
+            <li>Power scarcity worsens; capex cost inflation bites returns</li>
+          </ul>
+          <div style="font-size:12px;color:var(--dim);margin-top:8px;line-height:1.5">Evidence: MS worst case · WSJ closure risk · Goldman flow data · BofA capex bottleneck</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:6px">Hedging / defensive assets outperform; generation / baseload names hold.</div>
+          <div class="conf" style="color:var(--d5)">Key risk: multiple compression, order deferrals, financing strain</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     15 · KEY CONTRADICTIONS
+════════════════════════════════════ -->
+<div class="slide" id="slide-15">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Contradictions &amp; Monitoring Triggers</span>
+      <span class="slide-num">Slide 15 / 18</span>
+    </div>
+    <h2 class="slide-title">Five genuine tensions in the dataset — each requires a specific trigger to resolve.</h2>
+    <div class="slide-content">
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th>Tension</th><th>Source A Position</th><th>Source B Position</th><th>Analytical Read</th><th>Monitoring Trigger</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>CPO timing</strong></td>
+              <td>Goldman: CPO = new market, additive</td>
+              <td>JPM Mitsubishi: full-scale CPO only from 2030</td>
+              <td>Near-term EML/pluggable earnings risk <span class="hl-teal">overstated</span>; disruption real but lagged</td>
+              <td>Design wins shifting 1.6T → CPO; optical-engine volume; 2027–28 capex mix</td>
+            </tr>
+            <tr>
+              <td><strong>Power transition timing</strong></td>
+              <td>Bernstein: 800 VDC meaningful from 2027</td>
+              <td>Optical notes: pluggable/EML dominate through 2028</td>
+              <td>Networking upgrades arrive <span class="hl-teal">before</span> full electrical redesign reaches broad scale</td>
+              <td>Rubin Ultra / Feynman DC design disclosures; 800 VDC vendor order flow</td>
+            </tr>
+            <tr>
+              <td><strong>Software outcome</strong></td>
+              <td>Oracle: strong AI/cloud monetization at infra layer</td>
+              <td>Patel: agents pressure SaaS; value shifts to data/compute</td>
+              <td>Software outcome is <span class="hl-teal">layer-specific</span>; infra and data benefit earlier than app SaaS</td>
+              <td>OCI/DB growth vs SaaS NRR; AI agent adoption in enterprise workflows</td>
+            </tr>
+            <tr>
+              <td><strong>Oil shock persistence</strong></td>
+              <td>CPI/market notes: moderation if disruption ends soon</td>
+              <td>Goldman vessel data + WSJ: high-severity closure path preserved</td>
+              <td>Tech demand stays strong, but deployment timing becomes <span class="hl-amber">macro-sensitive</span></td>
+              <td>Hormuz vessel counts; Brent-Murban spread; Asian jet fuel; SPR/IEA pace</td>
+            </tr>
+            <tr>
+              <td><strong>AI capex breadth vs crowding</strong></td>
+              <td>Oracle, Bernstein, Goldman: broadening infra capex cycle</td>
+              <td>Short-form notes: squeeze risk, volatile sentiment, positioning</td>
+              <td>Fundamental breadth is improving but <span class="hl-amber">crowded positioning</span> can still drive sharp rotations</td>
+              <td>Funding structure changes; AI supplier order lead times; hedge fund positioning signals</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     16 · MONITORING DASHBOARD
+════════════════════════════════════ -->
+<div class="slide" id="slide-16">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Monitoring Dashboard · 9 Themes</span>
+      <span class="slide-num">Slide 16 / 18</span>
+    </div>
+    <h2 class="slide-title">Nine metrics to watch — one per theme, each linked to a specific analytical call.</h2>
+    <div class="slide-content">
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th>Theme</th><th>Primary Metric / Trigger</th><th>Domain</th><th>What It Resolves</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Optical scale-up</strong></td>
+              <td>Above-800G module shipments; 1.6T booking pace; 3.2T sampling cadence</td>
+              <td><span class="pill pill-teal">Optical</span></td>
+              <td>Confirms whether optical demand follows Goldman / OFC trajectory</td>
+            </tr>
+            <tr>
+              <td><strong>Lane-rate transition</strong></td>
+              <td>200G/lane and 400G/lane design wins; Broadcom DSP adoption</td>
+              <td><span class="pill pill-teal">Optical</span></td>
+              <td>Whether monetization shifts from volume to complexity value</td>
+            </tr>
+            <tr>
+              <td><strong>CPO timing</strong></td>
+              <td>Customer roadmaps; optical-engine production; Broadcom / Marvell comments</td>
+              <td><span class="pill pill-teal">Optical</span></td>
+              <td>Resolves the additive-vs-disruptive debate for EML / pluggable suppliers</td>
+            </tr>
+            <tr>
+              <td><strong>Packaging bottlenecks</strong></td>
+              <td>TSMC CoWoS kwpm adds; ASE/SPIL capacity; tool lead times</td>
+              <td><span class="pill pill-amber">Packaging</span></td>
+              <td>Whether AI throughput stays packaging-constrained or begins to ease</td>
+            </tr>
+            <tr>
+              <td><strong>Rack power density</strong></td>
+              <td>Rubin Ultra / Feynman rack-power disclosures; HVDC deployment references</td>
+              <td><span class="pill pill-purple">Power</span></td>
+              <td>Tests Bernstein's 800 VDC architecture timing thesis</td>
+            </tr>
+            <tr>
+              <td><strong>Power procurement</strong></td>
+              <td>Self-generation announcements; gas-turbine lead times; PPA / BYOC structures</td>
+              <td><span class="pill pill-amber">Energy</span></td>
+              <td>Whether energy access becomes a hard gating factor for AI deployments</td>
+            </tr>
+            <tr>
+              <td><strong>Cloud monetization</strong></td>
+              <td>Oracle OCI growth; AI capacity margin; RPO conversion; multicloud regions</td>
+              <td><span class="pill pill-green">Cloud</span></td>
+              <td>Validates infra/data software resilience and margin normalization path</td>
+            </tr>
+            <tr>
+              <td><strong>Software disruption</strong></td>
+              <td>SaaS growth / NRR; agent adoption in production; data-platform consumption</td>
+              <td><span class="pill pill-purple">Software</span></td>
+              <td>Tests Patel's workflow-layer compression thesis vs SaaS resilience</td>
+            </tr>
+            <tr>
+              <td><strong>Energy shock</strong></td>
+              <td>Hormuz vessel counts; Brent; Brent-Murban spread; Asian jet fuel; SPR pace</td>
+              <td><span class="pill pill-red">Macro</span></td>
+              <td>Governs macro transmission channel into tech capex timing and build cost</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     17 · TECHNOLOGY SIGNALS SUMMARY
+════════════════════════════════════ -->
+<div class="slide" id="slide-17">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Technology Signals · Cross-Domain Summary</span>
+      <span class="slide-num">Slide 17 / 18</span>
+    </div>
+    <h2 class="slide-title">Six technology signals confirmed across the dataset — each changes the investable surface area of the AI cycle.</h2>
+    <div class="slide-content">
+      <div class="three-col">
+        <div class="card card-accent" style="border-left-color:var(--d3)">
+          <div class="card-eyebrow">Power &amp; Electrical</div>
+          <ul>
+            <li><span class="hl-teal">800 VDC</span> moving from concept to modeled architecture reality</li>
+            <li>Net <span class="hl-amber">–$0.65B/GW</span> TAM impact by 2030 — mix-shift confirmed by Bernstein</li>
+            <li>Liquid cooling, CDUs, automation are the growth pools</li>
+            <li>AC PDU/UPS/transformer suppliers face <span class="hl-amber">–40% to –80%</span> TAM headwinds</li>
+          </ul>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--d1)">
+          <div class="card-eyebrow">Optical &amp; Networking</div>
+          <ul>
+            <li><span class="hl-teal">1.6T</span> is the next real optical volume node — above-800G units hit 94M by 2028E</li>
+            <li><span class="hl-teal">3.2T</span> visible on roadmap; 400G/lane is live commercial signal from Broadcom</li>
+            <li>Copper hitting distance/power limits at higher lane rates — architecturally unavoidable</li>
+            <li>CPO strategically important; pluggable/EML monetization window intact through 2029+</li>
+          </ul>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--d1)">
+          <div class="card-eyebrow">Packaging</div>
+          <ul>
+            <li>TSMC CoWoS: <span class="hl-amber">75 → 220 kwpm</span> by end-2027</li>
+            <li>ASE/SPIL: <span class="hl-teal">6×</span> capacity growth 2025–2027</li>
+            <li>All Ring: Goldman Buy, TP raised to <span class="hl-amber">NT$800</span> from NT$365</li>
+            <li>Packaging intensity remains critical through CoWoS and CPO capex cycles</li>
+          </ul>
+        </div>
+      </div>
+      <div class="three-col">
+        <div class="card card-accent" style="border-left-color:var(--d4)">
+          <div class="card-eyebrow">Software</div>
+          <ul>
+            <li>Oracle RPO <span class="hl-amber">$553B</span>: multi-year contracted AI demand backlog</li>
+            <li>AI agents threaten <em>application stack</em> more than infra/data layers</li>
+            <li>Software outcome is layer-specific; private-credit markdowns on software loans are an early warning</li>
+          </ul>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--d2)">
+          <div class="card-eyebrow">Power Generation</div>
+          <ul>
+            <li><span class="hl-teal">7</span> major U.S. tech companies signed self-power agreements for AI data centers</li>
+            <li>Siemens booked <span class="hl-amber">13GW</span> gas-turbine orders in 26Q1 alone</li>
+            <li>Gas turbines, backup power, and self-generation are now AI infrastructure, not macro trades</li>
+          </ul>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--d2)">
+          <div class="card-eyebrow">Macro Interface</div>
+          <ul>
+            <li>Iran/Hormuz = <span class="hl-teal">deployment friction</span>, not demand destruction</li>
+            <li>CPI <span class="hl-amber">2.5%</span>; Fed on hold — no financing cost relief near-term</li>
+            <li>Build timing and infrastructure availability are the new key return variables</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     18 · FINAL INSTITUTIONAL TAKEAWAYS
+════════════════════════════════════ -->
+<div class="slide" id="slide-18">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Institutional Takeaways · Positioning</span>
+      <span class="slide-num">Slide 18 / 18</span>
+    </div>
+    <h2 class="slide-title">The densification thesis — not the chip thesis — is the highest-conviction call in this dataset.</h2>
+    <div class="slide-content">
+      <div class="featured-layout">
+        <div class="featured-card">
+          <div class="card-eyebrow">The Widening Stack</div>
+          <div class="statement">Strategic advantage now depends on controlling or partnering across compute, optical interconnect, packaging, power conversion, thermal management, site power / generation, and cloud capacity financing.</div>
+          <div class="body">The largest near-term risk is not a collapse in AI demand. It is a mismatch between demand and the physical ability to deploy capacity on time and at acceptable economics. That is a new variable the market has historically underweighted in AI capex models. Power procurement delays, energy cost inflation, and over-crowding in winning names are the three most actionable near-term risk factors — not the secular demand outlook.</div>
+        </div>
+        <div class="right-grid">
+          <div class="stat-card">
+            <div class="stat-eyebrow">Call One — Physical</div>
+            <div class="stat-value" style="font-size:20px">Full Stack</div>
+            <div class="stat-detail">Own the full densification value chain: <span class="hl-teal">optics, power, packaging, generation</span>.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Call Two — Staged</div>
+            <div class="stat-value" style="font-size:20px">Coexist</div>
+            <div class="stat-detail">Don't price CPO disruption into EML/pluggable names now. <span class="hl-amber">2030</span> is the JPM timeline.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Call Three — Software</div>
+            <div class="stat-value" style="font-size:20px">Layer</div>
+            <div class="stat-detail"><span class="hl-teal">Infra and data</span> win. Generic SaaS loses. Treat them as separate investment theses.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Call Four — Macro</div>
+            <div class="stat-value" style="font-size:20px">Friction</div>
+            <div class="stat-detail">Monitor deployment <span class="hl-amber">timing and cost</span>, not just demand visibility. Build schedule is the new return variable.</div>
+          </div>
+        </div>
+      </div>
+      <div class="insight-grid">
+        <div class="insight-card">
+          <div class="insight-title">Highest-conviction positions</div>
+          <p>Broadcom (400G/lane DSP), Innolight (1.6T modules), TSMC / ASE (CoWoS), All Ring (CPO capex optionality), Oracle OCI (RPO backlog), Vertiv / Schneider (liquid cooling / CDU).</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">Avoid / underweight</div>
+          <p>Legacy AC-only electrical suppliers (PDU, transformer), generic horizontal SaaS (CRM, SAP-class multiples), any AI story dependent on CPO cannibalizing EML before 2028.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">Wildcard: Dongfang Electric</div>
+          <p>Emerging-market gas turbine play on AI self-power theme. Lead times create a <span class="hl-teal">2-year order runway</span>. BofA sees export substitution opportunity as Western suppliers hit capacity limits.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">What invalidates the thesis</div>
+          <p>A confirmed hyperscaler capex revision down, a sustained <span class="hl-amber">$120+</span> Brent scenario delaying project starts, or a CPO design-win cadence that accelerates the disruption timeline into 2027 rather than 2030.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     NAV BAR
+════════════════════════════════════ -->
+<div id="nav">
+  <span>Key Points</span>
+  <div style="display:flex;align-items:center;gap:12px">
+    <button onclick="go(current-1)">← Prev</button>
+    <span id="counter">1 / 18</span>
+    <button onclick="go(current+1)">Next →</button>
+  </div>
+  <span id="nav-slide-label">Slide 1</span>
+</div>
+
+<script>
+let current = 0;
+const slides = document.querySelectorAll('.slide');
+
+function go(n) {
+  slides[current].classList.remove('active');
+  current = Math.max(0, Math.min(n, slides.length - 1));
+  slides[current].classList.add('active');
+  document.getElementById('progress').style.width =
+    ((current + 1) / slides.length * 100) + '%';
+  document.getElementById('counter').textContent =
+    (current + 1) + ' / ' + slides.length;
+  document.getElementById('nav-slide-label').textContent =
+    'Slide ' + (current + 1);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(current + 1);
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   go(current - 1);
+});
+
+let tx = 0;
+document.addEventListener('touchstart', e => tx = e.touches[0].clientX, { passive: true });
+document.addEventListener('touchend', e => {
+  const dx = tx - e.changedTouches[0].clientX;
+  if (Math.abs(dx) > 40) go(current + (dx > 0 ? 1 : -1));
+});
+
+go(0);
+</script>
+</body>
+</html>

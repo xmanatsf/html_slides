@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intelligence Report — Iran War &amp; Market Shock | March 11 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;500&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #141e30;
+  --surface:  #1c2a42;
+  --surface2: #243450;
+  --border:   #2e4060;
+  --text:     #dde8f8;
+  --dim:      #94a8c8;
+  --accent:   #60a0f8;
+
+  --d1: #f97316; --d1bg: rgba(249,115,22,0.12);
+  --d2: #22c55e; --d2bg: rgba(34,197,94,0.12);
+  --d3: #3b82f6; --d3bg: rgba(59,130,246,0.12);
+  --d4: #a855f7; --d4bg: rgba(168,85,247,0.12);
+  --d5: #eab308; --d5bg: rgba(234,179,8,0.12);
+  --d6: #ef4444; --d6bg: rgba(239,68,68,0.12);
+
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body:    'IBM Plex Mono', monospace;
+  --font-ui:      'Syne', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  overflow: hidden;
+}
+
+/* ── PROGRESS BAR ── */
+#progress-wrap {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--border); z-index: 100;
+}
+#progress {
+  height: 100%; width: 0;
+  background: linear-gradient(90deg, var(--d1), var(--d4));
+  transition: width 0.35s ease;
+}
+
+/* ── NAV BAR ── */
+#nav {
+  position: fixed; bottom: 0; left: 0; right: 0; height: 40px;
+  background: rgba(20,30,48,0.95); border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; z-index: 100;
+  font-family: var(--font-ui); font-size: 11px; color: var(--dim);
+  letter-spacing: 0.06em;
+}
+#nav button {
+  background: none; border: 1px solid var(--border); color: var(--dim);
+  padding: 4px 14px; cursor: pointer; font-family: var(--font-ui);
+  font-size: 11px; letter-spacing: 0.06em; border-radius: 3px;
+  transition: all 0.2s;
+}
+#nav button:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── SLIDE ENGINE ── */
+.slide {
+  position: fixed; inset: 3px 0 40px 0;
+  display: none; overflow: hidden;
+}
+.slide.active { display: flex; }
+
+.slide-inner {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  padding: 28px 40px 20px;
+  overflow: hidden;
+}
+
+.slide-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px; flex-shrink: 0;
+}
+
+.domain-tag {
+  font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.14em;
+  font-weight: 600; padding: 3px 10px; border-radius: 2px;
+  text-transform: uppercase;
+}
+
+.slide-num {
+  font-family: var(--font-ui); font-size: 11px; color: var(--dim);
+  letter-spacing: 0.08em;
+}
+
+.slide-title {
+  font-family: var(--font-display); font-size: 38px;
+  letter-spacing: 0.04em; line-height: 1.05;
+  color: var(--text); margin-bottom: 18px; flex-shrink: 0;
+}
+
+.slide-content {
+  flex: 1; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 10px;
+}
+
+.slide-content::-webkit-scrollbar { width: 4px; }
+.slide-content::-webkit-scrollbar-track { background: transparent; }
+.slide-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ── CARD ── */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-left: 3px solid var(--accent); border-radius: 4px;
+  padding: 12px 14px;
+}
+.card-header {
+  font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.12em;
+  font-weight: 600; color: var(--dim); margin-bottom: 6px; text-transform: uppercase;
+}
+.card p { font-size: 13.5px; line-height: 1.55; color: var(--text); }
+.card ul { padding-left: 16px; }
+.card ul li { font-size: 13.5px; line-height: 1.6; color: var(--text); margin-bottom: 3px; }
+
+/* ── STAT GRID ── */
+.stat-grid {
+  display: grid; gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  flex-shrink: 0;
+}
+.stat-box {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
+  padding: 12px 14px; text-align: center;
+}
+.stat-value {
+  font-family: var(--font-display); font-size: 34px;
+  line-height: 1; color: var(--accent);
+}
+.stat-label {
+  font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.1em;
+  color: var(--dim); margin-top: 5px; text-transform: uppercase;
+}
+
+/* ── TWO-COL ── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+/* ── QUOTE ── */
+.quote-block {
+  background: var(--surface); border-left: 3px solid var(--d3);
+  padding: 10px 14px; border-radius: 0 4px 4px 0;
+}
+.quote-source {
+  font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.1em;
+  color: var(--dim); margin-bottom: 4px; text-transform: uppercase;
+}
+.quote-text { font-size: 13.5px; line-height: 1.5; color: var(--text); font-style: italic; }
+
+/* ── TABLE ── */
+.tbl-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th {
+  background: var(--surface2); color: var(--dim);
+  font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.08em;
+  text-transform: uppercase; padding: 7px 10px; text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+td { border-bottom: 1px solid var(--border); padding: 7px 10px; vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* ── PILL / BADGE ── */
+.pill {
+  display: inline-block; padding: 2px 8px; border-radius: 2px;
+  font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.08em;
+  font-weight: 600; text-transform: uppercase;
+}
+
+/* ── TIMELINE ── */
+.timeline { display: flex; flex-direction: column; gap: 6px; }
+.tl-item {
+  display: grid; grid-template-columns: 10px 110px 1fr;
+  gap: 10px; align-items: start;
+}
+.tl-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  margin-top: 5px; flex-shrink: 0;
+}
+.tl-label {
+  font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.08em;
+  color: var(--dim); padding-top: 3px; text-transform: uppercase;
+}
+.tl-text { font-size: 13.5px; line-height: 1.5; color: var(--text); }
+
+/* ── LINK MAP ── */
+.chain {
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  padding: 8px 12px; background: var(--surface); border-radius: 4px;
+  border: 1px solid var(--border);
+}
+.chain-node {
+  font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.06em;
+  padding: 4px 10px; border-radius: 3px;
+}
+.chain-arrow { color: var(--dim); font-size: 13px; }
+
+/* ── TITLE SLIDE ── */
+.title-slide {
+  background: linear-gradient(135deg, #0d1520 0%, #141e30 50%, #1a2640 100%);
+}
+.title-slide .slide-inner {
+  justify-content: center; align-items: flex-start; padding: 60px;
+}
+.title-eyebrow {
+  font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.18em;
+  color: var(--d1); text-transform: uppercase; margin-bottom: 18px;
+}
+.title-main {
+  font-family: var(--font-display); font-size: 72px; line-height: 0.95;
+  letter-spacing: 0.02em; color: var(--text); margin-bottom: 8px;
+}
+.title-main span { color: var(--d1); }
+.title-sub {
+  font-family: var(--font-display); font-size: 36px; letter-spacing: 0.06em;
+  color: var(--dim); margin-bottom: 32px;
+}
+.title-meta {
+  display: flex; gap: 32px; flex-wrap: wrap;
+}
+.meta-item { display: flex; flex-direction: column; gap: 3px; }
+.meta-label {
+  font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.12em;
+  color: var(--dim); text-transform: uppercase;
+}
+.meta-value {
+  font-family: var(--font-ui); font-size: 13px; font-weight: 600; color: var(--text);
+}
+.title-decoration {
+  position: absolute; right: 60px; bottom: 80px;
+  width: 280px; height: 280px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(249,115,22,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ── REGIME BOX ── */
+.regime-box {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
+  padding: 14px 16px; text-align: center;
+}
+.regime-label {
+  font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.12em;
+  color: var(--dim); margin-bottom: 6px; text-transform: uppercase;
+}
+.regime-val {
+  font-family: var(--font-display); font-size: 26px; letter-spacing: 0.06em;
+}
+.regime-sub { font-size: 11px; color: var(--dim); margin-top: 4px; font-family: var(--font-ui); }
+
+/* ── HEAT BAR ── */
+.heat-bar-wrap { display: flex; flex-direction: column; gap: 2px; }
+.heat-row { display: flex; align-items: center; gap: 8px; }
+.heat-label { font-size: 12px; color: var(--text); min-width: 260px; flex-shrink: 0; }
+.heat-bar-bg { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.heat-bar-fill { height: 100%; border-radius: 3px; }
+.heat-score { font-family: var(--font-ui); font-size: 10px; color: var(--dim); min-width: 28px; text-align: right; }
+
+/* ── SCENARIO COLS ── */
+.scenario-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.scenario-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
+  padding: 12px 14px;
+}
+.scenario-title {
+  font-family: var(--font-ui); font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px;
+}
+.scenario-card ul { padding-left: 15px; }
+.scenario-card li { font-size: 13px; line-height: 1.55; color: var(--text); margin-bottom: 3px; }
+.conf-tag {
+  display: inline-block; margin-top: 6px; padding: 2px 8px;
+  border-radius: 2px; font-family: var(--font-ui); font-size: 10px;
+  letter-spacing: 0.08em; font-weight: 600;
+}
+
+/* ── EXEC BULLETS ── */
+.exec-bullets { display: flex; flex-direction: column; gap: 8px; }
+.exec-bullet {
+  display: flex; align-items: flex-start; gap: 12px;
+  background: var(--surface); border-left: 3px solid var(--d1);
+  padding: 10px 14px; border-radius: 0 4px 4px 0;
+}
+.exec-bullet-num {
+  font-family: var(--font-display); font-size: 22px; color: var(--d1);
+  line-height: 1; flex-shrink: 0; width: 24px;
+}
+.exec-bullet-text { font-size: 13.5px; line-height: 1.55; color: var(--text); }
+</style>
+</head>
+<body>
+
+<div id="progress-wrap"><div id="progress"></div></div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 01 — TITLE
+═══════════════════════════════════════════════════════════ -->
+<div class="slide title-slide active" id="slide-1">
+  <div class="slide-inner">
+    <div class="title-eyebrow">Multi-Domain Intelligence Report &nbsp;·&nbsp; 28 Source Articles</div>
+    <div class="title-main">IRAN WAR &amp;<br><span>MARKET SHOCK</span></div>
+    <div class="title-sub">Cross-Asset Intelligence Synthesis</div>
+    <div class="title-meta">
+      <div class="meta-item">
+        <span class="meta-label">Report Date</span>
+        <span class="meta-value">March 11, 2026</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Source Corpus</span>
+        <span class="meta-value">28 Articles &nbsp;·&nbsp; WSJ / Bloomberg / Barron's</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Dominant Regime</span>
+        <span class="meta-value" style="color:var(--d1)">Fragile Bull — Energy Shock Active</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Primary Domains</span>
+        <span class="meta-value">Geopolitics · Energy · AI · Credit · Macro</span>
+      </div>
+    </div>
+  </div>
+  <div class="title-decoration"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 02 — EXECUTIVE SUMMARY
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-2">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="background:var(--surface2);color:var(--accent)">Executive Summary</span>
+      <span class="slide-num">02 / 21</span>
+    </div>
+    <h2 class="slide-title">Eight Signals That Define This Tape</h2>
+    <div class="slide-content">
+      <div class="exec-bullets">
+        <div class="exec-bullet">
+          <div class="exec-bullet-num">1</div>
+          <div class="exec-bullet-text">The Iran war crossed from <strong>geopolitical risk premium</strong> into <strong>physical energy-flow disruption</strong>: ship strikes, Iraqi terminal suspensions, Oman evacuations.</div>
+        </div>
+        <div class="exec-bullet">
+          <div class="exec-bullet-num">2</div>
+          <div class="exec-bullet-text">IEA released <strong>400 million barrels</strong> (largest ever); U.S. SPR drew <strong>172 million barrels</strong> over ~120 days — time buyers, not route restorers.</div>
+        </div>
+        <div class="exec-bullet">
+          <div class="exec-bullet-num">3</div>
+          <div class="exec-bullet-text">Iran is using <strong>selective closure</strong> for strategic leverage — its own exports held at <strong>2.1 mb/d</strong> while rivals and consumers absorb disruption cost.</div>
+        </div>
+        <div class="exec-bullet">
+          <div class="exec-bullet-num">4</div>
+          <div class="exec-bullet-text">Oil above <strong>$100 Brent</strong> reintroduces headline inflation risk and widens the gap between resilient nominal growth stories and rate-sensitive or consumer-sensitive assets.</div>
+        </div>
+        <div class="exec-bullet">
+          <div class="exec-bullet-num">5</div>
+          <div class="exec-bullet-text">AI infrastructure demand remains structurally strong: Oracle lifted FY2027 outlook to <strong>$90 billion</strong>; Nvidia-backed compute commitments remain extreme.</div>
+        </div>
+        <div class="exec-bullet">
+          <div class="exec-bullet-num">6</div>
+          <div class="exec-bullet-text">Private-credit fragility emerged: <strong>Cliffwater $33B</strong> and <strong>Morgan Stanley $8B</strong> vehicles capped redemptions — liquidity stress leaking into retail-facing vehicles.</div>
+        </div>
+        <div class="exec-bullet">
+          <div class="exec-bullet-num">7</div>
+          <div class="exec-bullet-text">Market pricing appears <strong>too comfortable</strong> with war headlines relative to prolonged energy, inflation, and funding-market second-order effects.</div>
+        </div>
+        <div class="exec-bullet">
+          <div class="exec-bullet-num">8</div>
+          <div class="exec-bullet-text">Boeing wiring flaw adds <strong>company-specific industrial setback</strong> — a reminder that micro execution risk persists beneath macro headlines.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 03 — NARRATIVE 1: HORMUZ LOGISTICS
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-3">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="background:var(--d1bg);color:var(--d1)">Geopolitics · Narrative 1</span>
+      <span class="slide-num">03 / 21</span>
+    </div>
+    <h2 class="slide-title">Hormuz Is Now a Throughput Problem</h2>
+    <div class="slide-content">
+      <div class="stat-grid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d1)">3</div>
+          <div class="stat-label">Cargo Ships Struck (Mar 11)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d1)">2</div>
+          <div class="stat-label">Tankers Attacked (Iraqi Waters)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d2)">1 mb/d</div>
+          <div class="stat-label">Mina Al Fahal Capacity Affected</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d6)">0</div>
+          <div class="stat-label">U.S. Escort Commitments (Near Term)</div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card" style="border-left-color:var(--d1)">
+          <div class="card-header">What Happened</div>
+          <ul>
+            <li>WSJ: three cargo ships struck transiting Hormuz on March 11</li>
+            <li>Bloomberg: two tankers attacked in Iraqi waters; terminals suspended</li>
+            <li>Bloomberg: Oman evacuated vessels from Mina Al Fahal (~1 mb/d terminal)</li>
+            <li>WSJ: U.S. military declined near-term escort requests for civilian shipping</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left-color:var(--d6)">
+          <div class="card-header">Why This Shifts the Frame</div>
+          <ul>
+            <li>The story is no longer "oil may go up if war worsens"</li>
+            <li>Lost confidence in transit safety = actual routing disruption</li>
+            <li>Insurance premia surge even without formal closure declaration</li>
+            <li>U.S. posture focused on degrading Iran, not guaranteeing transit</li>
+            <li>Risk now wider than the narrowest Hormuz framing</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card" style="border-left-color:var(--d5)">
+        <div class="card-header">Key Inference</div>
+        <p>Commercial decisions — not official closure announcements — are now defining the effective throughput constraint. Higher self-imposed shipping avoidance can close the strait without Iran ever declaring it closed.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 04 — NARRATIVE 2: RESERVES
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-4">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="background:var(--d2bg);color:var(--d2)">Energy · Narrative 2</span>
+      <span class="slide-num">04 / 21</span>
+    </div>
+    <h2 class="slide-title">Emergency Reserves: Cushion, Not Cure</h2>
+    <div class="slide-content">
+      <div class="stat-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d2)">400M</div>
+          <div class="stat-label">IEA Release (Barrels) — Largest Ever</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d3)">172M</div>
+          <div class="stat-label">U.S. SPR Draw (~120 Days)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d5)">$100+</div>
+          <div class="stat-label">Brent Crude (Current Level)</div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card" style="border-left-color:var(--d2)">
+          <div class="card-header">What Reserves Do</div>
+          <ul>
+            <li>Smooth near-term inventory availability</li>
+            <li>Cap panic-driven price spikes in the short run</li>
+            <li>Buy diplomatic time for negotiation</li>
+            <li>Aramco is ramping alternate pipeline routes (partial relief)</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left-color:var(--d6)">
+          <div class="card-header">What Reserves Cannot Do</div>
+          <ul>
+            <li>Reopen Hormuz or restore route integrity</li>
+            <li>Reduce marine insurance premia</li>
+            <li>Guarantee tanker traffic through contested waters</li>
+            <li>Restore Iraqi and Omani terminal operations</li>
+          </ul>
+        </div>
+      </div>
+      <div class="quote-block">
+        <div class="quote-source">Barron's — Aramco Analysis</div>
+        <div class="quote-text">"Even Aramco's alternate pipeline ramp is framed as easing rather than eliminating the bottleneck. The policy toolkit can smooth near-term prices, but only naval security or de-escalation meaningfully restores Gulf export reliability."</div>
+      </div>
+      <div class="card" style="border-left-color:var(--d5)">
+        <div class="card-header">Market Implication</div>
+        <p>Reserve headlines are being read as a full solution. The correct read is: they buy weeks, not routes. Any investor treating the SPR release as a normalization signal is mispricing duration risk.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 05 — NARRATIVE 3: IRAN SELECTIVE DISRUPTION
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-5">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="background:var(--d1bg);color:var(--d1)">Geopolitics · Narrative 3</span>
+      <span class="slide-num">05 / 21</span>
+    </div>
+    <h2 class="slide-title">Iran's Asymmetric Export Strategy</h2>
+    <div class="slide-content">
+      <div class="stat-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d2)">7</div>
+          <div class="stat-label">Iranian Tankers Loaded Since Feb 28 (Kpler)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d2)">2.1 mb/d</div>
+          <div class="stat-label">Iran's 6-Day Average (vs 2.0 in Feb)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d1)">↑ vs ↓</div>
+          <div class="stat-label">Iran Exports vs Rival Disruption</div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card" style="border-left-color:var(--d1)">
+          <div class="card-header">The Strategic Logic</div>
+          <ul>
+            <li>Iran is not maximizing volume destruction</li>
+            <li>It is maximizing geopolitical leverage AND price impact</li>
+            <li>Selective passage preserves Tehran's own cash flow</li>
+            <li>Economic burden shifts to Gulf rivals, importers, consumers</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left-color:var(--d6)">
+          <div class="card-header">Why This Matters Most</div>
+          <ul>
+            <li>Reduces the odds of a short, clean normalization</li>
+            <li>Even without a formal closure, asymmetric leverage is sustained</li>
+            <li>Market often models symmetric shutdown — the reality is asymmetric</li>
+            <li>Iran can keep monetizing while rivals absorb most disruption cost</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card" style="border-left-color:var(--d5)">
+        <div class="card-header">Investment Implication</div>
+        <p>The consensus shutdown model is wrong. The correct model is sustained selective disruption with Iranian export continuity. This prolongs the shock duration and argues against buying oil retracements as normalization signals.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 06 — NARRATIVE 4: MACRO SHOCK
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-6">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="background:var(--d3bg);color:var(--d3)">Economy · Narrative 4</span>
+      <span class="slide-num">06 / 21</span>
+    </div>
+    <h2 class="slide-title">Inflationary First, Recessionary Second</h2>
+    <div class="slide-content">
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot" style="background:var(--d1)"></div>
+          <div class="tl-label">Phase 1 · Now</div>
+          <div class="tl-text">Crude above $100 → gasoline and diesel prices surge → headline inflation re-accelerates</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:var(--d5)"></div>
+          <div class="tl-label">Phase 2 · Weeks</div>
+          <div class="tl-text">Fuel cost pressure hits autos, airlines, transportation, and low-end discretionary spending</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:var(--d3)"></div>
+          <div class="tl-label">Phase 3 · ~1–3 Months</div>
+          <div class="tl-text">Real disposable income falls; Fed easing path narrows; rate-sensitive equities and duration face renewed pressure</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:var(--d6)"></div>
+          <div class="tl-label">Phase 4 · If Sustained</div>
+          <div class="tl-text">EM balance-of-payment stress → dollar strength → broader risk aversion → stagflation sequencing risk</div>
+        </div>
+      </div>
+      <div class="three-col">
+        <div class="card" style="border-left-color:var(--d3)">
+          <div class="card-header">Exposed — U.S.</div>
+          <ul>
+            <li>Autos (fuel cost + ICE mix reversal)</li>
+            <li>Airlines</li>
+            <li>Consumer discretionary</li>
+            <li>Long-duration equities</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left-color:var(--d5)">
+          <div class="card-header">Exposed — EM</div>
+          <ul>
+            <li>Pakistan import bill surge</li>
+            <li>Gulf-reliant economies</li>
+            <li>EM FX pressure</li>
+            <li>EM sovereign spread widening</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left-color:var(--d2)">
+          <div class="card-header">Benefiting</div>
+          <ul>
+            <li>Energy producers (XLE, Brent)</li>
+            <li>Inflation breakevens</li>
+            <li>Hard assets</li>
+            <li>Defense / security capex</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 07 — NARRATIVE 5: AI RESILIENCE
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-7">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="background:var(--d4bg);color:var(--d4)">AI · Technology · Narrative 5</span>
+      <span class="slide-num">07 / 21</span>
+    </div>
+    <h2 class="slide-title">AI Capital Intensity Overpowers Macro Caution</h2>
+    <div class="slide-content">
+      <div class="stat-grid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d4)">$90B</div>
+          <div class="stat-label">Oracle FY2027 Sales Outlook</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d4)">+9%</div>
+          <div class="stat-label">ORCL Stock Rise on Earnings</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d4)">1 GW</div>
+          <div class="stat-label">Thinking Machines Nvidia Chip Plan</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d4)">$1.03B</div>
+          <div class="stat-label">AMI Seed Round (Nvidia + Samsung)</div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card" style="border-left-color:var(--d4)">
+          <div class="card-header">What the Data Confirms</div>
+          <ul>
+            <li>Oracle guidance upgrade = concrete revenue signal, not narrative</li>
+            <li>1 GW Thinking Machines plan = unusually explicit frontier compute scale</li>
+            <li>$1.03B seed round: Nvidia &amp; Samsung backing AMI (Yann LeCun)</li>
+            <li>Tencent OpenClaw products = China AI enthusiasm → equity upside</li>
+            <li>Infrastructure demand remains supply-constrained and revenue-relevant</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left-color:var(--d5)">
+          <div class="card-header">Software Dispersion Widening</div>
+          <ul>
+            <li>Infrastructure-adjacent names outperform (ORCL, NVDA)</li>
+            <li>Application-layer incumbents under pressure (CRM, SAP, SaaS HMV)</li>
+            <li>Barron's: Oracle as lens to rethink software-stock risk broadly</li>
+            <li>Private-credit markdowns on software-linked loans confirm AI disrupts borrowers too</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card" style="border-left-color:var(--d6)">
+        <div class="card-header">Hidden Credit Risk</div>
+        <p>AI disruption is creating visible infrastructure winners AND invisible software-credit losers. Equity leadership in ORCL/NVDA can mask deterioration in software-linked borrowers and the private-credit vehicles that hold them.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 08 — NARRATIVE 6: CREDIT STRESS
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-8">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="background:var(--d6bg);color:var(--d6)">Credit · Narrative 6</span>
+      <span class="slide-num">08 / 21</span>
+    </div>
+    <h2 class="slide-title">Private-Credit Plumbing Is Starting to Matter</h2>
+    <div class="slide-content">
+      <div class="stat-grid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d6)">$33B</div>
+          <div class="stat-label">Cliffwater Flagship — Redemptions Capped</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d6)">7%</div>
+          <div class="stat-label">Allowed vs 14% Requested (Cliffwater Q1)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d6)">$8B</div>
+          <div class="stat-label">Morgan Stanley North Haven — Capped</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d6)">$169M</div>
+          <div class="stat-label">Morgan Stanley Returned vs Full Request</div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card" style="border-left-color:var(--d6)">
+          <div class="card-header">What Triggered the Gates</div>
+          <ul>
+            <li>Bloomberg: markdowns on software-linked loans</li>
+            <li>More restrictive bank financing conditions</li>
+            <li>Redemptions requested at 14% but only 7% allowed (Cliffwater)</li>
+            <li>Morgan Stanley capped at 5%; returned ~$169M vs full request</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left-color:var(--d5)">
+          <div class="card-header">Second-Order Risk</div>
+          <ul>
+            <li>Oil-driven rates backup can deepen credit stress further</li>
+            <li>Stress can spread from obscure vehicles into broader funding conditions</li>
+            <li>Listed alternative-asset managers face valuation pressure if issue broadens</li>
+            <li>Public markets focused on AI &amp; war while credit quietly tightens</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card" style="border-left-color:var(--d3)">
+        <div class="card-header">Historical Pattern</div>
+        <p>A liquidity gap between private-credit gating and public equity resilience typically matters when macro stress persists. The gap between index-level equity calm and redemption caps in retail-facing credit vehicles is not yet priced in public markets.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 09 — TOP 10 SIGNALS
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-9">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="background:var(--surface2);color:var(--accent)">Signal Intelligence</span>
+      <span class="slide-num">09 / 21</span>
+    </div>
+    <h2 class="slide-title">Top 10 Signals This Report Cycle</h2>
+    <div class="slide-content">
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Signal</th>
+              <th>Domain</th>
+              <th>Why It Matters</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span style="color:var(--d1);font-family:var(--font-display);font-size:18px">1</span></td>
+              <td>Ship &amp; tanker attacks turned Hormuz story physical</td>
+              <td><span class="pill" style="background:var(--d1bg);color:var(--d1)">Geo</span></td>
+              <td>Throughput risk matters more than rhetoric for oil and inflation</td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--d1);font-family:var(--font-display);font-size:18px">2</span></td>
+              <td>Oman evacuated Mina Al Fahal terminal</td>
+              <td><span class="pill" style="background:var(--d2bg);color:var(--d2)">Energy</span></td>
+              <td>Risk now extends beyond the narrow strait itself</td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--d1);font-family:var(--font-display);font-size:18px">3</span></td>
+              <td>Brent moved back above $100</td>
+              <td><span class="pill" style="background:var(--d5bg);color:var(--d5)">Markets</span></td>
+              <td>Reintroduces inflation and rate-path risk immediately</td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--d1);font-family:var(--font-display);font-size:18px">4</span></td>
+              <td>U.S. declined immediate tanker escorts</td>
+              <td><span class="pill" style="background:var(--d1bg);color:var(--d1)">Geo</span></td>
+              <td>Raises odds of prolonged commercial disruption</td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--d1);font-family:var(--font-display);font-size:18px">5</span></td>
+              <td>IEA announced 400 million barrel release</td>
+              <td><span class="pill" style="background:var(--d2bg);color:var(--d2)">Energy</span></td>
+              <td>Large policy cushion — but not a logistics fix</td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--d3);font-family:var(--font-display);font-size:18px">6</span></td>
+              <td>U.S. SPR draw: 172M bbls over ~120 days</td>
+              <td><span class="pill" style="background:var(--d3bg);color:var(--d3)">Policy</span></td>
+              <td>Underscores shock severity; helps near-term supply</td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--d3);font-family:var(--font-display);font-size:18px">7</span></td>
+              <td>Iran kept loading ~2.1 mb/d (above Feb)</td>
+              <td><span class="pill" style="background:var(--d1bg);color:var(--d1)">Geo</span></td>
+              <td>Selective disruption improves Tehran's leverage</td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--d3);font-family:var(--font-display);font-size:18px">8</span></td>
+              <td>Oracle raised FY2027 sales outlook to $90B</td>
+              <td><span class="pill" style="background:var(--d4bg);color:var(--d4)">AI</span></td>
+              <td>AI infrastructure demand remains strong despite macro stress</td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--d3);font-family:var(--font-display);font-size:18px">9</span></td>
+              <td>Thinking Machines plans ≥1 GW of Nvidia chips</td>
+              <td><span class="pill" style="background:var(--d4bg);color:var(--d4)">AI</span></td>
+              <td>Confirms frontier-model capex intensity remains extreme</td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--d3);font-family:var(--font-display);font-size:18px">10</span></td>
+              <td>Private-credit funds gated redemptions</td>
+              <td><span class="pill" style="background:var(--d6bg);color:var(--d6)">Credit</span></td>
+              <td>Liquidity stress is no longer theoretical</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 10 — CROSS-DOMAIN LINKAGE MAP
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-10">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="background:var(--surface2);color:var(--accent)">Cross-Domain Linkage</span>
+      <span class="slide-num">10 / 21</span>
+    </div>
+    <h2 class="slide-title">Causal Chain Map</h2>
+    <div class="slide-content">
+      <div class="chain">
+        <span class="chain-node" style="background:var(--d1bg);color:var(--d1)">Iran War Widens</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node" style="background:var(--d2bg);color:var(--d2)">Ship Attacks</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node" style="background:var(--d2bg);color:var(--d2)">Crude &gt;$100</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node" style="background:var(--d3bg);color:var(--d3)">Headline Inflation ↑</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node" style="background:var(--d3bg);color:var(--d3)">Fed Easing Delayed</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node" style="background:var(--d5bg);color:var(--d5)">Duration Pressure</span>
+      </div>
+      <div class="chain">
+        <span class="chain-node" style="background:var(--d2bg);color:var(--d2)">Crude &gt;$100</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node" style="background:var(--d3bg);color:var(--d3)">Gasoline/Diesel ↑</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node" style="background:var(--d5bg);color:var(--d5)">Autos / Airlines / Freight</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node" style="background:var(--d6bg);color:var(--d6)">Consumer &amp; Industrial Margin ↓</span>
+      </div>
+      <div class="chain">
+        <span class="chain-node" style="background:var(--d4bg);color:var(--d4)">AI Infrastructure</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node" style="background:var(--d4bg);color:var(--d4)">Oracle / Nvidia Winners</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node" style="background:var(--d6bg);color:var(--d6)">Software-Credit Losers</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node" style="background:var(--d6bg);color:var(--d6)">Private-Credit Gating</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node" style="background:var(--d5bg);color:var(--d5)">Alt-Asset Manager Stress</span>
+      </div>
+      <div class="chain">
+        <span class="chain-node" style="background:var(--d1bg);color:var(--d1)">Iran War</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node" style="background:var(--d1bg);color:var(--d1)">U.S.-China Calculus Shifts</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node" style="background:var(--d4bg);color:var(--d4)">Bloc Alignment ↑</span>
+        <span class="chain-arrow">→</span>
+        <span class="chain-node" style="background:var(--d2bg);color:var(--d2)">Resource Security Priority ↑</span>
+      </div>
+      <div class="two-col" style="margin-top:4px">
+        <div class="card" style="border-left-color:var(--d2)">
+          <div class="card-header">Energy → Inflation → Fed</div>
+          <p style="font-size:13px">Higher energy prices threaten to re-accelerate headline inflation and delay the point at which easing becomes comfortable. This is the primary macro transmission channel.</p>
+        </div>
+        <div class="card" style="border-left-color:var(--d4)">
+          <div class="card-header">AI → Credit (Losers)</div>
+          <p style="font-size:13px">Bloomberg's private-credit story explicitly connects software-linked loan markdowns to tighter financing — AI disruption is creating losers in financing markets as well as winners in equity markets.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 11 — GEOPOLITICS DOMAIN BRIEF
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-11">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="background:var(--d1bg);color:var(--d1)">Domain Brief · Geopolitics</span>
+      <span class="slide-num">11 / 21</span>
+    </div>
+    <h2 class="slide-title">Geopolitics Agent Brief</h2>
+    <div class="slide-content">
+      <div class="three-col">
+        <div class="card" style="border-left-color:var(--d1)">
+          <div class="card-header">Core Facts</div>
+          <ul>
+            <li>Iran war entered week 2, broadening into maritime interdiction</li>
+            <li>3 cargo ships struck transiting Hormuz (Mar 11, WSJ)</li>
+            <li>2 tankers attacked in Iraqi waters (Bloomberg)</li>
+            <li>Oman evacuated Mina Al Fahal vessels (Bloomberg)</li>
+            <li>U.S. declined near-term civilian escort requests (WSJ)</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left-color:var(--d5)">
+          <div class="card-header">Key Signals</div>
+          <ul>
+            <li>Iran demonstrating coercive capacity over global trade flows</li>
+            <li>No escort → commercial decisions define "effective closure"</li>
+            <li>Stress widening: Oman, Iraq, Bahrain — not just strait</li>
+            <li>U.S. focused on degrading Iran, not guaranteeing transit</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left-color:var(--d6)">
+          <div class="card-header">Scenarios</div>
+          <ul>
+            <li><strong>Base:</strong> Intermittent disruption continues</li>
+            <li><strong>Bull:</strong> Escorts / diplomacy stabilize transit quickly</li>
+            <li><strong>Bear:</strong> Repeated attacks sustain effective closure</li>
+            <li><strong>Tail:</strong> Broader escalation → stagflation shock</li>
+          </ul>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card" style="border-left-color:var(--d3)">
+          <div class="card-header">First-Order Implications</div>
+          <ul>
+            <li>Higher insurance premia and self-imposed shipping avoidance</li>
+            <li>Greater urgency for reserve releases and alternate export routing</li>
+            <li>Higher market sensitivity to any naval-policy or diplomacy update</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left-color:var(--d4)">
+          <div class="card-header">Priced vs Not Fully Priced</div>
+          <ul>
+            <li><span class="pill" style="background:rgba(34,197,94,0.15);color:#22c55e">PRICED</span>&nbsp; War premium and immediate oil spike</li>
+            <li><span class="pill" style="background:var(--d6bg);color:var(--d6)">NOT PRICED</span>&nbsp; Prolonged commercial avoidance without formal closure</li>
+          </ul>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;padding:8px 12px;background:var(--surface);border-radius:4px;border:1px solid var(--border)">
+        <span style="font-family:var(--font-ui);font-size:10px;letter-spacing:0.1em;color:var(--dim);text-transform:uppercase">Confidence</span>
+        <span class="pill" style="background:var(--d2bg);color:var(--d2)">HIGH on disruption</span>
+        <span class="pill" style="background:var(--d5bg);color:var(--d5)">MEDIUM on duration</span>
+        <span style="font-size:12px;color:var(--text);margin-left:8px">Changes on: confirmed escort policy · verified de-escalation channels</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 12 — OIL & ENERGY DOMAIN BRIEF
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-12">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="background:var(--d2bg);color:var(--d2)">Domain Brief · Oil & Energy</span>
+      <span class="slide-num">12 / 21</span>
+    </div>
+    <h2 class="slide-title">Oil, Energy &amp; Commodities Agent Brief</h2>
+    <div class="slide-content">
+      <div class="stat-grid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d2)">7 mb/d</div>
+          <div class="stat-label">Aramco Exports (Alternate Pipeline Ramping)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d1)">$100+</div>
+          <div class="stat-label">Brent / WTI (Current)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d5)">2.1 mb/d</div>
+          <div class="stat-label">Iran's Own Exports (Above Feb)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d3)">572M</div>
+          <div class="stat-label">Total Reserve Release (IEA+SPR bbls)</div>
+        </div>
+      </div>
+      <div class="three-col">
+        <div class="card" style="border-left-color:var(--d2)">
+          <div class="card-header">What Is New</div>
+          <ul>
+            <li>Physical disruptions hit ports outside narrowest framing</li>
+            <li>Iran export continuity more robust than consensus</li>
+            <li>Market pricing actual supply friction, not just war premium</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left-color:var(--d5)">
+          <div class="card-header">First-Order</div>
+          <ul>
+            <li>Higher crude and refined-product prices</li>
+            <li>Wider freight and insurance costs</li>
+            <li>Producers outperform refiners and fuel-intensive demand</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left-color:var(--d6)">
+          <div class="card-header">Exposed Assets</div>
+          <ul>
+            <li>XLE, integrated oils, Aramco</li>
+            <li>Tanker and shipping names</li>
+            <li>Airlines, autos, chemicals</li>
+            <li>EM importers (Pakistan, Gulf-reliant)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card" style="border-left-color:var(--d2)">
+          <div class="card-header">Priced vs Not Priced</div>
+          <ul>
+            <li><span class="pill" style="background:rgba(34,197,94,0.15);color:#22c55e">PRICED</span>&nbsp; Immediate crude spike and reserve releases</li>
+            <li><span class="pill" style="background:var(--d6bg);color:var(--d6)">NOT PRICED</span>&nbsp; Multi-week routing impairment + non-Hormuz infrastructure avoidance</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left-color:var(--d3)">
+          <div class="card-header">Scenarios</div>
+          <ul>
+            <li><strong>Base:</strong> Partial flows continue with elevated risk premium</li>
+            <li><strong>Bull:</strong> Rerouting + reserves normalize prices</li>
+            <li><strong>Bear:</strong> More attacks spread outages</li>
+            <li><strong>Tail:</strong> Prolonged closure forces rationing</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 13 — ECONOMY / FED DOMAIN BRIEF
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-13">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="background:var(--d3bg);color:var(--d3)">Domain Brief · Economy & Fed</span>
+      <span class="slide-num">13 / 21</span>
+    </div>
+    <h2 class="slide-title">Economy, Inflation &amp; Fed Policy Agent Brief</h2>
+    <div class="slide-content">
+      <div class="three-col">
+        <div class="card" style="border-left-color:var(--d3)">
+          <div class="card-header">What Is New</div>
+          <ul>
+            <li>Inflation impulse no longer hypothetical — crude above $100 with actual transport disruptions</li>
+            <li>Shock broadening from commodity pricing into consumer and import-economy transmission</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left-color:var(--d5)">
+          <div class="card-header">Key Signals</div>
+          <ul>
+            <li>Headline inflation rising faster than core disinflation can offset</li>
+            <li>Fed path harder to ease into if energy stays elevated</li>
+            <li>Growth damage likely lags inflation → stagflationary sequencing</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left-color:var(--d6)">
+          <div class="card-header">First-Order Hits</div>
+          <ul>
+            <li>Higher gasoline and energy bills</li>
+            <li>Lower real disposable income</li>
+            <li>Less room for dovish rate repricing</li>
+            <li>Consumer mix back toward fuel efficiency</li>
+          </ul>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card" style="border-left-color:var(--d3)">
+          <div class="card-header">Second-Order Cross-Domain</div>
+          <ul>
+            <li>Rate-sensitive equities and credit face renewed pressure</li>
+            <li>EM stress → dollar strength → broader risk aversion</li>
+            <li>Consumer mix shift hurts recent ICE-heavy auto positioning</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left-color:var(--d5)">
+          <div class="card-header">Exposed Assets</div>
+          <p>Treasuries, inflation breakevens, USD, autos, airlines, retailers, EM sovereigns and FX</p>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card" style="border-left-color:var(--d2)">
+          <div class="card-header">Priced vs Not Priced</div>
+          <ul>
+            <li><span class="pill" style="background:rgba(34,197,94,0.15);color:#22c55e">PRICED</span>&nbsp; Immediate inflation scare</li>
+            <li><span class="pill" style="background:var(--d6bg);color:var(--d6)">NOT PRICED</span>&nbsp; Prolonged persistence that materially alters Fed medium-term stance</li>
+          </ul>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;padding:8px 12px;background:var(--surface);border-radius:4px;border:1px solid var(--border)">
+          <span style="font-family:var(--font-ui);font-size:10px;letter-spacing:0.1em;color:var(--dim)">CONFIDENCE</span>
+          <span class="pill" style="background:var(--d5bg);color:var(--d5)">MEDIUM</span>
+          <span style="font-size:12px;color:var(--text)">Triggers: retail fuel data · inflation expectations · duration of route disruption</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 14 — AI & TECH DOMAIN BRIEF
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-14">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="background:var(--d4bg);color:var(--d4)">Domain Brief · AI & Technology</span>
+      <span class="slide-num">14 / 21</span>
+    </div>
+    <h2 class="slide-title">AI, Technology &amp; Semiconductors Agent Brief</h2>
+    <div class="slide-content">
+      <div class="three-col">
+        <div class="card" style="border-left-color:var(--d4)">
+          <div class="card-header">Infrastructure Winners</div>
+          <ul>
+            <li>NVDA, ORCL, Samsung Electronics (memory)</li>
+            <li>Networking, power, data-center suppliers</li>
+            <li>Cloud infrastructure layer</li>
+            <li>Companies monetizing compute demand directly</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left-color:var(--d6)">
+          <div class="card-header">Application-Layer Losers</div>
+          <ul>
+            <li>High-multiple SaaS names (CRM, SAP)</li>
+            <li>Weaker software credits with AI-compressed moats</li>
+            <li>Software-linked loan collateral quality deteriorating</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left-color:var(--d5)">
+          <div class="card-header">Geographic Spread</div>
+          <ul>
+            <li>China: Tencent OpenClaw-compatible products</li>
+            <li>China AI enthusiasm → product and equity momentum</li>
+            <li>Competition broadening geographically</li>
+          </ul>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card" style="border-left-color:var(--d4)">
+          <div class="card-header">Bull Case</div>
+          <ul>
+            <li>Supply eases enough to convert backlog to faster revenue</li>
+            <li>Infrastructure winners keep leadership</li>
+            <li>Oracle follow-through validates AI infrastructure investment thesis</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left-color:var(--d6)">
+          <div class="card-header">Bear Case / Tail Risk</div>
+          <ul>
+            <li>Macro stress eventually hits funding or deployment pace</li>
+            <li>Credit spillovers from AI-disrupted borrowers offset AI-winner gains</li>
+            <li>Software-credit performance becomes broader funding signal</li>
+          </ul>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;padding:8px 12px;background:var(--surface);border-radius:4px;border:1px solid var(--border)">
+        <span style="font-family:var(--font-ui);font-size:10px;letter-spacing:0.1em;color:var(--dim)">CONFIDENCE</span>
+        <span class="pill" style="background:var(--d4bg);color:var(--d4)">MEDIUM-HIGH</span>
+        <span style="font-size:12px;color:var(--text)">Changes on: next capex disclosures · supply-chain constraints · software-credit performance</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 15 — MARKETS DOMAIN BRIEF
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-15">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="background:var(--d5bg);color:var(--d5)">Domain Brief · Financial Markets</span>
+      <span class="slide-num">15 / 21</span>
+    </div>
+    <h2 class="slide-title">Financial Markets, Equities &amp; Credit Agent Brief</h2>
+    <div class="slide-content">
+      <div class="stat-grid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d6)">-1.1%</div>
+          <div class="stat-label">S&amp;P 500 Futures (Bloomberg)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d6)">-1.6%</div>
+          <div class="stat-label">Asian Shares (Bloomberg)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d4)">+9%</div>
+          <div class="stat-label">Oracle Equity After Earnings</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--d2)">↑</div>
+          <div class="stat-label">Energy / Defense Relative Strength</div>
+        </div>
+      </div>
+      <div class="three-col">
+        <div class="card" style="border-left-color:var(--d5)">
+          <div class="card-header">Key Market Signals</div>
+          <ul>
+            <li>Cross-asset confirmation: energy up, equities down, inflation back</li>
+            <li>Market discriminating between real-asset/AI winners and broad risk</li>
+            <li>Private-credit gating = fresh non-equity fragility indicator</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left-color:var(--d6)">
+          <div class="card-header">Public vs Private Gap</div>
+          <ul>
+            <li>Index-level equity still appears too calm</li>
+            <li>Liquidity-sensitive corners are more fragile than indices imply</li>
+            <li>Public mkt focus: war + AI; private credit: quietly tightening</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left-color:var(--d3)">
+          <div class="card-header">Regime Classification</div>
+          <ul>
+            <li style="color:var(--d5)">Fragile Bull with Narrow Leadership</li>
+            <li>Choppy range; energy + AI infra outperform</li>
+            <li>Consumer cyclicals underperform</li>
+          </ul>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card" style="border-left-color:var(--d2)">
+          <div class="card-header">Priced vs Not Priced</div>
+          <ul>
+            <li><span class="pill" style="background:rgba(34,197,94,0.15);color:#22c55e">PRICED</span>&nbsp; Immediate risk-off and energy spike</li>
+            <li><span class="pill" style="background:var(--d6bg);color:var(--d6)">NOT PRICED</span>&nbsp; Sustained inflation + tighter private-credit together</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left-color:var(--d5)">
+          <div class="card-header">Exposed Assets</div>
+          <p style="font-size:12px">SPX, NDX, crude, inflation breakevens, alt-asset managers, ORCL, NVDA, autos, transports, energy equities</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 16 — NARRATIVE HEAT MAP
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-16">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="background:var(--surface2);color:var(--accent)">Narrative Intelligence</span>
+      <span class="slide-num">16 / 21</span>
+    </div>
+    <h2 class="slide-title">Narrative Heat Map</h2>
+    <div class="slide-content">
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Narrative</th>
+              <th>Freq</th>
+              <th>Incremental?</th>
+              <th>Market Relevance</th>
+              <th>Confidence</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Iran war widens into shipping &amp; export disruption</td>
+              <td><strong>11</strong></td>
+              <td><span class="pill" style="background:var(--d1bg);color:var(--d1)">Yes</span></td>
+              <td><span class="pill" style="background:var(--d6bg);color:var(--d6)">Very High</span></td>
+              <td><span class="pill" style="background:var(--d2bg);color:var(--d2)">High</span></td>
+            </tr>
+            <tr>
+              <td>Emergency reserve release offsets price shock only partially</td>
+              <td><strong>4</strong></td>
+              <td><span class="pill" style="background:var(--d1bg);color:var(--d1)">Yes</span></td>
+              <td><span class="pill" style="background:var(--d6bg);color:var(--d6)">High</span></td>
+              <td><span class="pill" style="background:var(--d2bg);color:var(--d2)">High</span></td>
+            </tr>
+            <tr>
+              <td>Iran preserves own exports while rivals suffer disruption</td>
+              <td><strong>2</strong></td>
+              <td><span class="pill" style="background:var(--d1bg);color:var(--d1)">Yes</span></td>
+              <td><span class="pill" style="background:var(--d6bg);color:var(--d6)">High</span></td>
+              <td><span class="pill" style="background:var(--d5bg);color:var(--d5)">Med-High</span></td>
+            </tr>
+            <tr>
+              <td>AI infrastructure demand remains robust</td>
+              <td><strong>5</strong></td>
+              <td><span class="pill" style="background:var(--d5bg);color:var(--d5)">Confirming + New Scale</span></td>
+              <td><span class="pill" style="background:var(--d6bg);color:var(--d6)">High</span></td>
+              <td><span class="pill" style="background:var(--d5bg);color:var(--d5)">Med-High</span></td>
+            </tr>
+            <tr>
+              <td>Software and private credit vulnerable to AI repricing</td>
+              <td><strong>2</strong></td>
+              <td><span class="pill" style="background:var(--d1bg);color:var(--d1)">Yes</span></td>
+              <td><span class="pill" style="background:var(--d5bg);color:var(--d5)">Med-High</span></td>
+              <td><span class="pill" style="background:var(--d5bg);color:var(--d5)">Medium</span></td>
+            </tr>
+            <tr>
+              <td>Consumer &amp; industrial cyclicals face fuel-cost pressure</td>
+              <td><strong>3</strong></td>
+              <td><span class="pill" style="background:var(--d1bg);color:var(--d1)">Yes</span></td>
+              <td><span class="pill" style="background:var(--d5bg);color:var(--d5)">Medium</span></td>
+              <td><span class="pill" style="background:var(--d5bg);color:var(--d5)">Medium</span></td>
+            </tr>
+            <tr>
+              <td>Idiosyncratic corporate execution issues persist (Boeing)</td>
+              <td><strong>2</strong></td>
+              <td><span class="pill" style="background:var(--border);color:var(--dim)">Known Type</span></td>
+              <td><span class="pill" style="background:var(--d5bg);color:var(--d5)">Medium</span></td>
+              <td><span class="pill" style="background:var(--d2bg);color:var(--d2)">High</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card" style="border-left-color:var(--d1);margin-top:4px">
+        <div class="card-header">Dominant Narrative</div>
+        <p>Iran war → physical logistics disruption is the macro center of gravity with 11 article mentions. All other narratives orbit this primary signal. The next most impactful independent narrative is AI infrastructure resilience (5 mentions).</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 17 — PRICED vs UNPRICED
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-17">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="background:var(--surface2);color:var(--accent)">Market Pricing Analysis</span>
+      <span class="slide-num">17 / 21</span>
+    </div>
+    <h2 class="slide-title">Priced vs Not Fully Priced</h2>
+    <div class="slide-content">
+      <div class="two-col">
+        <div>
+          <div style="font-family:var(--font-ui);font-size:10px;letter-spacing:0.12em;color:var(--d2);text-transform:uppercase;margin-bottom:8px;padding:4px 10px;background:var(--d2bg);border-radius:3px;display:inline-block">Likely Priced In</div>
+          <div class="card" style="border-left-color:var(--d2)">
+            <ul>
+              <li>Spot crude above $100 and near-term energy volatility</li>
+              <li>Immediate equity weakness in broad index futures and Asia-linked risk assets</li>
+              <li>Strong AI infrastructure demand for Oracle and Nvidia-related ecosystems</li>
+              <li>First-order benefit to energy and defense sentiment</li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <div style="font-family:var(--font-ui);font-size:10px;letter-spacing:0.12em;color:var(--d6);text-transform:uppercase;margin-bottom:8px;padding:4px 10px;background:var(--d6bg);border-radius:3px;display:inline-block">Not Fully Priced</div>
+          <div class="card" style="border-left-color:var(--d6)">
+            <ul>
+              <li>Persistence of route insecurity even after reserve releases fade from headlines</li>
+              <li>A scenario where inflation re-accelerates enough to materially tighten Fed reaction function</li>
+              <li>Spillover from private-credit redemption caps into broader funding or valuation stress</li>
+              <li>Iran keeps monetizing exports while rivals absorb most disruption cost</li>
+              <li>Second-order damage to import-dependent EMs if elevated energy lasts more than a few weeks</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="border-left-color:var(--d5)">
+        <div class="card-header">The Core Mispricing</div>
+        <p>Public equity markets are treating the SPR release as a normalization signal. The gap between reserve-release optimism and the reality of unresolved route insecurity, Iran's selective export strategy, and private-credit stress is the most actionable mispricing in this report cycle.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 18 — SCENARIO FRAMEWORK
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-18">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="background:var(--surface2);color:var(--accent)">Scenario Framework</span>
+      <span class="slide-num">18 / 21</span>
+    </div>
+    <h2 class="slide-title">Four Scenarios — Confidence-Weighted</h2>
+    <div class="slide-content">
+      <div class="scenario-grid">
+        <div class="scenario-card" style="border-top:2px solid var(--d5)">
+          <div class="scenario-title" style="color:var(--d5)">Base Case</div>
+          <ul>
+            <li>Hormuz remains intermittently impaired rather than fully normalized</li>
+            <li>Emergency reserves and alternate routing cap crude upside but not back to pre-crisis</li>
+            <li>Equities stay choppy — energy and AI infra outperform, consumer cyclicals underperform</li>
+          </ul>
+          <span class="conf-tag" style="background:var(--d5bg);color:var(--d5)">Confidence: Medium-High</span>
+        </div>
+        <div class="scenario-card" style="border-top:2px solid var(--d2)">
+          <div class="scenario-title" style="color:var(--d2)">Bullish Variant</div>
+          <ul>
+            <li>Naval protection or diplomatic de-escalation restores enough route confidence</li>
+            <li>Oil retraces; inflation fears ease; market rotates back toward broad risk</li>
+            <li>AI winners keep leadership but macro breadth improves materially</li>
+          </ul>
+          <span class="conf-tag" style="background:var(--d2bg);color:var(--d2)">Confidence: Low-Medium</span>
+        </div>
+        <div class="scenario-card" style="border-top:2px solid var(--d6)">
+          <div class="scenario-title" style="color:var(--d6)">Bearish Variant</div>
+          <ul>
+            <li>More successful attacks hit ships or infrastructure outside the narrow strait</li>
+            <li>Crude stays above $100 for longer; gasoline rises further; inflation pushes rates and credit spreads wider</li>
+            <li>Private-credit issues deepen → broader liquidity discount across risk assets</li>
+          </ul>
+          <span class="conf-tag" style="background:var(--d6bg);color:var(--d6)">Confidence: Medium</span>
+        </div>
+        <div class="scenario-card" style="border-top:2px solid var(--d3)">
+          <div class="scenario-title" style="color:var(--d3)">Tail Risk</div>
+          <ul>
+            <li>Prolonged closure + broader regional escalation forces rationing logic</li>
+            <li>Classic stagflation shock: energy spike + growth slowdown + funding stress + sharp derisking</li>
+            <li>Low probability, but impact is very high — requires asymmetric hedge overlay</li>
+          </ul>
+          <span class="conf-tag" style="background:var(--d3bg);color:var(--d3)">Confidence: Low · Impact: Very High</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 19 — TOP INVESTMENT IMPLICATIONS
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-19">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="background:var(--surface2);color:var(--accent)">Investment Implications</span>
+      <span class="slide-num">19 / 21</span>
+    </div>
+    <h2 class="slide-title">Top 5 Investment Implications</h2>
+    <div class="slide-content">
+      <div class="tbl-wrap" style="margin-bottom:10px">
+        <table>
+          <thead>
+            <tr><th>#</th><th>Implication</th><th>Assets / Names</th><th>Horizon</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span style="color:var(--d1);font-family:var(--font-display);font-size:20px">1</span></td>
+              <td>Favor energy and hard-asset exposures while route security remains unresolved</td>
+              <td><span class="pill" style="background:var(--d2bg);color:var(--d2)">XLE · Brent · WTI · Aramco · Tankers</span></td>
+              <td>Immediate → Near</td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--d6);font-family:var(--font-display);font-size:20px">2</span></td>
+              <td>Cautious on consumer cyclicals, transports, fuel-sensitive industrials</td>
+              <td><span class="pill" style="background:var(--d6bg);color:var(--d6)">Autos · Airlines · Freight · Low-end retail</span></td>
+              <td>Near Term</td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--d4);font-family:var(--font-display);font-size:20px">3</span></td>
+              <td>Maintain AI infrastructure beneficiaries — demand structural, not cyclical</td>
+              <td><span class="pill" style="background:var(--d4bg);color:var(--d4)">ORCL · NVDA · Memory · Networking · Power</span></td>
+              <td>Near → Structural</td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--d5);font-family:var(--font-display);font-size:20px">4</span></td>
+              <td>Watch listed credit/alt managers for valuation stress transmission</td>
+              <td><span class="pill" style="background:var(--d5bg);color:var(--d5)">Alt-asset managers · Software lenders</span></td>
+              <td>Near → Medium</td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--d3);font-family:var(--font-display);font-size:20px">5</span></td>
+              <td>Separate macro winners from micro execution losers (Boeing, SaaS names)</td>
+              <td><span class="pill" style="background:var(--d3bg);color:var(--d3)">Stock-specific underwriting required</span></td>
+              <td>Immediate</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="two-col">
+        <div class="card" style="border-left-color:var(--d2)">
+          <div class="card-header">Integrated Oils with Alternate Route Capacity</div>
+          <p>Aramco's pipeline flexibility suggests producers with bypass capacity gain relative advantage if Hormuz remains degraded. This is a structural trade, not just a war premium.</p>
+        </div>
+        <div class="card" style="border-left-color:var(--d4)">
+          <div class="card-header">Software Dispersion Trade</div>
+          <p>Oracle's positioning suggests infrastructure-adjacent software can outperform even as AI threatens application-layer incumbents (CRM, SAP, high-multiple SaaS). The gap between infra and app layer should widen.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 20 — UNDERAPPRECIATED RISKS + WATCH LIST
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-20">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="background:var(--d6bg);color:var(--d6)">Risk Intelligence</span>
+      <span class="slide-num">20 / 21</span>
+    </div>
+    <h2 class="slide-title">Underappreciated Risks &amp; Watch List</h2>
+    <div class="slide-content">
+      <div class="two-col">
+        <div class="card" style="border-left-color:var(--d6)">
+          <div class="card-header">Top 5 Underappreciated Risks</div>
+          <ul>
+            <li><strong>Route insecurity persists after reserve headlines fade</strong> — stocks misread stockpile releases as a full solution</li>
+            <li><strong>Private-credit stress broadens</strong> during energy-driven rates backup — liquidity problems spread faster than public markets price</li>
+            <li><strong>Iran's selective export strategy prolongs the shock</strong> — market models symmetric shutdown, not asymmetric leverage</li>
+            <li><strong>Fuel-cost pressure worsens consumer affordability</strong> — higher ownership and financing costs magnify the hit to autos and discretionary</li>
+            <li><strong>AI disruption creates credit losers</strong> while infrastructure winners rally — equity leadership hides deterioration in software-linked borrowers</li>
+          </ul>
+        </div>
+        <div>
+          <div class="card" style="border-left-color:var(--d5);margin-bottom:10px">
+            <div class="card-header">Watch List — Geopolitics / Energy</div>
+            <ul>
+              <li>Confirmed shift in U.S./allied naval escort policy in Hormuz</li>
+              <li>Verified export volumes lost from Iraq, Oman, and Gulf exporters</li>
+              <li>Whether Mina Al Fahal and Iraqi terminals resume normal operations</li>
+              <li>Daily evidence on Iranian export continuity vs broader Gulf disruption</li>
+            </ul>
+          </div>
+          <div class="card" style="border-left-color:var(--d4)">
+            <div class="card-header">Watch List — Markets / Tech</div>
+            <ul>
+              <li>Market response to IEA release and SPR drawdown pace</li>
+              <li>Gasoline / diesel price transmission into U.S. consumer behavior</li>
+              <li>Further redemption limits, valuation markdowns, or bank financing pullbacks</li>
+              <li>Oracle follow-through, hyperscaler capex commentary</li>
+              <li>GPU, memory, networking, and power supply-chain signals</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 21 — TACTICAL BIAS + BOTTOM LINE
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-21">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="background:var(--surface2);color:var(--accent)">Regime Classification · Tactical Bias</span>
+      <span class="slide-num">21 / 21</span>
+    </div>
+    <h2 class="slide-title">Bottom Line &amp; Tactical Bias</h2>
+    <div class="slide-content">
+      <div class="stat-grid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="regime-box">
+          <div class="regime-label">Market Regime</div>
+          <div class="regime-val" style="color:var(--d5)">Fragile Bull</div>
+          <div class="regime-sub">Narrow Leadership</div>
+        </div>
+        <div class="regime-box">
+          <div class="regime-label">Narrative Stability</div>
+          <div class="regime-val" style="color:var(--d3)">58 / 100</div>
+          <div class="regime-sub">War narrative dominant but unstable</div>
+        </div>
+        <div class="regime-box">
+          <div class="regime-label">Crowding Risk</div>
+          <div class="regime-val" style="color:var(--d5)">62 / 100</div>
+          <div class="regime-sub">Energy &amp; AI names crowded</div>
+        </div>
+        <div class="regime-box">
+          <div class="regime-label">Tactical Bias</div>
+          <div class="regime-val" style="color:var(--d1)">Energy Long</div>
+          <div class="regime-sub">With hedge overlay on duration</div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card" style="border-left-color:var(--d1)">
+          <div class="card-header">Highest-Conviction Integrated Stance</div>
+          <ul>
+            <li>Treat the energy shock as <strong>more durable</strong> than current reserve headlines imply</li>
+            <li>Stay <strong>selective and infrastructure-heavy</strong> inside technology (ORCL, NVDA ecosystem)</li>
+            <li>Watch for the next leg of risk to come from <strong>credit and inflation persistence</strong>, not initial war headlines</li>
+            <li>Do not conflate AI equity winners with AI credit — they are telling different stories</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left-color:var(--d6)">
+          <div class="card-header">Invalidation Triggers</div>
+          <ul>
+            <li><span class="pill" style="background:var(--d2bg);color:var(--d2)">BULL INVALIDATED</span> if naval escorts restore transit or diplomacy de-escalates verifiably</li>
+            <li><span class="pill" style="background:var(--d6bg);color:var(--d6)">BEAR ACCELERATES</span> if private-credit gating spreads to listed alt managers or bank financing tightens broadly</li>
+            <li><span class="pill" style="background:var(--d3bg);color:var(--d3)">FED PIVOT DELAYED</span> if energy keeps CPI above Fed comfort zone for 2+ months</li>
+            <li><span class="pill" style="background:var(--d4bg);color:var(--d4)">AI THESIS AT RISK</span> if next hyperscaler capex round shows cuts or supply-chain bottlenecks</li>
+          </ul>
+        </div>
+      </div>
+      <div class="quote-block">
+        <div class="quote-source">Report Bottom Line — March 11, 2026</div>
+        <div class="quote-text">"The Iran war has crossed the line from market narrative into a real logistics shock with inflation, routing, and risk-premium consequences. AI infrastructure demand remains structurally powerful enough to create winners even inside a stressed tape, but private-credit redemption caps and software-loan markdowns remind us that AI is also generating losers in financing markets."</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     NAVIGATION BAR
+═══════════════════════════════════════════════════════════ -->
+<div id="nav">
+  <span style="font-weight:600;letter-spacing:0.1em">IRAN WAR &amp; MARKET SHOCK</span>
+  <div style="display:flex;align-items:center;gap:12px">
+    <button onclick="go(current-1)">◀ PREV</button>
+    <span id="counter" style="min-width:52px;text-align:center">1 / 21</span>
+    <button onclick="go(current+1)">NEXT ▶</button>
+  </div>
+  <span style="letter-spacing:0.08em">← → ARROW KEYS &nbsp;·&nbsp; SWIPE</span>
+</div>
+
+<script>
+let current = 0;
+const slides = document.querySelectorAll('.slide');
+
+function go(n) {
+  slides[current].classList.remove('active');
+  current = Math.max(0, Math.min(n, slides.length - 1));
+  slides[current].classList.add('active');
+  document.getElementById('progress').style.width =
+    ((current + 1) / slides.length * 100) + '%';
+  document.getElementById('counter').textContent =
+    (current + 1) + ' / ' + slides.length;
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(current + 1);
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   go(current - 1);
+});
+
+let tx = 0;
+document.addEventListener('touchstart', e => tx = e.touches[0].clientX);
+document.addEventListener('touchend', e => {
+  const dx = tx - e.changedTouches[0].clientX;
+  if (Math.abs(dx) > 40) go(current + (dx > 0 ? 1 : -1));
+});
+
+go(0);
+</script>
+</body>
+</html>

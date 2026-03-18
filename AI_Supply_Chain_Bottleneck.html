@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Rotating Bottleneck: AI Semiconductor Supply Chain 2025–2030</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700;800;900&family=DM+Sans:wght@300;400;500;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5ede0; --surface: #ffffff; --surface2: #f0e8d8;
+  --border: #e0d4c0; --border2: #ccc0a8;
+  --text: #1c1a14; --text2: #4a4438; --dim: #8a7d6a;
+  --teal: #1e6464; --teal-light: #e8f3f0; --teal-dark: #154848;
+  --amber: #c96a14; --amber-light: #fdf0e0;
+  /* Domain: d1=AI Infra, d2=Demand/Market, d3=HBM/Memory, d4=Logic/Node, d5=Risk/Constraint */
+  --d1: #1e6464; --d1bg: #e8f3f0;
+  --d2: #c96a14; --d2bg: #fdf0e0;
+  --d3: #6b4ca8; --d3bg: #f0ecf8;
+  --d4: #1a6b3c; --d4bg: #e8f5ec;
+  --d5: #8a4020; --d5bg: #faeae0;
+  --font-display: 'Libre Franklin', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-ui: 'Syne', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 14px; overflow: hidden; }
+
+#progress-wrap { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: var(--border); z-index: 100; }
+#progress { height: 100%; width: 0; background: var(--teal); transition: width 0.3s ease; }
+
+#nav { position: fixed; bottom: 0; left: 0; right: 0; height: 38px; background: var(--surface); border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; z-index: 100; font-family: var(--font-ui); font-size: 10px; color: var(--dim); letter-spacing: 0.12em; text-transform: uppercase; }
+#nav button { background: none; border: 1px solid var(--border2); color: var(--text2); padding: 4px 14px; cursor: pointer; font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.1em; border-radius: 2px; text-transform: uppercase; transition: all 0.2s; }
+#nav button:hover { border-color: var(--teal); color: var(--teal); }
+
+.slide { position: fixed; inset: 3px 0 38px 0; display: none; overflow: hidden; background: var(--bg); }
+.slide.active { display: flex; }
+.slide-inner { width: 100%; height: 100%; display: flex; flex-direction: column; padding: 24px 40px 18px; }
+
+.slide-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; flex-shrink: 0; padding-bottom: 9px; border-bottom: 1px solid var(--border); }
+.domain-tag { font-family: var(--font-ui); font-size: 10px; font-weight: 600; letter-spacing: 0.16em; color: var(--teal); text-transform: uppercase; }
+.slide-num { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.1em; color: var(--dim); text-transform: uppercase; }
+.slide-title { font-family: var(--font-display); font-size: 26px; font-weight: 800; line-height: 1.15; color: var(--text); margin-bottom: 12px; flex-shrink: 0; }
+.slide-subtitle { font-family: var(--font-body); font-size: 13px; color: var(--dim); margin-bottom: 12px; flex-shrink: 0; line-height: 1.4; }
+
+.slide-content { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 9px; }
+.slide-content::-webkit-scrollbar { width: 4px; }
+.slide-content::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 9px; }
+.four-col { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 9px; }
+
+.featured-layout { display: grid; grid-template-columns: 1.5fr 1fr; gap: 11px; flex: 1; min-height: 0; }
+.featured-layout .right-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; align-content: start; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; }
+.card-eyebrow { font-family: var(--font-ui); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: var(--teal); text-transform: uppercase; margin-bottom: 5px; }
+.card-title { font-family: var(--font-display); font-size: 18px; font-weight: 800; color: var(--text); line-height: 1.1; margin-bottom: 5px; }
+.card p { font-size: 13.5px; line-height: 1.6; color: var(--text2); }
+.card ul { padding-left: 16px; }
+.card ul li { font-size: 13.5px; line-height: 1.6; color: var(--text2); margin-bottom: 3px; }
+.card-accent { border-left: 3px solid var(--teal); border-radius: 0 6px 6px 0; }
+
+.featured-card { background: var(--teal-dark); border-radius: 8px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; }
+.featured-card .card-eyebrow { color: rgba(255,255,255,0.55); }
+.featured-card .statement { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: #ffffff; line-height: 1.4; }
+.featured-card .body { font-size: 13px; line-height: 1.65; color: rgba(255,255,255,0.72); }
+
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; }
+.stat-eyebrow { font-family: var(--font-ui); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: var(--teal); text-transform: uppercase; margin-bottom: 4px; }
+.stat-value { font-family: var(--font-display); font-size: 26px; font-weight: 800; color: var(--text); line-height: 1; margin-bottom: 4px; }
+.stat-detail { font-size: 12.5px; line-height: 1.55; color: var(--text2); }
+
+.insight-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 9px; }
+.insight-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
+.insight-card .insight-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 5px; line-height: 1.2; }
+.insight-card p { font-size: 12.5px; line-height: 1.6; color: var(--text2); }
+
+.hl-teal { color: var(--teal); font-weight: 600; }
+.hl-amber { color: var(--amber); font-weight: 600; }
+
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 9px; flex-shrink: 0; }
+.stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; text-align: center; }
+.stat-box .val { font-family: var(--font-display); font-size: 24px; font-weight: 800; color: var(--teal); line-height: 1; }
+.stat-box .lbl { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.1em; color: var(--dim); margin-top: 4px; text-transform: uppercase; }
+
+.tbl-wrap { overflow-x: auto; border-radius: 6px; }
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; background: var(--surface); border-radius: 6px; overflow: hidden; }
+th { background: var(--teal-dark); color: rgba(255,255,255,0.80); font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 7px 10px; text-align: left; }
+td { border-bottom: 1px solid var(--border); padding: 7px 10px; color: var(--text2); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--surface2); }
+
+.pill { display: inline-block; padding: 2px 8px; border-radius: 2px; font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.08em; font-weight: 700; text-transform: uppercase; }
+.pill-teal { background: var(--teal-light); color: var(--teal); }
+.pill-amber { background: var(--amber-light); color: var(--amber); }
+.pill-green { background: #e8f5ec; color: #1a6b3c; }
+.pill-red { background: #faeaea; color: #8a1c1c; }
+.pill-purple { background: #f0ecf8; color: #6b4ca8; }
+
+.quote-block { background: var(--teal-light); border-left: 3px solid var(--teal); border-radius: 0 6px 6px 0; padding: 10px 14px; }
+.quote-source { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.12em; color: var(--teal); text-transform: uppercase; margin-bottom: 4px; }
+.quote-text { font-size: 13.5px; line-height: 1.6; color: var(--text); font-style: italic; }
+
+.timeline { display: flex; flex-direction: column; gap: 7px; }
+.tl-item { display: grid; grid-template-columns: 8px 100px 1fr; gap: 10px; align-items: start; }
+.tl-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); margin-top: 4px; flex-shrink: 0; }
+.tl-label { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.1em; color: var(--teal); padding-top: 2px; text-transform: uppercase; font-weight: 600; }
+.tl-text { font-size: 13px; line-height: 1.55; color: var(--text2); }
+
+.chain { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; }
+.chain-node { font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.06em; padding: 4px 10px; border-radius: 3px; }
+.chain-arrow { color: var(--dim); font-size: 14px; }
+
+/* Title Slide */
+.title-slide .slide-inner { justify-content: center; align-items: flex-start; padding: 56px 64px; background: var(--bg); }
+.title-eyebrow { font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.2em; color: var(--teal); text-transform: uppercase; margin-bottom: 16px; font-weight: 600; }
+.title-main { font-family: var(--font-display); font-size: 50px; font-weight: 900; line-height: 1.0; color: var(--text); margin-bottom: 10px; max-width: 800px; }
+.title-sub { font-family: var(--font-display); font-size: 20px; font-weight: 500; color: var(--dim); margin-bottom: 28px; max-width: 760px; line-height: 1.35; }
+.title-rule { width: 48px; height: 3px; background: var(--teal); margin-bottom: 24px; border-radius: 2px; }
+.title-meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 18px; max-width: 760px; }
+.title-meta-item { display: flex; flex-direction: column; gap: 3px; }
+.title-meta-label { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.14em; color: var(--dim); text-transform: uppercase; }
+.title-meta-value { font-family: var(--font-body); font-size: 13.5px; font-weight: 500; color: var(--text); }
+
+/* Section divider accent */
+.section-label { font-family: var(--font-ui); font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; padding: 3px 8px; border-radius: 2px; display: inline-block; margin-bottom: 6px; }
+.section-d1 { background: var(--d1bg); color: var(--d1); }
+.section-d2 { background: var(--d2bg); color: var(--d2); }
+.section-d3 { background: var(--d3bg); color: var(--d3); }
+.section-d4 { background: var(--d4bg); color: var(--d4); }
+.section-d5 { background: var(--d5bg); color: var(--d5); }
+
+/* Bullet list standalone */
+.bullet-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.bullet-list li { font-size: 13.5px; line-height: 1.6; color: var(--text2); padding-left: 14px; position: relative; }
+.bullet-list li::before { content: '—'; position: absolute; left: 0; color: var(--teal); font-weight: 600; }
+
+/* Note text */
+.note { font-family: var(--font-ui); font-size: 10px; color: var(--dim); letter-spacing: 0.06em; margin-top: 4px; }
+
+/* Constraint badge */
+.constraint-primary { background: #faeaea; color: #8a1c1c; font-family: var(--font-ui); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 2px; text-transform: uppercase; }
+.constraint-secondary { background: var(--amber-light); color: var(--amber); font-family: var(--font-ui); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 2px; text-transform: uppercase; }
+.constraint-ok { background: var(--d4bg); color: var(--d4); font-family: var(--font-ui); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 2px; text-transform: uppercase; }
+</style>
+</head>
+<body>
+<div id="progress-wrap"><div id="progress"></div></div>
+
+<!-- SLIDE 1: TITLE -->
+<div class="slide title-slide active" id="slide-1">
+  <div class="slide-inner">
+    <div class="title-eyebrow">AI Semiconductor Supply Chain Intelligence · 12 Broker Sources · March 2026</div>
+    <h1 class="title-main">The Rotating<br>Bottleneck</h1>
+    <div class="title-sub">What Actually Gates AI System Output (2025–2030): A Three-Pillar Supply-Chain Model Linking Logic Wafers, Advanced Packaging, and HBM Memory</div>
+    <div class="title-rule"></div>
+    <div class="title-meta-grid">
+      <div class="title-meta-item">
+        <span class="title-meta-label">Core Thesis</span>
+        <span class="title-meta-value" style="color:var(--teal)">The binding constraint rotates across the decade — and never disappears</span>
+      </div>
+      <div class="title-meta-item">
+        <span class="title-meta-label">Three Pillars</span>
+        <span class="title-meta-value">Logic Wafers · CoWoS Packaging · HBM Memory</span>
+      </div>
+      <div class="title-meta-item">
+        <span class="title-meta-label">Broker Sources</span>
+        <span class="title-meta-value">Bernstein · JPMorgan · Morgan Stanley · HSBC · Jefferies · Citi · Deutsche Bank · Needham · Kepler Cheuvreux · Evercore ISI</span>
+      </div>
+      <div class="title-meta-item">
+        <span class="title-meta-label">Horizon</span>
+        <span class="title-meta-value">2025–2030 Supply-Demand Model</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 2: SYSTEM CONVERSION CHAIN -->
+<div class="slide" id="slide-2">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">System Architecture</span>
+      <span class="slide-num">Slide 2 / 22</span>
+    </div>
+    <h2 class="slide-title">Every AI GPU Must Clear Three Sequential Gates — Failure at Any Layer Kills System Output</h2>
+    <div class="slide-subtitle">Logic Wafer Starts → Known-Good Dies → CoWoS Packaging → HBM Integration → Final AI System</div>
+    <div class="slide-content">
+      <div class="chain">
+        <div class="chain-node" style="background:var(--d4bg);color:var(--d4)">TSMC N3 Wafer Start</div>
+        <span class="chain-arrow">→</span>
+        <div class="chain-node" style="background:var(--d4bg);color:var(--d4)">GPU Die Yield (~50%)</div>
+        <span class="chain-arrow">→</span>
+        <div class="chain-node" style="background:var(--d1bg);color:var(--d1)">KGD (&gt;99.9%)</div>
+        <span class="chain-arrow">→</span>
+        <div class="chain-node" style="background:var(--d1bg);color:var(--d1)">CoWoS-L Packaging</div>
+        <span class="chain-arrow">→</span>
+        <div class="chain-node" style="background:var(--d3bg);color:var(--d3)">HBM4 Integration (8–12 stacks)</div>
+        <span class="chain-arrow">→</span>
+        <div class="chain-node" style="background:var(--d2bg);color:var(--d2)">NVL72 / NVL576 Rack</div>
+      </div>
+      <div class="featured-layout" style="margin-top:4px;">
+        <div class="featured-card">
+          <div class="card-eyebrow">Compound Yield Problem</div>
+          <div class="statement">A full package with no testing yields only ~6%. Even with perfect testing, final system yield is ~35%.</div>
+          <div class="body">This is not a manufacturing failure — it is the physics of integrating reticle-limited GPU dies, sub-angstrom interconnects, and KGD-qualified HBM stacks in a single pass. Each step multiplies against the prior yield floor. (Bernstein)</div>
+        </div>
+        <div class="right-grid">
+          <div class="stat-card">
+            <div class="stat-eyebrow">CoWoS-L Dies/Wafer</div>
+            <div class="stat-value">~9</div>
+            <div class="stat-detail">Rubin on CoWoS-L vs. <span class="hl-amber">~14</span> for Blackwell — a <span class="hl-amber">36%</span> packaging throughput reduction per wafer. (HSBC/Bernstein)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">2025 Capacity Gap</div>
+            <div class="stat-value">3×</div>
+            <div class="stat-detail"><span class="hl-amber">1.23M</span> wafers of advanced packaging demand vs. only <span class="hl-amber">420K</span> installed capacity. (Evercore ISI)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Primary Constraint</div>
+            <div class="stat-value">Pkg</div>
+            <div class="stat-detail">TSMC management: advanced packaging — not wafer output — is now the binding constraint on AI GPU volumes. (Kepler Cheuvreux)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Chain Character</div>
+            <div class="stat-value">Serial</div>
+            <div class="stat-detail">Even if N3 wafers are sufficient, GPUs cannot ship if packaging or HBM is unavailable. The chain is <span class="hl-teal">strictly sequential</span>.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3: DEMAND EXPLOSION -->
+<div class="slide" id="slide-3">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Demand Architecture</span>
+      <span class="slide-num">Slide 3 / 22</span>
+    </div>
+    <h2 class="slide-title">NVIDIA Data Center GPU Units Are Growing at ~40% CAGR — and Every Unit Needs All Three Layers</h2>
+    <div class="slide-subtitle">Cross-Broker GPU Unit Forecasts Anchor the Demand Side of the Entire Model</div>
+    <div class="slide-content">
+      <div class="stat-row" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat-box"><div class="val">~40%</div><div class="lbl">GPU Unit CAGR</div></div>
+        <div class="stat-box"><div class="val">$417B</div><div class="lbl">GPU Sales FY26–27E (Citi)</div></div>
+        <div class="stat-box"><div class="val">16.2M</div><div class="lbl">Combined B+R Units FY26–27</div></div>
+        <div class="stat-box"><div class="val">8.02M</div><div class="lbl">Bernstein Peak 2025 Units</div></div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th>Year</th><th>JPMorgan</th><th>HSBC*</th><th>Bernstein**</th><th>Citi*</th><th>Morgan Stanley</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>2023</td><td>1.7M</td><td>—</td><td>—</td><td>—</td><td>1.47M</td></tr>
+            <tr><td>2024</td><td>4.5M</td><td>—</td><td>—</td><td>—</td><td>3.61M</td></tr>
+            <tr><td>2025/FY26</td><td><span class="hl-amber">6.2M</span></td><td><span class="hl-amber">6.09M</span></td><td><span class="hl-amber">8.02M</span></td><td><span class="hl-amber">7.1M</span></td><td>6.36M</td></tr>
+            <tr><td>2026E/FY27</td><td><span class="hl-amber">7.5M</span></td><td><span class="hl-amber">9.41M</span></td><td><span class="hl-amber">10.74M</span></td><td><span class="hl-amber">10.2M</span></td><td>7.70M</td></tr>
+            <tr><td>2027E/FY28</td><td>7.6M</td><td>8.33M</td><td>8.37M</td><td>—</td><td>5.71M</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">*HSBC and Citi on NVIDIA fiscal year basis. **Bernstein uses die-level counting.</p>
+      <div class="insight-grid">
+        <div class="insight-card">
+          <div class="insight-title">Generational Transition Is Aggressive</div>
+          <p>Hopper peaked in CY2024 (~<span class="hl-amber">4.3M</span>). Blackwell peaks in CY2025–2026 (~<span class="hl-amber">5–8M</span>). Rubin expected to dominate by CY2027 (<span class="hl-amber">6–8M+</span> units).</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">JPMorgan Generation Split</div>
+          <p>Blackwell <span class="hl-amber">4.3M</span> + Rubin <span class="hl-amber">2.8M</span> in CY2026E; Rubin <span class="hl-amber">5.9M</span> + Rubin Ultra <span class="hl-amber">1.1M</span> in CY2027E.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">Demand Is Not the Constraint</div>
+          <p>Supply-chain constraints — N3 wafers, CoWoS-L capacity, HBM4 readiness — remain the binding constraint on unit volumes rather than demand. (JPMorgan)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4: NVIDIA PRODUCT ROADMAP -->
+<div class="slide" id="slide-4">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Product Roadmap</span>
+      <span class="slide-num">Slide 4 / 22</span>
+    </div>
+    <h2 class="slide-title">Blackwell → Rubin → Feynman: Every Generation Inflates Die Size, Package Area, and HBM Content</h2>
+    <div class="slide-subtitle">The Physical Demands on TSMC's Supply Chain Compound with Each Product Cycle</div>
+    <div class="slide-content">
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th>Generation</th><th>TSMC Node</th><th>Transistors</th><th>GPU TDP</th><th>Rack Power</th><th>CoWoS Dies/Wafer</th><th>Wafer Price</th><th>HBM Gen</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Blackwell (B200)</strong></td><td>N4P</td><td>208B (2-die)</td><td>1,200W</td><td>140kW (NVL72)</td><td><span class="hl-teal">~14</span></td><td>~$18–20K</td><td>HBM3e</td></tr>
+            <tr><td><strong>Blackwell Ultra (B300)</strong></td><td>N4P</td><td>208B (2-die)</td><td>1,400W</td><td>140kW (NVL72)</td><td><span class="hl-teal">~14</span></td><td>~$18–20K</td><td>HBM3e</td></tr>
+            <tr><td><strong>Rubin (NVL72)</strong></td><td>N3</td><td>336B (2-die)</td><td>1,800–2,300W</td><td>200kW+</td><td><span class="hl-amber">~9</span></td><td>~$20K</td><td><span class="hl-amber">HBM4</span></td></tr>
+            <tr><td><strong>Rubin Ultra (NVL576)</strong></td><td>N3</td><td>4-die pkg</td><td>~3,600W</td><td>600kW+ (Kyber)</td><td><span class="hl-amber">&lt;9</span></td><td>~$20K</td><td><span class="hl-amber">HBM4</span></td></tr>
+            <tr><td><strong>Feynman</strong></td><td><span class="hl-teal">A16</span></td><td>TBD (3D stack)</td><td>5kW+ est.</td><td>~1MW</td><td>TBD</td><td><span class="hl-amber">~$36.5K</span></td><td>HBM5</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="two-col" style="margin-top:4px;">
+        <div class="card card-accent">
+          <div class="card-eyebrow">Die Area Inflation</div>
+          <ul>
+            <li>Rubin substrate area grows from <span class="hl-amber">4,785mm²</span> (Blackwell) to <span class="hl-amber">6,699mm²</span> — a <span class="hl-amber">40%</span> area increase</li>
+            <li>Layer count increases from 14 to 18, making total substrate area <span class="hl-teal">~1.8× Blackwell</span> (Bernstein)</li>
+            <li>Each GPU consumes disproportionately more packaging capacity per unit — fewer dies per CoWoS wafer means more wafer starts for the same GPU count</li>
+          </ul>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--d2)">
+          <div class="card-eyebrow" style="color:var(--d2)">Reticle Limits &amp; Feynman Premium</div>
+          <ul>
+            <li>The reticle limit (~858mm²) forces every generation into multi-die disaggregation: Blackwell = 2 dies, Rubin Ultra = 4, Feynman likely 3D-stacked (Bernstein)</li>
+            <li>Feynman on A16 is NVIDIA's first time at TSMC's absolute leading edge</li>
+            <li>A16 wafer price at <span class="hl-amber">~$36,500</span> — an <span class="hl-amber">85% premium</span> over N3's ~$20,000 (Jefferies)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5: COWOS PHASE 1 BOTTLENECK -->
+<div class="slide" id="slide-5">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Phase 1 Bottleneck · 2025–2026</span>
+      <span class="slide-num">Slide 5 / 22</span>
+    </div>
+    <h2 class="slide-title">CoWoS Capacity Trails Demand by 15–30% Through 2027 Despite Aggressive Doubling Each Year</h2>
+    <div class="slide-subtitle">TSMC Holds Near-100% Market Share in AI Chip Packaging — Making It the Single Point of Failure</div>
+    <div class="slide-content">
+      <div class="featured-layout">
+        <div class="featured-card">
+          <div class="card-eyebrow">Primary Binding Constraint · 2025–2026</div>
+          <div class="statement">Advanced packaging — not N3 logic wafers — is the binding constraint on AI GPU volumes through at least 2027.</div>
+          <div class="body">TSMC management has been explicit. Evercore ISI quantifies the 2025 gap: <span style="color:rgba(255,210,120,0.9);font-weight:600">1.23M wafers</span> of advanced packaging demand vs. only <span style="color:rgba(255,210,120,0.9);font-weight:600">420K</span> installed capacity — a nearly 3× shortfall. JPMorgan sees a persistent <span style="color:rgba(255,210,120,0.9);font-weight:600">15–20% gap</span> through 2027, with a Dec 2025 estimate of 20–30% across the board.</div>
+        </div>
+        <div class="right-grid">
+          <div class="stat-card">
+            <div class="stat-eyebrow">2025 Capacity</div>
+            <div class="stat-value">80k</div>
+            <div class="stat-detail">kwpm year-end (Bernstein). Growing from <span class="hl-amber">38k</span> in 2024 — more than doubling annually.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">2026E Capacity</div>
+            <div class="stat-value">140k</div>
+            <div class="stat-detail">kwpm (Bernstein). Shipments needed: <span class="hl-amber">1,230k</span> wafers — gap persists at 15–20% (JPMorgan).</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">CoWoS Revenue %</div>
+            <div class="stat-value">~15%</div>
+            <div class="stat-detail">of TSMC total revenue in 2026E (Morgan Stanley). Advanced packaging exceeds <span class="hl-amber">10%</span> of TSMC revenue.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">2029E Peak</div>
+            <div class="stat-value">~275k</div>
+            <div class="stat-detail">kwpm before CoPoS transition (Needham). Capex aimed at easing constraints only in 2028–2029. (Kepler Cheuvreux)</div>
+          </div>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Metric</th><th>2023</th><th>2024</th><th>2025E</th><th>2026E</th><th>2027E</th><th>2028E</th><th>2029E</th></tr></thead>
+          <tbody>
+            <tr><td>CoWoS Capacity kwpm (Bernstein)</td><td>17</td><td>38</td><td><span class="hl-amber">80</span></td><td><span class="hl-amber">140</span></td><td>197</td><td>188</td><td>275</td></tr>
+            <tr><td>CoWoS Wafer Shipments k (Bernstein)</td><td>123</td><td>309</td><td>720</td><td><span class="hl-amber">1,230</span></td><td>1,776</td><td>—</td><td>—</td></tr>
+            <tr><td>Needham Monthly Capacity kwpm</td><td>—</td><td>—</td><td>~80</td><td>106</td><td>135</td><td>188</td><td>~275</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6: COWOS BY VENDOR -->
+<div class="slide" id="slide-6">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Packaging Supply · Vendor Map</span>
+      <span class="slide-num">Slide 6 / 22</span>
+    </div>
+    <h2 class="slide-title">TSMC Controls ~90% of AI Packaging — OSATs Are Scaling but Remain a Fraction of Demand</h2>
+    <div class="slide-subtitle">Global CoWoS Capacity Split: TSMC vs. Non-TSMC (Amkor, ASE, UMC) · Source: Morgan Stanley / Bernstein</div>
+    <div class="slide-content">
+      <div class="two-col">
+        <div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Year</th><th>TSMC (kwpm)</th><th>Non-TSMC (kwpm)</th><th>Total (kwpm)</th></tr></thead>
+              <tbody>
+                <tr><td>2022</td><td>10</td><td>2</td><td>12</td></tr>
+                <tr><td>2023</td><td>13</td><td>5</td><td>18</td></tr>
+                <tr><td>2024</td><td>32</td><td>6</td><td>38</td></tr>
+                <tr><td>2025</td><td><span class="hl-amber">70</span></td><td>23</td><td>93</td></tr>
+                <tr><td>2026E</td><td><span class="hl-amber">125</span></td><td><span class="hl-amber">50</span></td><td><span class="hl-amber">175</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="note" style="margin-top:6px;">Bernstein's March 2026 model shows TSMC at ~130kwpm, non-TSMC at ~40–50kwpm by end-2026.</p>
+        </div>
+        <div class="card">
+          <div class="card-eyebrow">TSMC Fab Footprint</div>
+          <ul>
+            <li><strong>AP5</strong> — Taichung (CoWoS)</li>
+            <li><strong>AP7 P2B</strong> — Chiayi (CoWoS)</li>
+            <li><strong>AP8</strong> — Tainan (CoWoS)</li>
+            <li><strong>AP9/AP10</strong> — Arizona (multiple; production likely 2028)</li>
+            <li><strong>AP7 P4</strong> — CoPoS panel-level packaging ramp 2H27 (for &gt;8–9× reticle packages)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="three-col">
+        <div class="insight-card">
+          <div class="insight-title">TSMC Market Share</div>
+          <p>JPMorgan estimates TSMC retains <span class="hl-amber">90%+</span> of industry CoWoS capacity into 2026. Near-monopoly on AI chip packaging.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">ASE / SPIL OSAT</div>
+          <p>CoWoS wafer capacity at <span class="hl-teal">~20kwpm</span>, FoCoS-B (bridge) at 10kwpm by end-2026 (Jefferies). JPMorgan: 15–20k wfpm full-process 2.5D capacity.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">Amkor Ramp</div>
+          <p>From <span class="hl-teal">15kwpm</span> (end-2025) to <span class="hl-teal">20kwpm</span> (2026, Morgan Stanley). Needham: Amkor could build ~<span class="hl-amber">50kwpm</span> over next five years.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7: COWOS CUSTOMER ALLOCATION -->
+<div class="slide" id="slide-7">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Packaging · Customer Allocation</span>
+      <span class="slide-num">Slide 7 / 22</span>
+    </div>
+    <h2 class="slide-title">Five Customers Consume Nearly All of TSMC's CoWoS Capacity — NVIDIA Takes 50%+</h2>
+    <div class="slide-subtitle">2025–2026 CoWoS Wafer Allocation by Customer (k wafers, annual) · Source: Morgan Stanley / JPMorgan</div>
+    <div class="slide-content">
+      <div class="two-col">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Customer</th><th>2025E (k wafers)</th><th>2026E (k wafers)</th></tr></thead>
+            <tbody>
+              <tr><td><strong>NVIDIA</strong></td><td><span class="hl-amber">425</span></td><td><span class="hl-amber">800</span></td></tr>
+              <tr><td>Broadcom</td><td>85</td><td><span class="hl-amber">235</span></td></tr>
+              <tr><td>AMD</td><td>60</td><td>130</td></tr>
+              <tr><td>AWS + Alchip</td><td>5</td><td>70</td></tr>
+              <tr><td>Marvell</td><td>75</td><td>45</td></tr>
+              <tr><td>GUC</td><td>2</td><td>14</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-eyebrow">JPMorgan 2026 Detailed Breakdown</div>
+          <ul>
+            <li><strong>NVIDIA</strong> ~580k wafers at TSMC: CoWoS-S/R ~30k, <span class="hl-amber">CoWoS-L ~355k</span>, outside TSMC ~15k</li>
+            <li><strong>Broadcom</strong> ~200k wafers</li>
+            <li><strong>AMD</strong> ~90k: CoWoS-S ~35k, CoWoS-L ~55k</li>
+            <li><strong>Alchip+AWS</strong> ~80k (Trainium 3 ramp 2Q26, ~1.36M units in 2026)</li>
+            <li><strong>Marvell</strong> ~35k</li>
+          </ul>
+        </div>
+      </div>
+      <div class="insight-grid">
+        <div class="insight-card">
+          <div class="insight-title">NVIDIA Dominates Allocation</div>
+          <p>NVIDIA books <span class="hl-amber">50%+</span> of total CoWoS capacity to support its product roadmap. Blackwell 10.7M + TPU 3.5M + AMD 636K + Amazon 2.2M drives total demand to <span class="hl-amber">1,230k wafers</span> in 2026. (Bernstein/Jefferies)</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">Rubin Pushout Effect</div>
+          <p>JPMorgan keeping 2026 NVIDIA CoWoS at ~<span class="hl-teal">700k wafers</span> but Rubin slightly lower due to 1–2 month pushout from HBM4 readiness. GB300 correspondingly seeing more upside.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">Persistent Supply-Demand Gap</div>
+          <p>Total 2026 CoWoS demand ~<span class="hl-amber">1,150k</span> (JPMorgan) against capacity serving only a portion — hence the persistent <span class="hl-amber">15–20% gap</span>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8: HBM PHASE 2 BOTTLENECK -->
+<div class="slide" id="slide-8">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Phase 2 Bottleneck · HBM Memory</span>
+      <span class="slide-num">Slide 8 / 22</span>
+    </div>
+    <h2 class="slide-title">HBM Is Structurally Tight Through 2028 — Not Because Vendors Fail, but Because Each GPU Eats More DRAM Wafers</h2>
+    <div class="slide-subtitle">The HBM4 Trade Ratio Doubles Wafer Intensity per Stack, Compounding the Shortage</div>
+    <div class="slide-content">
+      <div class="featured-layout">
+        <div class="featured-card">
+          <div class="card-eyebrow">HBM4 Trade Ratio Problem</div>
+          <div class="statement">HBM4 consumes roughly 4× the silicon per bit versus standard DRAM — and each Rubin GPU needs 8–12 stacks of it.</div>
+          <div class="body">HBM4's I/O count doubles to 2,048 (from 1,024 in HBM3E). Dies per wafer fall by <span style="color:rgba(255,210,120,0.9);font-weight:600">37%</span>. The trade ratio moves to 4:1, compounding the structural wafer shortage through 2030. SK Hynix Chairman warned the global shortage could persist well into 2030. (Citi / JPMorgan)</div>
+        </div>
+        <div class="right-grid">
+          <div class="stat-card">
+            <div class="stat-eyebrow">HBM CAGR</div>
+            <div class="stat-value">30%</div>
+            <div class="stat-detail">HBM bit demand grows at <span class="hl-amber">30%</span> CAGR vs. <span class="hl-teal">15%</span> for total DRAM through 2030. (Deutsche Bank)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">HBM4 Readiness</div>
+            <div class="stat-value">Q4'26</div>
+            <div class="stat-detail">Most immediate Rubin constraint — design changes push meaningful HBM4 volume to <span class="hl-amber">Q4 2026</span> only. (JPMorgan)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">2026 HBM3E</div>
+            <div class="stat-value">Surplus</div>
+            <div class="stat-detail">Supply <span class="hl-teal">17,879</span> after loss vs. demand 16,224 — HBM3E in oversupply while <span class="hl-amber">HBM4</span> remains very tight. (JPMorgan)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">HBM Demand 2028</div>
+            <div class="stat-value">7,831M</div>
+            <div class="stat-detail">Gb vs. <span class="hl-amber">2,088M Gb</span> in 2025 — nearly <span class="hl-amber">4× growth</span> in three years. (Deutsche Bank)</div>
+          </div>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Year</th><th>DRAM WSPM Requirement (000s)</th><th>Estimated WSPM Capacity (000s)</th><th>Surplus / (Shortfall)</th></tr></thead>
+          <tbody>
+            <tr><td>2026</td><td>2,149</td><td>2,028</td><td><span class="hl-amber">(121)</span></td></tr>
+            <tr><td>2027</td><td>2,480</td><td>2,258</td><td><span class="hl-amber">(222)</span></td></tr>
+            <tr><td>2028</td><td>2,955</td><td>2,551</td><td><span class="hl-amber">(404) — PEAK SHORTFALL</span></td></tr>
+            <tr><td>2029</td><td>2,797</td><td>2,808</td><td><span class="hl-teal">11 — roughly balanced</span></td></tr>
+            <tr><td>2030</td><td>2,651</td><td>3,063</td><td><span class="hl-teal">412 — first clear surplus</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 9: HBM VENDOR CAPACITY -->
+<div class="slide" id="slide-9">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">HBM · Vendor Structure</span>
+      <span class="slide-num">Slide 9 / 22</span>
+    </div>
+    <h2 class="slide-title">SK Hynix Leads HBM with 62% Share — Samsung's Yield Challenges Tighten Effective Supply Further</h2>
+    <div class="slide-subtitle">HBM TSV Capacity (kwpm) and Vendor Split · Source: HSBC / Bernstein / Morgan Stanley</div>
+    <div class="slide-content">
+      <div class="two-col">
+        <div>
+          <div style="margin-bottom:6px;"><span class="section-label section-d3">Table A · HSBC HBM Production Capacity (kwpm)</span></div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Vendor</th><th>2023</th><th>2024</th><th>2025E</th><th>2026E</th><th>2027E</th></tr></thead>
+              <tbody>
+                <tr><td><strong>SK Hynix</strong></td><td>65</td><td>110</td><td><span class="hl-teal">160</span></td><td><span class="hl-teal">180</span></td><td>200</td></tr>
+                <tr><td>Samsung</td><td>45</td><td>120</td><td>150</td><td>170</td><td>190</td></tr>
+                <tr><td>Micron</td><td>3</td><td>15</td><td>55</td><td>80</td><td>100</td></tr>
+                <tr><td><strong>Total</strong></td><td><strong>113</strong></td><td><strong>245</strong></td><td><strong>365</strong></td><td><strong><span class="hl-amber">430</span></strong></td><td><strong>490</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <div style="margin-bottom:6px;"><span class="section-label section-d1">Table B · Bernstein HBM TSV &amp; Bit Shipment Model</span></div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Year</th><th>Total HBM TSV Capacity (kwpm)</th><th>HBM Bit Shipment (bn Gb)</th></tr></thead>
+              <tbody>
+                <tr><td>2025</td><td>390</td><td>20</td></tr>
+                <tr><td>2026</td><td><span class="hl-amber">586</span></td><td><span class="hl-amber">39</span></td></tr>
+                <tr><td>2027</td><td>758</td><td>62</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="insight-grid">
+        <div class="insight-card">
+          <div class="insight-title">SK Hynix Sold Out in 2026</div>
+          <p><span class="hl-amber">~62%</span> market share. Effectively sold out in 2026. Samsung at <span class="hl-teal">~17%</span> has faced yield challenges delaying full NVIDIA qualification. (Kepler Cheuvreux)</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">Yield Variation Is Critical</div>
+          <p>Morgan Stanley yield grid: Samsung <span class="hl-amber">50/60/60%</span>, SK Hynix <span class="hl-teal">60/75/70%</span>, Micron <span class="hl-teal">50/70/70%</span> blended across 2025–2027. Nominal capacity ≠ effective supply.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">HBM4 Die Size Problem</div>
+          <p>Needham: 8-hi HBM3/HBM3E yields in low-90% range. 12-hi likely pushes yield below <span class="hl-amber">80%</span> and in some cases to <span class="hl-amber">60%</span>. HBM4 die sizes ~<span class="hl-amber">15%</span> larger. (Needham)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 10: TSMC NODE ARCHITECTURE -->
+<div class="slide" id="slide-10">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Logic Wafers · Node Architecture</span>
+      <span class="slide-num">Slide 10 / 22</span>
+    </div>
+    <h2 class="slide-title">TSMC's Advanced Node Roadmap: From FinFET (N7–N3) to GAA Nanosheet (N2) to BSPDN (A16)</h2>
+    <div class="slide-subtitle">Each Node Transition Changes Transistor Architecture, Capex Intensity, and Effective Capacity</div>
+    <div class="slide-content">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Node</th><th>Architecture</th><th>Mass Production</th><th>Key Innovation</th><th>PPA vs. Prior</th></tr></thead>
+          <tbody>
+            <tr><td><strong>N7/N6</strong></td><td>FinFET (DUV, limited EUV)</td><td>2018</td><td>First limited EUV</td><td>Baseline</td></tr>
+            <tr><td><strong>N5/N4</strong></td><td>FinFET (EUV)</td><td>2020</td><td>Full EUV adoption</td><td>~30% power/perf uplift</td></tr>
+            <tr><td><strong>N3/N3E</strong></td><td>Denser FinFET (EUV)</td><td>2023</td><td>Further FinFET optimization</td><td>~30% power/perf uplift</td></tr>
+            <tr><td><strong>N2</strong></td><td>GAA Nanosheet (1st gen)</td><td>2H25</td><td>First nanosheet transistor</td><td><span class="hl-amber">10–15%</span> speed or <span class="hl-amber">25–30%</span> power</td></tr>
+            <tr><td><strong>N2P</strong></td><td>GAA Nanosheet (enhanced)</td><td>2H26</td><td>Performance/power uplift on N2</td><td>Enhancement of N2</td></tr>
+            <tr><td><strong>A16</strong></td><td><span class="hl-teal">GAA + BSPDN</span></td><td>2H26</td><td>Super Power Rail (backside power)</td><td><span class="hl-amber">8–10%</span> speed or <span class="hl-amber">15–20%</span> power vs. N2P</td></tr>
+            <tr><td><strong>A14</strong></td><td>GAA Nanosheet (2nd gen)</td><td>2028</td><td>Second-gen nanosheet + SPR option</td><td><span class="hl-amber">10–15%</span> speed or <span class="hl-amber">20–30%</span> power vs. N2</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="two-col" style="margin-top:4px;">
+        <div class="card card-accent">
+          <div class="card-eyebrow">Cumulative Node Improvement</div>
+          <ul>
+            <li>N7→A14: TSMC reported <span class="hl-amber">1.8×</span> speed increase at same power</li>
+            <li><span class="hl-amber">4.2×</span> improvement in power efficiency over the full span</li>
+            <li>N2 received ~<span class="hl-teal">4× the tapeouts</span> of N5 and ~<span class="hl-teal">2× the tapeouts</span> of N3 in its second year (JPMorgan)</li>
+          </ul>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--d2)">
+          <div class="card-eyebrow" style="color:var(--d2)">Capex Intensity Explosion</div>
+          <ul>
+            <li>GAA + BSPDN transition: capex intensity for N2/A16 estimated at <span class="hl-amber">1.8–2.5× N5</span> (Jefferies)</li>
+            <li>50k wspm capacity: <span class="hl-amber">$12.5bn</span> for N7 → <span class="hl-amber">$28–30bn</span> for N2/A16 (Jefferies)</li>
+            <li>TSMC 2026 capex guided at <span class="hl-amber">$52–56 billion</span>; ~70–80% to advanced process</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 11: TSMC CAPACITY BY NODE (ANNUAL) -->
+<div class="slide" id="slide-11">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Logic Wafers · Annual Output</span>
+      <span class="slide-num">Slide 11 / 22</span>
+    </div>
+    <h2 class="slide-title">N3 Is Running at 115–120% Utilization While N2 Ramps at Record Speed — Both Remain Structurally Short</h2>
+    <div class="slide-subtitle">Annual Capacity by Node (k wafers) · Source: Morgan Stanley / JPMorgan</div>
+    <div class="slide-content">
+      <div class="stat-row" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat-box"><div class="val">115–120%</div><div class="lbl">N3 Utilization 2025</div></div>
+        <div class="stat-box"><div class="val">67k</div><div class="lbl">N2 wfpm End-2026E (JPM)</div></div>
+        <div class="stat-box"><div class="val">~4×</div><div class="lbl">N2 Tapeouts vs N5 (Y2)</div></div>
+        <div class="stat-box"><div class="val">3×</div><div class="lbl">TSMC: capacity short of customer plans (DB)</div></div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Node</th><th>2024</th><th>2025</th><th>2026E</th><th>2027E</th><th>Source</th></tr></thead>
+          <tbody>
+            <tr><td><strong>N7</strong></td><td>2,000k</td><td>Declining</td><td>Declining</td><td>1,620k</td><td>Morgan Stanley</td></tr>
+            <tr><td><strong>N5</strong></td><td>~1,600k</td><td>Peak</td><td>Declining</td><td>Declining</td><td>Morgan Stanley</td></tr>
+            <tr><td><strong>N3</strong></td><td>920k</td><td><span class="hl-amber">1,190k</span></td><td><span class="hl-amber">1,500k</span></td><td>1,770k</td><td>Morgan Stanley</td></tr>
+            <tr><td><strong>N2</strong></td><td>0</td><td>225k</td><td><span class="hl-teal">535k</span></td><td><span class="hl-teal">1,155k</span></td><td>Morgan Stanley</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="insight-grid">
+        <div class="insight-card">
+          <div class="insight-title">N5/N4: Over 120% Utilization</div>
+          <p>Strong Blackwell demand drove utilization to <span class="hl-amber">≥120%</span> in 2025, with TSMC borrowing N7 capacity for some back-end metal layers. (Morgan Stanley)</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">N3: Hot Runs Everywhere</div>
+          <p>Utilization <span class="hl-amber">115–120%</span> with multiple customers executing hot runs and super hot runs for expedited delivery. N3 entered 2026 at approximately <span class="hl-teal">120kwpm</span>. (JPMorgan)</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">N2: Fastest Ramp in TSMC History</div>
+          <p>JPMorgan estimates N2 reaching <span class="hl-teal">67k wfpm</span> by end-2026 and <span class="hl-teal">128k wfpm</span> by end-2027 — vs. N3's 12k/48k/100k wfpm in its first three years.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">CEO C.C. Wei Warning</div>
+          <p>TSMC CEO described existing advanced capacity as roughly <span class="hl-amber">three times short</span> of what major customers plan to consume through this decade. (Deutsche Bank)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 12: TSMC MONTHLY CAPACITY -->
+<div class="slide" id="slide-12">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Logic Wafers · Monthly Capacity</span>
+      <span class="slide-num">Slide 12 / 22</span>
+    </div>
+    <h2 class="slide-title">JPMorgan's Leading-Edge Capacity Model Shows N3 Plateauing While N2 Surges</h2>
+    <div class="slide-subtitle">Monthly Capacity (kwpm) by Node — The Supply Side of the Equation · Source: JPMorgan / Morgan Stanley / Jefferies</div>
+    <div class="slide-content">
+      <div class="two-col">
+        <div>
+          <div style="margin-bottom:6px;"><span class="section-label section-d4">JPMorgan Leading-Edge Capacity (kwpm, year-end)</span></div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Node</th><th>2023</th><th>2024</th><th>2025</th><th>2026E</th><th>2027E</th></tr></thead>
+              <tbody>
+                <tr><td><strong>N7</strong></td><td>150</td><td>150</td><td>150</td><td>150</td><td>150</td></tr>
+                <tr><td><strong>N5</strong></td><td>137</td><td>117</td><td>137</td><td>133</td><td>133</td></tr>
+                <tr><td><strong>N3</strong></td><td>48</td><td>100</td><td><span class="hl-amber">123</span></td><td><span class="hl-amber">147</span></td><td>170</td></tr>
+                <tr><td><strong>N2</strong></td><td>0</td><td>0</td><td>17</td><td><span class="hl-teal">67</span></td><td><span class="hl-teal">125</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <div style="margin-bottom:6px;"><span class="section-label section-d1">Morgan Stanley / Jefferies Alternate Estimates</span></div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Node</th><th>End-2025</th><th>End-2026E</th><th>End-2027E</th></tr></thead>
+              <tbody>
+                <tr><td><strong>N3</strong></td><td>~120kwpm</td><td><span class="hl-amber">~150–160kwpm</span></td><td>~170kwpm</td></tr>
+                <tr><td><strong>N2</strong></td><td>~40kwpm</td><td><span class="hl-teal">~100kwpm</span></td><td>~140kwpm</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="two-col" style="margin-top:4px;">
+        <div class="card card-accent">
+          <div class="card-eyebrow">N3 Expansion Sources (to 147–160kwpm by end-2026)</div>
+          <ul>
+            <li>Conversion of <span class="hl-amber">15–20k wfpm</span> N4→N3 at Fab 18, Tainan</li>
+            <li>Cross-fab N6/N7 BEOL collaboration at Fab 14 (~<span class="hl-teal">5–10k wfpm</span>)</li>
+            <li>Arizona Fab 21 Phase 2 pull-in (~<span class="hl-teal">5k wfpm</span> in 2026)</li>
+            <li>No new greenfield N3 capacity in Taiwan — all new space reserved for N2</li>
+          </ul>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--d2)">
+          <div class="card-eyebrow" style="color:var(--d2)">Capex → Capacity Lag</div>
+          <ul>
+            <li>TSMC GigaFab advantage: <span class="hl-teal">85–90%</span> common tools across adjacent nodes — enables conversion from N7→N5→N3</li>
+            <li>New fab construction takes <span class="hl-amber">2–3 years</span> — rapid capacity increases are impossible</li>
+            <li>Much of the <span class="hl-amber">$52–56bn 2026 capex</span> yields capacity primarily in <span class="hl-amber">2028+</span> (JPMorgan)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 13: N3 CUSTOMER ALLOCATION -->
+<div class="slide" id="slide-13">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">N3 · Customer Allocation</span>
+      <span class="slide-num">Slide 13 / 22</span>
+    </div>
+    <h2 class="slide-title">NVIDIA and Apple Each Consume 25–30% of N3 — Leaving Zero Slack for Growing ASIC Demand</h2>
+    <div class="slide-subtitle">N3 Customer Allocation Breakdown — The Most Contested Node in Semiconductors</div>
+    <div class="slide-content">
+      <div class="two-col">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Customer</th><th>N3 Share (Est.)</th><th>Primary Product</th></tr></thead>
+            <tbody>
+              <tr><td><strong>NVIDIA</strong></td><td><span class="hl-amber">~25–30%</span></td><td>Rubin GPU (biggest N3 customer)</td></tr>
+              <tr><td><strong>Apple</strong></td><td><span class="hl-amber">~25–30%</span></td><td>iPhone A17/A-series, M5-series</td></tr>
+              <tr><td>Broadcom/Google</td><td>~10%</td><td>Google TPU (<span class="hl-teal">+289% YoY</span>, 180k→700k units)</td></tr>
+              <tr><td>AMD</td><td>~5–10%</td><td>MI450 GPU, OpenAI/Meta 6GW deals</td></tr>
+              <tr><td>Qualcomm</td><td>~10–15%</td><td>Snapdragon SoCs</td></tr>
+              <tr><td>MediaTek</td><td>~8–10%</td><td>Dimensity flagship SoCs</td></tr>
+              <tr><td>Crypto</td><td>~10%</td><td>Bitcoin ASICs (low TSMC priority)</td></tr>
+              <tr><td>Amazon/AWS</td><td>—</td><td>Trainium 3 ramp 2Q26, ~1.36M units</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div class="card card-accent">
+            <div class="card-eyebrow">Structural Constraint — Not Cyclical</div>
+            <p>Simultaneous migration of virtually every major AI accelerator to 3nm, compounded by resilient smartphone demand from Apple and Android OEMs. TSMC has reportedly temporarily suspended kick-offs for new 3nm projects, guiding customers toward 2nm.</p>
+          </div>
+          <div class="card card-accent" style="border-left-color:var(--d2)">
+            <div class="card-eyebrow" style="color:var(--d2)">Pricing Reflects Tightness</div>
+            <p>N3B: <span class="hl-amber">$21,750</span> → projected <span class="hl-amber">$24,500</span> by 1Q26. N3E: <span class="hl-amber">$20K</span> → <span class="hl-amber">$22K</span> by 1Q26 — a <span class="hl-amber">10–12% cumulative increase</span>. High-end HPC N3 wafers approaching <span class="hl-amber">$27–30K</span>. Hot runs carry <span class="hl-amber">50–100% ASP premium</span>. (Jefferies / JPMorgan)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 14: N2 RAMP -->
+<div class="slide" id="slide-14">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">N2 Node · Ramp Trajectory</span>
+      <span class="slide-num">Slide 14 / 22</span>
+    </div>
+    <h2 class="slide-title">N2 Is Ramping 4× Faster Than N3 — but the First Wave Is Smartphones, Not AI</h2>
+    <div class="slide-subtitle">N2 Revenue Trajectory and Customer Mix · Source: JPMorgan / Citi / Morgan Stanley</div>
+    <div class="slide-content">
+      <div class="stat-row" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat-box"><div class="val">$8B</div><div class="lbl">N2 Revenue 2026E (Year 1)</div></div>
+        <div class="stat-box"><div class="val">$36B</div><div class="lbl">N2 Revenue 2027E (Year 2)</div></div>
+        <div class="stat-box"><div class="val">~70–75%</div><div class="lbl">Apple Share of N2 Demand 2H26</div></div>
+        <div class="stat-box"><div class="val">2H27</div><div class="lbl">AI Chips Migrate to N2 (Citi)</div></div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Node</th><th>Year 1 Revenue</th><th>Year 2 Revenue</th><th>Year 1 wfpm (YE)</th><th>Year 2 wfpm (YE)</th><th>Year 3 wfpm (YE)</th></tr></thead>
+          <tbody>
+            <tr><td><strong>N5 (benchmark)</strong></td><td>$3.1bn</td><td>$9.3bn</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr><td><strong>N3 (benchmark)</strong></td><td>$3.1bn</td><td>$14.3bn</td><td>12k</td><td>48k</td><td>100k</td></tr>
+            <tr><td><strong>N2 (actual/forecast)</strong></td><td><span class="hl-amber">$8bn</span></td><td><span class="hl-amber">$36bn</span></td><td><span class="hl-teal">17k</span></td><td><span class="hl-teal">67k</span></td><td><span class="hl-teal">128k</span> (est.)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="insight-grid">
+        <div class="insight-card">
+          <div class="insight-title">2H26 = Smartphone Wave</div>
+          <p>Apple estimated at <span class="hl-amber">~70–75%</span> of N2 demand, all new iPhones in 2H26 using N2 for A20/A20 Pro. AMD ~<span class="hl-teal">5–7%</span> (Venice CPU, MI450). Qualcomm/MediaTek ~<span class="hl-teal">12–15%</span> and ~<span class="hl-teal">5%</span>. (JPMorgan)</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">AI Migration: 2H27 Onward</div>
+          <p>AI chips expected to migrate to N2 starting <span class="hl-amber">2H27</span>. NVIDIA's Feynman will use <span class="hl-teal">A16</span>, not N2 — specifically because BSPDN is needed for multi-kilowatt AI GPUs. (Citi)</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">Near-100% Utilization Incoming</div>
+          <p>N2 expected to see over or close to <span class="hl-amber">100% utilization</span> in 2027 or 2028 as AI chips migrate simultaneously. (Morgan Stanley)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 15: A16 AND BEYOND -->
+<div class="slide" id="slide-15">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">A16 Node · AI-Only Frontier</span>
+      <span class="slide-num">Slide 15 / 22</span>
+    </div>
+    <h2 class="slide-title">A16 Is an AI-Only Node — NVIDIA Is Currently TSMC's Sole A16 Customer</h2>
+    <div class="slide-subtitle">A16 Introduces Backside Power Delivery (BSPDN/SPR), Targeted Specifically at HPC/AI Applications</div>
+    <div class="slide-content">
+      <div class="featured-layout">
+        <div class="featured-card">
+          <div class="card-eyebrow">Unprecedented in TSMC History</div>
+          <div class="statement">For the first time, an AI application — not smartphones — is driving adoption of TSMC's most advanced process. NVIDIA is the only customer conducting joint A16 validation with TSMC.</div>
+          <div class="body">A16's Super Power Rail (SPR/BSPDN) separates power routing from signal layers, delivering power directly to transistor source/drain terminals. This enables <span style="color:rgba(255,210,120,0.9);font-weight:600">8–10% speed improvement</span> at same power, or <span style="color:rgba(255,210,120,0.9);font-weight:600">15–20% power reduction</span> at same speed vs. N2P. A16 wafer price: ~<span style="color:rgba(255,210,120,0.9);font-weight:600">$36,500</span> — the sharpest single-node price jump in TSMC history. (Jefferies / multiple sources)</div>
+        </div>
+        <div class="right-grid">
+          <div class="stat-card">
+            <div class="stat-eyebrow">A16 Wafer Price</div>
+            <div class="stat-value">$36.5K</div>
+            <div class="stat-detail"><span class="hl-amber">85% premium</span> over N3's ~$20,000 and ~<span class="hl-amber">50% premium</span> over N2's ~$30,000.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Total Life Build</div>
+            <div class="stat-value">50–60k</div>
+            <div class="stat-detail">wspm (Morgan Stanley), production volume ramp in <span class="hl-teal">2028</span>. Tool installation in 2026–2027.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Feynman Launch</div>
+            <div class="stat-value">2H28</div>
+            <div class="stat-detail">New GPU arch + CPU (Rosa) + Bluefield 5 + Kyber networking. Rack power approaching <span class="hl-amber">~1MW</span>.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Transistor Density</div>
+            <div class="stat-value">~1.10×</div>
+            <div class="stat-detail">vs. N2P. Trade-off: backside power routing takes die area, but power delivery improvement enables multi-kilowatt chips.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 16: AI ALLOCATION SHARE -->
+<div class="slide" id="slide-16">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">TSMC · AI Revenue Mix</span>
+      <span class="slide-num">Slide 16 / 22</span>
+    </div>
+    <h2 class="slide-title">AI/HPC Has Captured 58% of TSMC Revenue and Is Consuming the Majority of Leading-Edge Capacity</h2>
+    <div class="slide-subtitle">TSMC Revenue Mix and AI Intensity by Node · Full-Year 2025 Data + Forward Allocation</div>
+    <div class="slide-content">
+      <div class="stat-row" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat-box"><div class="val">58%</div><div class="lbl">HPC Share of Revenue (2025)</div></div>
+        <div class="stat-box"><div class="val">+48%</div><div class="lbl">HPC Revenue Growth YoY (2025)</div></div>
+        <div class="stat-box"><div class="val">77%</div><div class="lbl">Advanced Node (&lt;7nm) Revenue Share Q4'25</div></div>
+        <div class="stat-box"><div class="val">Mid-50s%</div><div class="lbl">AI Revenue CAGR 2024–2029 (TSMC)</div></div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Node</th><th>AI/HPC Allocation</th><th>Key AI Customers</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td><strong>N5/N4</strong></td><td>Primarily AI + flagship smartphones + PC CPUs + crypto</td><td>NVIDIA (Blackwell), AMD</td><td><span class="pill pill-amber">Tight — transitioning</span></td></tr>
+            <tr><td><strong>N3</strong></td><td>Majority of next-gen AI accelerators migrating in 2026</td><td>NVIDIA Rubin, Broadcom TPU v8, Amazon Trainium 3, Meta MTIA, Microsoft Maia 300</td><td><span class="pill pill-red">115–120% utilization</span></td></tr>
+            <tr><td><strong>N2</strong></td><td>Smartphones &amp; PC first; AI from 2H27</td><td>Apple A20, AMD Venice/MI450, then NVIDIA 2H27+</td><td><span class="pill pill-teal">Ramping fast</span></td></tr>
+            <tr><td><strong>A16</strong></td><td>AI-only — HPC with complex power delivery</td><td>NVIDIA Feynman (only customer)</td><td><span class="pill pill-purple">Production ramp 2028</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="two-col">
+        <div class="card card-accent">
+          <div class="card-eyebrow">Revenue Trajectory</div>
+          <ul>
+            <li>Advanced technology revenue share grew from <span class="hl-amber">27%</span> in 2019 to <span class="hl-amber">69%</span> in 2024</li>
+            <li>Q4 2025 node mix: 3nm <span class="hl-amber">28%</span>, 5nm <span class="hl-amber">35%</span>, 7nm <span class="hl-amber">14%</span></li>
+            <li>TSMC revenue could reach <span class="hl-teal">$300bn by 2030E</span>, inline with ~20% long-term CAGR guidance (Citi)</li>
+          </ul>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--d2)">
+          <div class="card-eyebrow" style="color:var(--d2)">2025 Full-Year Platform Mix</div>
+          <ul>
+            <li>HPC: <span class="hl-amber">58%</span> of revenue (up <span class="hl-amber">48%</span> YoY)</li>
+            <li>Smartphone: <span class="hl-teal">29%</span> (up <span class="hl-teal">11%</span> YoY)</li>
+            <li>IoT, Automotive, DCE, Consumer: combined ~13%</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 17: EFFECTIVE AI OUTPUT / YIELD MATH -->
+<div class="slide" id="slide-17">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Yield Math · Effective Output</span>
+      <span class="slide-num">Slide 17 / 22</span>
+    </div>
+    <h2 class="slide-title">Large Die Sizes and Sub-50% Yields Mean Effective AI Chip Output Is Far Below Nameplate Capacity</h2>
+    <div class="slide-subtitle">Conversion from Wafer Starts to Shippable AI Accelerators · Bernstein / HSBC / Citi</div>
+    <div class="slide-content">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Parameter</th><th>Blackwell (N4P)</th><th>Rubin (N3)</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Die size</td><td>~858mm² (2 dies)</td><td>~858mm² per die (2 dies)</td><td>Both at reticle limit</td></tr>
+            <tr><td>GPU die yield</td><td><span class="hl-amber">&lt;50%</span> (Bernstein)</td><td><span class="hl-amber">Likely similar or lower initially</span></td><td>Large dies challenge yield</td></tr>
+            <tr><td>Good dies per wafer (after yield)</td><td>~30–35</td><td>~25–30 (est.)</td><td>Approximate for reticle-limited</td></tr>
+            <tr><td>CoWoS dies per CoWoS wafer</td><td><span class="hl-teal">~14</span></td><td><span class="hl-amber">~9</span></td><td>Rubin needs 5.5× reticle CoWoS-L</td></tr>
+            <tr><td>DRAM die yield</td><td>~85%</td><td>~85%</td><td>Bernstein</td></tr>
+            <tr><td>KGD requirement</td><td><span class="hl-amber">&gt;99.9%</span></td><td><span class="hl-amber">&gt;99.9%</span></td><td>Citi — requires extensive testing infrastructure</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="featured-layout" style="margin-top:4px;">
+        <div class="featured-card">
+          <div class="card-eyebrow">Compound Yield Reality</div>
+          <div class="statement">Two-SoC, eight-HBM full package: ~6% yield without testing. Even with perfect testing: ~35% final yield.</div>
+          <div class="body">Every additional integration step compounds potential yield loss across high-value components already at the reticle limit. This is why nameplate capacity numbers are misleading — effective throughput is materially lower across the entire chain. (Bernstein)</div>
+        </div>
+        <div class="right-grid">
+          <div class="stat-card">
+            <div class="stat-eyebrow">Packaging Throughput Hit</div>
+            <div class="stat-value">−36%</div>
+            <div class="stat-detail">Rubin: <span class="hl-amber">~9 dies</span> per CoWoS wafer vs. <span class="hl-teal">~14</span> for Blackwell — packaging throughput falls 36% per wafer. (Bernstein)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Substrate Area Inflation</div>
+            <div class="stat-value">+127%</div>
+            <div class="stat-detail">ABF substrate market for NVIDIA AI GPUs growing <span class="hl-amber">127%</span> in FY26/3. Each Rubin = <span class="hl-amber">1.8×</span> total substrate area of each Blackwell. (Bernstein)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 18: CROSS-LAYER 2026 RECONCILIATION -->
+<div class="slide" id="slide-18">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">2026 · Cross-Layer Constraint Reconciliation</span>
+      <span class="slide-num">Slide 18 / 22</span>
+    </div>
+    <h2 class="slide-title">In 2026, CoWoS Packaging and HBM4 Readiness Are Co-Binding — with N3 Logic as a Close Third</h2>
+    <div class="slide-subtitle">Three-Pillar Supply-Demand Reconciliation for 2026 · JPMorgan / Bernstein / Kepler Cheuvreux / Evercore ISI</div>
+    <div class="slide-content">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Layer</th><th>Supply (Capacity)</th><th>Demand</th><th>Gap</th><th>Bottleneck Status</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Logic (N3)</strong></td>
+              <td>~147kwpm / ~1,500k annual wafers</td>
+              <td>115–120% utilization; all customers competing</td>
+              <td>Structural tightness, 0% slack</td>
+              <td><span class="constraint-secondary">Co-Binding</span></td>
+            </tr>
+            <tr>
+              <td><strong>Logic (N2)</strong></td>
+              <td>~67kwpm by end-2026</td>
+              <td>Mostly smartphone in 2026; AI migrates later</td>
+              <td>Tight but AI not yet here</td>
+              <td><span class="constraint-ok">Not Yet Binding for AI</span></td>
+            </tr>
+            <tr>
+              <td><strong>Packaging (CoWoS)</strong></td>
+              <td>~140kwpm (Bernstein) / ~125kwpm TSMC + 50kwpm non-TSMC</td>
+              <td>1,230k wafer shipments needed (Bernstein)</td>
+              <td><span class="hl-amber">15–20% persistent gap</span> (JPMorgan)</td>
+              <td><span class="constraint-primary">Primary Bottleneck</span></td>
+            </tr>
+            <tr>
+              <td><strong>HBM (Total)</strong></td>
+              <td>430kwpm TSV capacity (HSBC) / 586kwpm (Bernstein)</td>
+              <td>HBM3E oversupply; HBM4 very tight</td>
+              <td>HBM4 shortfall ~3,000 units (JPM)</td>
+              <td><span class="constraint-primary">Co-Binding (HBM4)</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="insight-grid">
+        <div class="insight-card">
+          <div class="insight-title">Management Confirmation</div>
+          <p>TSMC management has been explicit: advanced packaging — not wafer output — is now the binding constraint on AI GPU volumes. (Kepler Cheuvreux)</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">HBM4 Most Immediate for Rubin</div>
+          <p>Most immediate constraint on NVIDIA's Rubin ramp is HBM4 memory supply, not N3 wafers. Design changes push meaningful Rubin volume to <span class="hl-amber">Q4 2026</span> only. (JPMorgan)</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">The "Golden Screw" Problem</div>
+          <p>Hyperscalers describe a situation where memory orders already extend for delivery in <span class="hl-amber">2028 and 2029</span>, and several are asking for entire vendor capacity in 2026 — not even at typical volume discount. (Evercore ISI)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 19: 2027 LOGIC WAFER CONSTRAINT -->
+<div class="slide" id="slide-19">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">2027 · Constraint Shift</span>
+      <span class="slide-num">Slide 19 / 22</span>
+    </div>
+    <h2 class="slide-title">As CoWoS Capacity Grows Rapidly and HBM4 Supply Stabilizes, N3 and N2 Logic Wafer Availability Becomes the Binding Constraint</h2>
+    <div class="slide-subtitle">2027 Constraint Shift Analysis · Needham / Morgan Stanley / JPMorgan / Evercore ISI</div>
+    <div class="slide-content">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Layer</th><th>2027 Supply</th><th>2027 Demand Signal</th><th>Assessment</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Packaging (CoWoS)</strong></td>
+              <td>~197kwpm (Bernstein), +41% YoY</td>
+              <td>1,776k wafer shipments (+44% YoY)</td>
+              <td><span class="constraint-secondary">Gap narrowing but still 15–20% (JPM)</span></td>
+            </tr>
+            <tr>
+              <td><strong>Logic (N3)</strong></td>
+              <td>~170kwpm (plateau — no greenfield expansion)</td>
+              <td>NVIDIA alone demands ~140k wspm by 2028 (Needham)</td>
+              <td><span class="constraint-primary">Structural shortage — N3 cap plateaus</span></td>
+            </tr>
+            <tr>
+              <td><strong>Logic (N2)</strong></td>
+              <td>~125–140kwpm (Needham: ~200k wspm needed for NVIDIA alone by 2030)</td>
+              <td>Ramping fast but AI only migrating from 2H27</td>
+              <td><span class="constraint-secondary">Approaching 100% utilization (MS)</span></td>
+            </tr>
+            <tr>
+              <td><strong>HBM</strong></td>
+              <td>490kwpm TSV (HSBC) / 758kwpm (Bernstein)</td>
+              <td>Rubin Ultra 4× HBM content step; structural shortage continues</td>
+              <td><span class="constraint-secondary">Still tight — structural shortage to 2027 (JPM)</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="two-col" style="margin-top:4px;">
+        <div class="card card-accent">
+          <div class="card-eyebrow">The Needham Model</div>
+          <ul>
+            <li>NVIDIA alone: <span class="hl-amber">~70k wspm</span> on N5 in 2026</li>
+            <li>NVIDIA alone: <span class="hl-amber">~140k wspm</span> on N3 by 2028</li>
+            <li>NVIDIA alone: <span class="hl-amber">~200k wspm</span> on N2 by 2030</li>
+            <li>~<span class="hl-amber">six dedicated N2 fabs</span> required for NVIDIA alone (Needham)</li>
+          </ul>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--d2)">
+          <div class="card-eyebrow" style="color:var(--d2)">Packaging Partially Catches Up in 2027</div>
+          <ul>
+            <li>CoWoS wafer shipments grow <span class="hl-teal">47%</span> to 1,776k in 2027 (Bernstein)</li>
+            <li>Packaging constraint begins to ease — but constraint shifts <span class="hl-amber">upstream to logic wafers</span> as multiple AI ASICs migrate to N2/sub-2nm simultaneously</li>
+            <li>N3 capacity plateaus at ~<span class="hl-amber">170kwpm structurally</span> — TSMC is not expected to expand 3nm further (Evercore ISI)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 20: 2028-2029 HBM STRUCTURAL SHORTAGE -->
+<div class="slide" id="slide-20">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">2028–2029 · HBM Structural Shortage</span>
+      <span class="slide-num">Slide 20 / 22</span>
+    </div>
+    <h2 class="slide-title">By 2028, CoWoS Has Scaled and N2 Is Ramping — the Constraint That Cannot Be Solved Quickly Is HBM Wafer Supply</h2>
+    <div class="slide-subtitle">Deutsche Bank's DRAM WSPM Model Shows Shortfall Peaking at 404K Wafers in 2028</div>
+    <div class="slide-content">
+      <div class="featured-layout">
+        <div class="featured-card">
+          <div class="card-eyebrow">The Structural Endgame</div>
+          <div class="statement">HBM-driven wafer tightness lasts through 2028 not because vendors fail — but because HBM keeps taking a larger share of wafer starts under a 3:1 to 4:1 trade-ratio regime.</div>
+          <div class="body">HBM WSPM grows at a theoretical <span style="color:rgba(255,210,120,0.9);font-weight:600">20% CAGR</span> (after accounting for higher trade ratio) vs. only <span style="color:rgba(255,210,120,0.9);font-weight:600">2% CAGR</span> for non-HBM wafer demand through 2030. New fab capacity (Micron ID1/ID2, Samsung P4/P5, SK Hynix Yongin) only comes online in 2028–2030. SK Hynix Chairman: wafer supply gap exceeds <span style="color:rgba(255,210,120,0.9);font-weight:600">20% across the industry</span>, pointing to ~2030 for equilibrium.</div>
+        </div>
+        <div class="right-grid">
+          <div class="stat-card">
+            <div class="stat-eyebrow">Peak Shortfall Year</div>
+            <div class="stat-value">2028</div>
+            <div class="stat-detail">DRAM WSPM shortfall peaks at <span class="hl-amber">404K wafers</span> (Deutsche Bank). This is the most acute year of the entire shortage cycle.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Balance Achieved</div>
+            <div class="stat-value">2029</div>
+            <div class="stat-detail">DRAM supply/demand roughly balanced with only <span class="hl-teal">11K</span> wafer surplus. First clear surplus: <span class="hl-teal">2030</span> (+412K wspm).</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Trade Ratio Trajectory</div>
+            <div class="stat-value">4:1</div>
+            <div class="stat-detail">Micron: HBM 3-to-1 DDR5 trade ratio <span class="hl-amber">only increases</span> with HBM4, HBM4E, HBM5 — compounding constraint as AI content rises.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">HBM TAM by 2028</div>
+            <div class="stat-value">~$100B</div>
+            <div class="stat-detail">Growing from <span class="hl-teal">~$35B (2025)</span> at <span class="hl-amber">~40% CAGR</span>. (Micron)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 21: INTEGRATED BOTTLENECK TIMELINE -->
+<div class="slide" id="slide-21">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Integrated Timeline · 2025–2030</span>
+      <span class="slide-num">Slide 21 / 22</span>
+    </div>
+    <h2 class="slide-title">The AI Supply Chain Will Never Be in Equilibrium Through 2030 — the Bottleneck Simply Rotates</h2>
+    <div class="slide-subtitle">Binding Constraint Summary by Year · Cross-Broker Synthesis</div>
+    <div class="slide-content">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Year</th><th>Primary Binding Constraint</th><th>Secondary Constraint</th><th>Tertiary Constraint</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>2025–2026</strong></td>
+              <td><span class="constraint-primary">CoWoS packaging (15–20% gap) + HBM4 readiness</span></td>
+              <td><span class="constraint-secondary">N3 logic wafers (115–120% utilization)</span></td>
+              <td>T-glass/ABF substrates (~20% gap)</td>
+            </tr>
+            <tr>
+              <td><strong>2027</strong></td>
+              <td><span class="constraint-primary">N3/N2 logic wafer capacity</span></td>
+              <td><span class="constraint-secondary">HBM wafer supply</span></td>
+              <td>SoIC capacity for next-gen ASICs</td>
+            </tr>
+            <tr>
+              <td><strong>2028</strong></td>
+              <td><span class="constraint-primary">HBM wafer supply (structural, 404k shortfall)</span></td>
+              <td><span class="constraint-secondary">N2/A16 logic capacity</span></td>
+              <td>CoPoS technology maturity</td>
+            </tr>
+            <tr>
+              <td><strong>2029</strong></td>
+              <td><span class="constraint-primary">HBM wafer supply (barely balanced)</span></td>
+              <td><span class="constraint-secondary">N2 capacity (200k+ wspm needed)</span></td>
+              <td>CoWoS-to-CoPoS transition risk</td>
+            </tr>
+            <tr>
+              <td><strong>2030</strong></td>
+              <td><span class="constraint-secondary">HBM wafer supply + N2/A14 logic capacity</span></td>
+              <td>CoPoS ramp execution</td>
+              <td>System integration complexity</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="insight-grid">
+        <div class="insight-card">
+          <div class="insight-title">~$1 Trillion Order Pipeline</div>
+          <p>NVIDIA's confirmed order pipeline: ~<span class="hl-amber">$1 trillion</span> across CY25–CY27 for Blackwell and Rubin alone, providing hard demand visibility into the constraint model. (Bernstein, confirmed at GTC 2026)</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">$932B Datacenter Silicon by 2030</div>
+          <p>TD Cowen estimates total datacenter silicon spending (ex-DRAM and storage) reaches ~<span class="hl-amber">$932B</span> by 2030. Custom accelerators growing at <span class="hl-teal">15.9% CAGR</span> from ~<span class="hl-amber">$110B</span> in 2025.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">TSMC $300B Revenue by 2030E</div>
+          <p>TSMC revenue could reach <span class="hl-teal">$300bn by 2030E</span>, inline with ~<span class="hl-amber">20% long-term CAGR</span> guidance. AI revenue CAGR guided at <span class="hl-amber">mid-to-high-50s%</span> from 2024–2029. (Citi)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 22: INVESTMENT IMPLICATIONS -->
+<div class="slide" id="slide-22">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Investment Framework · Follow the Constraint</span>
+      <span class="slide-num">Slide 22 / 22</span>
+    </div>
+    <h2 class="slide-title">The Supply Chain Tells You Where the Pricing Power Is — Follow the Constraint</h2>
+    <div class="slide-subtitle">Key Takeaways for Capital Allocation · Constraint → Pricing Power → Investment Implication by Phase</div>
+    <div class="slide-content">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Phase</th><th>Binding Constraint</th><th>Pricing Power Holder</th><th>Investment Implication</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>2025–2026</strong></td>
+              <td>CoWoS packaging shortage</td>
+              <td><strong>TSMC advanced packaging</strong></td>
+              <td>Pkg sales exceed <span class="hl-amber">10%</span> of TSMC rev. CoWoS capex ~<span class="hl-amber">$7–8M/kwpm</span>. Benefits <span class="hl-teal">ASE</span> (revenue doubling in AI) and <span class="hl-teal">Amkor</span>.</td>
+            </tr>
+            <tr>
+              <td><strong>2026–2027</strong></td>
+              <td>N3 wafer tightness</td>
+              <td><strong>TSMC logic pricing</strong></td>
+              <td>N3 wafer prices rising <span class="hl-amber">5%+ annually</span>, approaching <span class="hl-amber">$27–30K</span> for HPC. Hot runs carry <span class="hl-amber">50–100% ASP premium</span>. (JPMorgan)</td>
+            </tr>
+            <tr>
+              <td><strong>2027–2028</strong></td>
+              <td>Logic + HBM co-constraint</td>
+              <td><strong>Memory vendor pricing</strong></td>
+              <td>HBM4 commands <span class="hl-amber">28–58% premium</span> over HBM3E. <span class="hl-teal">SK Hynix</span> capacity and yield leader — <span class="hl-amber">&gt;60%</span> of NVIDIA's most advanced HBM wallet share. (Jefferies / JPMorgan)</td>
+            </tr>
+            <tr>
+              <td><strong>2028–2030</strong></td>
+              <td>Structural HBM wafer shortage</td>
+              <td><strong>DRAM capex supercycle</strong></td>
+              <td>Deutsche Bank fab-addition slate (<span class="hl-teal">Micron ID1/ID2, Samsung P4/P5, SK Hynix Yongin</span>) drives late-decade relief. HBM TAM: <span class="hl-amber">~$35B (2025)</span> → <span class="hl-amber">~$100B (2028)</span>. (Micron)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="featured-layout" style="margin-top:4px;">
+        <div class="featured-card">
+          <div class="card-eyebrow">The Central Node Through the Entire Period</div>
+          <div class="statement">TSMC's $52–56B annual capex — with 10–20% allocated to advanced packaging — determines the pace of the entire AI buildout through 2030.</div>
+          <div class="body">TSMC expects N2, N2P, A16, and their derivatives to form another large and long-lasting node cycle. The company's AI semiconductor revenue CAGR is guided at mid-to-high-50s% from 2024–2029, with revenue potentially reaching $300bn by 2030E. No competitor has the process lead, packaging integration, or fab ecosystem to challenge this position on a sub-decade timeline.</div>
+        </div>
+        <div class="right-grid">
+          <div class="stat-card">
+            <div class="stat-eyebrow">TSMC 2026 Capex</div>
+            <div class="stat-value">$52–56B</div>
+            <div class="stat-detail"><span class="hl-amber">70–80%</span> allocated to advanced process technologies. The single largest annual semiconductor capex program in history.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Bottleneck Thesis</div>
+            <div class="stat-value">Rotates</div>
+            <div class="stat-detail">Never disappears. CoWoS (2025–2026) → Logic (2027) → HBM (2028) → Combined (2029–2030). Follow the constraint.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV BAR -->
+<div id="nav">
+  <span>The Rotating Bottleneck · AI Supply Chain 2025–2030</span>
+  <div style="display:flex;align-items:center;gap:12px">
+    <button onclick="go(current-1)">← Prev</button>
+    <span id="counter">1 / 22</span>
+    <button onclick="go(current+1)">Next →</button>
+  </div>
+  <span id="nav-slide-label">Slide 1</span>
+</div>
+
+<script>
+let current = 0;
+const slides = document.querySelectorAll('.slide');
+
+function go(n) {
+  slides[current].classList.remove('active');
+  current = Math.max(0, Math.min(n, slides.length - 1));
+  slides[current].classList.add('active');
+  document.getElementById('progress').style.width = ((current + 1) / slides.length * 100) + '%';
+  document.getElementById('counter').textContent = (current + 1) + ' / ' + slides.length;
+  document.getElementById('nav-slide-label').textContent = 'Slide ' + (current + 1);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(current + 1);
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   go(current - 1);
+});
+
+let tx = 0;
+document.addEventListener('touchstart', e => tx = e.touches[0].clientX, { passive: true });
+document.addEventListener('touchend', e => {
+  const dx = tx - e.changedTouches[0].clientX;
+  if (Math.abs(dx) > 40) go(current + (dx > 0 ? 1 : -1));
+});
+
+go(0);
+</script>
+</body>
+</html>

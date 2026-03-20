@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi-Agent Market Intelligence Synthesis | March 19, 2026</title>
+  <style>
+    :root {
+      --bg: #f3ecdf;
+      --paper: #fbf7ef;
+      --ink: #17202a;
+      --muted: #5d6673;
+      --accent: #174a78;
+      --accent-2: #9c5d1b;
+      --accent-3: #7e2330;
+      --line: rgba(23, 74, 120, 0.18);
+      --panel: rgba(255, 255, 255, 0.72);
+      --panel-strong: rgba(255, 255, 255, 0.9);
+      --good: #23633d;
+      --warn: #99611f;
+      --bad: #8b2635;
+      --shadow: 0 28px 70px rgba(34, 40, 50, 0.18);
+      --radius-lg: 28px;
+      --radius-md: 18px;
+      --radius-sm: 12px;
+      --safe-x: 56px;
+      --safe-y: 42px;
+      --title-font: "Aptos Display", "Bahnschrift", "Segoe UI", sans-serif;
+      --body-font: "Georgia", "Cambria", serif;
+      --ui-font: "Aptos", "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at top left, rgba(23, 74, 120, 0.1), transparent 32%),
+        radial-gradient(circle at right 12% top 18%, rgba(156, 93, 27, 0.11), transparent 24%),
+        linear-gradient(160deg, #e9e1d3 0%, #f5efe3 52%, #ebe2d4 100%);
+      color: var(--ink);
+      font-family: var(--body-font);
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+      padding: 10px 10px 58px;
+    }
+
+    .deck-shell {
+      position: relative;
+      width: 1600px;
+      height: 900px;
+      transform-origin: top left;
+      box-shadow: var(--shadow);
+      border-radius: 30px;
+      overflow: hidden;
+      background: var(--paper);
+      border: 1px solid rgba(255, 255, 255, 0.45);
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      padding: var(--safe-y) var(--safe-x);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0) 36%),
+        linear-gradient(0deg, rgba(23, 74, 120, 0.04), rgba(23, 74, 120, 0.04)),
+        var(--paper);
+      grid-template-rows: auto auto auto 1fr auto;
+      gap: 14px;
+    }
+
+    .slide.active { display: grid; }
+    .slide::before, .slide::after { content: ""; position: absolute; pointer-events: none; z-index: 0; }
+    .slide::before {
+      width: 520px; height: 520px; right: -120px; top: -180px;
+      background: radial-gradient(circle, rgba(23, 74, 120, 0.1), transparent 68%);
+    }
+    .slide::after {
+      width: 380px; height: 380px; left: -100px; bottom: -120px;
+      background: radial-gradient(circle, rgba(156, 93, 27, 0.1), transparent 70%);
+    }
+
+    .eyebrow, .title-block, .divider, .content, .footer { position: relative; z-index: 1; }
+
+    .eyebrow {
+      display: flex; align-items: center; justify-content: space-between;
+      font-family: var(--ui-font); font-size: 13px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--accent);
+    }
+
+    .eyebrow .tag {
+      padding: 6px 12px; border: 1px solid rgba(23, 74, 120, 0.18);
+      border-radius: 999px; background: rgba(255, 255, 255, 0.55);
+    }
+
+    .title-block { display: grid; gap: 8px; max-width: 1220px; }
+    h1, h2 {
+      margin: 0; font-family: var(--title-font); font-weight: 700;
+      line-height: 1.04; letter-spacing: -0.03em;
+    }
+    h1 { font-size: clamp(56px, 4.2vw, 70px); max-width: 1180px; }
+    h2 { font-size: clamp(32px, 2.55vw, 42px); max-width: 1080px; }
+
+    .subtitle, .lead {
+      margin: 0; font-size: 22px; line-height: 1.38;
+      color: var(--muted); max-width: 1120px;
+    }
+
+    .divider {
+      height: 2px;
+      background: linear-gradient(90deg, rgba(23, 74, 120, 0.75), rgba(23, 74, 120, 0.2) 72%, transparent 100%);
+      border-radius: 999px;
+    }
+
+    .content {
+      min-height: 0;
+      display: grid;
+      align-content: start;
+      gap: 18px;
+    }
+
+    .footer {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      font-family: var(--ui-font); color: var(--muted); font-size: 14px;
+    }
+    .footer .source { max-width: 1200px; }
+
+    .hero-grid, .two-col, .three-col, .quad-grid, .matrix-grid, .timeline-grid, .comparison-grid {
+      display: grid; gap: 18px; min-width: 0;
+    }
+    .hero-grid { grid-template-columns: 1.45fr 0.9fr; align-items: stretch; }
+    .two-col { grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr); }
+    .three-col { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .quad-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .matrix-grid { grid-template-columns: 1.1fr 0.9fr; }
+    .timeline-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .comparison-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    .panel, .metric-card, .mini-card, .pillar, .signal, .scenario, .watch, .step {
+      background: var(--panel);
+      border: 1px solid rgba(23, 74, 120, 0.12);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      backdrop-filter: blur(8px);
+      min-width: 0;
+    }
+    .panel.strong, .metric-card.strong, .scenario.strong { background: var(--panel-strong); }
+    .panel.dark {
+      background: linear-gradient(165deg, rgba(23,74,120,0.95), rgba(16,42,68,0.96));
+      color: #eef4fb;
+      border-color: rgba(255,255,255,0.12);
+    }
+    .panel.dark .kicker, .panel.dark p, .panel.dark li, .panel.dark .metric-label { color: rgba(238, 244, 251, 0.88); }
+
+    .kicker {
+      margin: 0 0 8px;
+      font-family: var(--ui-font);
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .panel h3, .metric-card h3, .scenario h3, .watch h3, .step h3 {
+      margin: 0 0 8px;
+      font-family: var(--title-font);
+      font-size: 24px;
+      line-height: 1.12;
+    }
+    .panel p, .metric-card p, .scenario p, .watch p, .step p {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.42;
+      color: var(--muted);
+    }
+
+    .metric-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .metric-card { padding: 18px 18px 16px; }
+    .metric-label {
+      margin: 0 0 8px; font-family: var(--ui-font); font-size: 12px;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
+    }
+    .metric-value {
+      margin: 0; font-family: var(--title-font); font-size: clamp(36px, 2.7vw, 50px);
+      line-height: 1; letter-spacing: -0.04em; color: var(--ink);
+    }
+    .metric-note { margin-top: 8px; font-size: 15px; line-height: 1.36; color: var(--muted); }
+    .metric-good .metric-value { color: var(--good); }
+    .metric-warn .metric-value { color: var(--warn); }
+    .metric-bad .metric-value { color: var(--bad); }
+
+    ul.bullets { margin: 0; padding-left: 22px; display: grid; gap: 10px; }
+    ul.bullets li { font-size: 19px; line-height: 1.34; color: var(--ink); padding-left: 4px; }
+    ul.bullets li strong { font-family: var(--ui-font); font-weight: 700; color: var(--ink); }
+    .detail { display: block; margin-top: 4px; font-size: 16px; line-height: 1.38; color: var(--muted); }
+
+    .pill-row, .signal-row, .watch-row { display: grid; gap: 14px; }
+    .pill-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .signal-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .watch-row { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .pill, .signal, .watch { position: relative; overflow: hidden; }
+    .pill::before, .signal::before, .watch::before {
+      content: ""; position: absolute; inset: 0 auto 0 0; width: 6px; border-radius: 999px; background: var(--accent);
+    }
+    .pill.warn::before, .signal.warn::before, .watch.warn::before { background: var(--warn); }
+    .pill.bad::before, .signal.bad::before, .watch.bad::before { background: var(--bad); }
+    .pill.good::before, .signal.good::before, .watch.good::before { background: var(--good); }
+    .pill h3, .signal h3, .watch h3, .pill p, .signal p, .watch p { margin-left: 10px; }
+
+    .timeline {
+      display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; align-items: stretch;
+    }
+    .step { position: relative; padding-top: 22px; }
+    .step::before {
+      content: attr(data-step); position: absolute; top: -10px; left: 18px;
+      padding: 4px 10px; border-radius: 999px; background: rgba(23, 74, 120, 0.1);
+      font-family: var(--ui-font); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
+    }
+
+    .bar-stack { display: grid; gap: 12px; }
+    .bar { display: grid; gap: 6px; }
+    .bar-label {
+      display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+      font-family: var(--ui-font); font-size: 15px; color: var(--ink);
+    }
+    .track { height: 14px; border-radius: 999px; background: rgba(23, 74, 120, 0.08); overflow: hidden; }
+    .fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--accent), rgba(23, 74, 120, 0.48)); }
+    .fill.warn { background: linear-gradient(90deg, var(--warn), rgba(156, 93, 27, 0.46)); }
+    .fill.bad { background: linear-gradient(90deg, var(--bad), rgba(126, 35, 48, 0.46)); }
+
+    .matrix { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .matrix .mini-card { padding: 16px 18px; }
+    .mini-card h4 { margin: 0 0 8px; font-family: var(--ui-font); font-size: 17px; line-height: 1.24; }
+    .mini-card p { margin: 0; font-size: 15px; line-height: 1.36; color: var(--muted); }
+
+    .scenario-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .scenario { padding-bottom: 16px; }
+    .scenario .prob {
+      display: inline-block; margin-bottom: 10px; padding: 5px 10px; border-radius: 999px;
+      background: rgba(23, 74, 120, 0.08); font-family: var(--ui-font); font-size: 12px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
+    }
+    .scenario.bad .prob { background: rgba(126, 35, 48, 0.1); color: var(--bad); }
+    .scenario.warn .prob { background: rgba(156, 93, 27, 0.1); color: var(--warn); }
+    .scenario.good .prob { background: rgba(35, 99, 61, 0.1); color: var(--good); }
+
+    .callout { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 18px; align-items: stretch; }
+    .quote-band { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .quote {
+      border-radius: var(--radius-md); background: rgba(255,255,255,0.56); border: 1px solid rgba(23, 74, 120, 0.1);
+      padding: 16px 18px; font-size: 17px; line-height: 1.42; color: var(--ink);
+    }
+    .quote strong {
+      display: block; margin-bottom: 6px; font-family: var(--ui-font); font-size: 12px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
+    }
+
+    .source-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    .source-card {
+      border-radius: var(--radius-sm); background: rgba(255,255,255,0.55);
+      border: 1px solid rgba(23, 74, 120, 0.1); padding: 14px 16px;
+    }
+    .source-card h4 { margin: 0 0 8px; font-family: var(--ui-font); font-size: 16px; }
+    .source-card p { margin: 0; font-size: 14px; line-height: 1.35; color: var(--muted); }
+
+    .controls {
+      position: fixed; left: 14px; right: 14px; bottom: 10px; display: flex;
+      align-items: center; justify-content: center; gap: 10px; z-index: 10; font-family: var(--ui-font);
+    }
+    .controls button {
+      border: 0; border-radius: 999px; padding: 10px 16px; background: rgba(17, 29, 43, 0.9);
+      color: #f5f7fa; font-size: 14px; cursor: pointer; transition: transform 140ms ease, background 140ms ease;
+    }
+    .controls button:hover { transform: translateY(-1px); background: rgba(23, 74, 120, 0.96); }
+    .counter {
+      min-width: 92px; text-align: center; padding: 10px 16px; border-radius: 999px;
+      background: rgba(255, 255, 255, 0.78); color: var(--ink); border: 1px solid rgba(23, 74, 120, 0.12);
+    }
+    .progress-rail {
+      width: 260px; height: 10px; border-radius: 999px; background: rgba(255,255,255,0.64);
+      border: 1px solid rgba(23, 74, 120, 0.08); overflow: hidden;
+    }
+    .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width 220ms ease; }
+
+    .index-drawer {
+      position: fixed; right: 18px; top: 18px; width: 320px; max-height: calc(100vh - 96px); overflow: auto;
+      padding: 12px; border-radius: 22px; background: rgba(250, 246, 238, 0.94);
+      box-shadow: 0 20px 50px rgba(20, 27, 35, 0.16); border: 1px solid rgba(23, 74, 120, 0.12);
+      z-index: 11; display: none;
+    }
+    .index-drawer.open { display: block; }
+    .index-drawer h3 { margin: 4px 6px 10px; font-family: var(--title-font); font-size: 22px; }
+    .index-drawer button {
+      width: 100%; text-align: left; margin: 0 0 8px; padding: 12px 14px; border-radius: 14px; border: 1px solid transparent;
+      background: rgba(255,255,255,0.72); color: var(--ink); font-family: var(--ui-font); font-size: 14px; cursor: pointer;
+    }
+    .index-drawer button.active { border-color: rgba(23, 74, 120, 0.24); background: rgba(23, 74, 120, 0.08); }
+    .slide-number { font-variant-numeric: tabular-nums; opacity: 0.72; }
+
+    @media (max-width: 960px) {
+      body { padding-bottom: 66px; }
+      .index-drawer { width: min(88vw, 320px); right: 10px; top: 10px; }
+      .controls { gap: 8px; }
+      .progress-rail { width: 180px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck-shell" id="deck">
+    <section class="slide active" data-title="Fragile Bull With Geopolitical Overhang">
+      <div class="eyebrow">
+        <span>Multi-Agent Equity Market Intelligence Synthesis</span>
+        <span class="tag">March 19, 2026</span>
+      </div>
+      <div class="title-block">
+        <h1>Fragile Bull With Geopolitical Overhang</h1>
+        <p class="subtitle">AI infrastructure demand remains structurally real, but the market is financing that optimism through an oil shock, compressed policy flexibility, and a leverage regime that can turn a correction into a cascade.</p>
+      </div>
+      <div class="divider"></div>
+      <div class="content">
+        <div class="hero-grid">
+          <div class="panel dark strong">
+            <p class="kicker">Central Thesis</p>
+            <h3>The core call is not “AI or macro.” It is “AI still works, but the financing conditions around it have turned unstable.”</h3>
+            <ul class="bullets">
+              <li><strong>Structural demand is intact.</strong><span class="detail">$1 trillion NVIDIA purchase pipeline, hyperscaler build-outs, and memory pricing all support a multi-year compute cycle.</span></li>
+              <li><strong>Market asymmetry has flipped.</strong><span class="detail">Consensus still sees upside, while the report’s probability-weighted drawdown is about 19.5% over 12 months.</span></li>
+              <li><strong>Positioning is extreme in both directions.</strong><span class="detail">Shorts are crowded, CTA exposure is light, and gross leverage is elevated enough for either a squeeze or a forced unwind.</span></li>
+            </ul>
+          </div>
+          <div class="panel strong">
+            <p class="kicker">What Matters For Investors</p>
+            <ul class="bullets">
+              <li><strong>Own the secular winners.</strong><span class="detail">Memory, AI infrastructure, optics, and select cloud proxies still have earnings support.</span></li>
+              <li><strong>Respect the macro transmission.</strong><span class="detail">Oil above $110 and gasoline near $4 per gallon threaten both EPS and policy easing.</span></li>
+              <li><strong>Trade the regime, not the narrative.</strong><span class="detail">The next move is likely violent because leverage and hedging are already stretched.</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="metric-strip">
+          <div class="metric-card metric-warn strong">
+            <p class="metric-label">Regime Classification</p>
+            <p class="metric-value">Fragile Bull</p>
+            <p class="metric-note">The AI thesis is durable, but Q2-Q3 2026 financing conditions look materially less forgiving.</p>
+          </div>
+          <div class="metric-card metric-bad strong">
+            <p class="metric-label">Weighted Drawdown</p>
+            <p class="metric-value">-19.5%</p>
+            <p class="metric-note">The report argues downside is larger than consensus upside, reversing the usual growth-stock payoff profile.</p>
+          </div>
+          <div class="metric-card metric-good strong">
+            <p class="metric-label">Mechanical Re-Leverage</p>
+            <p class="metric-value">$145B-$170B</p>
+            <p class="metric-note">If oil resolves, trend followers and short covering could drive a sharp rebound rather than a slow recovery.</p>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="source">Source: Multi-Agent Market Intelligence report synthesizing 37 research files across semis, cloud, macro, flows, and earnings.</span>
+        <span class="slide-number">1</span>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Executive Verdict">
+      <div class="eyebrow">
+        <span>Executive Summary</span>
+        <span class="tag">Verdict</span>
+      </div>
+      <div class="title-block">
+        <h2>The market still has a real AI growth engine, but the near-term payoff is hostage to oil, funding stress, and policy ambiguity</h2>
+      </div>
+      <div class="divider"></div>
+      <div class="content">
+        <div class="callout">
+          <div class="panel strong">
+            <p class="kicker">Five Takeaways</p>
+            <ul class="bullets">
+              <li><strong>AI capex remains validated.</strong><span class="detail">NVIDIA purchase commitments, memory pricing, and hyperscaler revenue momentum all say the demand signal is real rather than speculative.</span></li>
+              <li><strong>Returns on capital are the weak link.</strong><span class="detail">AWS shows the problem clearly: revenue accelerates, but FCF goes negative and ROIC compresses as the investment burden rises.</span></li>
+              <li><strong>Oil is the macro shock absorber.</strong><span class="detail">An 8-12 million barrel per day shut-in scenario pressures GDP, margin expectations, and the Fed’s freedom to ease.</span></li>
+              <li><strong>Positioning magnifies both outcomes.</strong><span class="detail">Crowded shorts and low CTA equity exposure support a squeeze, but high gross leverage also means a normal drawdown can become mechanical selling.</span></li>
+              <li><strong>The correct stance is balanced, not complacent.</strong><span class="detail">Stay long the secular theme, but pay for protection against an oil and credit-led downdraft.</span></li>
+            </ul>
+          </div>
+          <div class="panel dark strong">
+            <p class="kicker">Business Meaning</p>
+            <h3>Boards and investors should separate demand confirmation from monetization quality.</h3>
+            <p>Semis and infrastructure still have visible revenue support. The debate has shifted to who can turn that demand into durable cash returns without becoming dependent on just a handful of buyers or on permanently cheap capital.</p>
+          </div>
+        </div>
+        <div class="quote-band">
+          <div class="quote">
+            <strong>Why now</strong>
+            This week’s research stack ties together four moving parts at once: AI demand strength, oil shock risk, Fed hesitation, and market internals that can amplify either outcome.
+          </div>
+          <div class="quote">
+            <strong>Decision frame</strong>
+            The question is no longer whether AI spending exists. The question is whether markets can keep underwriting the spend while macro risk moves from “background noise” to “earnings transmission channel.”
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="source">Source emphasis: Executive Summary, Tactical Bias, Risk Map.</span>
+        <span class="slide-number">2</span>
+      </div>
+    </section>
+
+    <section class="slide" data-title="What Changed This Week">
+      <div class="eyebrow">
+        <span>Story Beat 1</span>
+        <span class="tag">What Changed</span>
+      </div>
+      <div class="title-block">
+        <h2>Five developments turned a comfortable AI bull story into a higher-stakes regime call</h2>
+      </div>
+      <div class="divider"></div>
+      <div class="content">
+        <div class="timeline">
+          <div class="step strong" data-step="Demand">
+            <h3>NVIDIA demand stepped up again</h3>
+            <p>UBS raised the purchase pipeline to roughly $1 trillion for 2025-2027, implying the compute build-out is still being funded at scale.</p>
+          </div>
+          <div class="step strong" data-step="Pricing">
+            <h3>Memory pricing broke above expectations</h3>
+            <p>Bernstein’s 2QCY26 view calls for DRAM ASP up 47% quarter on quarter and NAND up 60%, confirming a true supply squeeze.</p>
+          </div>
+          <div class="step strong" data-step="Returns">
+            <h3>AWS revealed the capex paradox</h3>
+            <p>Cloud revenue is accelerating, yet free cash flow turns negative and incremental returns look far weaker than headline growth implies.</p>
+          </div>
+          <div class="step strong" data-step="Macro">
+            <h3>Oil shock stopped being theoretical</h3>
+            <p>Research now frames 8-12 mbd shut-ins as the central macro swing factor, not a tail event too remote to matter for equities.</p>
+          </div>
+        </div>
+        <div class="signal-row">
+          <div class="signal warn">
+            <h3>Fed support became conditional</h3>
+            <p>Powell’s posture remained dovish in tone but reactive in substance. Higher core PCE and oil uncertainty limit how quickly cuts can arrive.</p>
+          </div>
+          <div class="signal bad">
+            <h3>Asymmetry turned against consensus</h3>
+            <p>The report’s risk-weighted downside now exceeds the street’s upside case, meaning the market is paying peak multiples into weaker margin of safety.</p>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="source">Sources: UBS GTC, Bernstein Memory, Evercore AWS, JPM Oil, Evercore FOMC.</span>
+        <span class="slide-number">3</span>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Regime Map">
+      <div class="eyebrow">
+        <span>Story Beat 2</span>
+        <span class="tag">Regime</span>
+      </div>
+      <div class="title-block">
+        <h2>The regime is best described as a fragile bull: structural demand up, financing resilience down</h2>
+      </div>
+      <div class="divider"></div>
+      <div class="content">
+        <div class="two-col">
+          <div class="panel strong">
+            <p class="kicker">What Still Supports The Bull Case</p>
+            <ul class="bullets">
+              <li><strong>Compute demand is broad.</strong><span class="detail">Demand strength shows up in GPUs, memory, optics, power systems, and enterprise software checks, not just in one product cycle.</span></li>
+              <li><strong>Fed growth assumptions still embed AI productivity.</strong><span class="detail">The upward growth revision suggests policymakers are accepting AI as a real macro productivity contributor.</span></li>
+              <li><strong>Supply is still tight.</strong><span class="detail">Micron allocation data and NVIDIA pipeline commitments imply demand is being rationed by capacity rather than by price sensitivity.</span></li>
+            </ul>
+          </div>
+          <div class="panel strong">
+            <p class="kicker">Why It Is Fragile Instead Of Durable</p>
+            <ul class="bullets">
+              <li><strong>Oil raises the discount rate indirectly.</strong><span class="detail">Even without explicit rate hikes, higher energy costs compress EPS, dent consumers, and keep the Fed more cautious.</span></li>
+              <li><strong>Capital intensity is rising faster than proof of ROI.</strong><span class="detail">Hyperscalers are spending as if demand certainty already equals economic certainty. That leap is not yet proven.</span></li>
+              <li><strong>Leverage removes the soft landing.</strong><span class="detail">At high gross leverage, an ordinary de-risking can turn into a fast-moving market structure event.</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="metric-strip">
+          <div class="metric-card metric-warn">
+            <p class="metric-label">Narrative Stability</p>
+            <p class="metric-value">62 / 100</p>
+            <p class="metric-note">The AI thesis still dominates, but doubts on ROIC, oil persistence, and cycle timing are now visible enough to matter.</p>
+          </div>
+          <div class="metric-card metric-bad">
+            <p class="metric-label">Crowding Risk</p>
+            <p class="metric-value">78 / 100</p>
+            <p class="metric-note">Crowding exists on both sides: heavy leverage, heavy shorts, and heavy faith that the next shock will be temporary.</p>
+          </div>
+          <div class="metric-card metric-bad">
+            <p class="metric-label">Asymmetry</p>
+            <p class="metric-value">Downside-Skewed</p>
+            <p class="metric-note">The market is still priced for a continuation regime even as the risk map points to a wider left tail.</p>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="source">Source emphasis: Regime & Crowding Scores, Expanded Sentiment Analysis.</span>
+        <span class="slide-number">4</span>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Bull Case">
+      <div class="eyebrow">
+        <span>Story Beat 3</span>
+        <span class="tag">Bull Case</span>
+      </div>
+      <div class="title-block">
+        <h2>The structural bull case rests on self-reinforcing AI infrastructure demand, not on narrative momentum alone</h2>
+      </div>
+      <div class="divider"></div>
+      <div class="content">
+        <div class="pill-row">
+          <div class="pill panel good strong">
+            <h3>Demand visibility improved</h3>
+            <p>$1 trillion of NVIDIA-related commitments suggest that customers are funding the next two architecture transitions, not just filling a one-year gap.</p>
+          </div>
+          <div class="pill panel good strong">
+            <h3>Pricing power remains extreme</h3>
+            <p>Memory ASPs and Micron margins indicate demand is still outrunning physical supply, a sign of real scarcity rather than hype.</p>
+          </div>
+          <div class="pill panel good strong">
+            <h3>Cloud revenue is accelerating</h3>
+            <p>AWS growth expectations near 25-30% for 2026 suggest enterprise and model providers are still routing more spend into infrastructure.</p>
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="panel strong">
+            <p class="kicker">What Bulls Believe</p>
+            <ul class="bullets">
+              <li><strong>Agentic AI increases token intensity.</strong><span class="detail">If workflows move from single prompts to iterative loops, infrastructure demand can compound faster than traditional SaaS usage curves.</span></li>
+              <li><strong>New bottlenecks extend the cycle.</strong><span class="detail">Optical interconnects, advanced memory, and power delivery create second- and third-order spending waves beyond the first GPU ramp.</span></li>
+              <li><strong>Policy remains supportive enough.</strong><span class="detail">Even limited Fed easing would help finance a capex-heavy cycle if energy stress fades.</span></li>
+            </ul>
+          </div>
+          <div class="panel dark strong">
+            <p class="kicker">Strategic Meaning</p>
+            <h3>This is a systems build-out, not a single-company trade.</h3>
+            <p>The report’s strongest bullish evidence comes from cross-validation: GPU orders, memory shortages, cloud demand, software spending, and optical supply chain checks all point in the same direction.</p>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="source">Source emphasis: Bull Case Summary, UBS GTC, Bernstein Asia Tech Tour, UBS Software Checks.</span>
+        <span class="slide-number">5</span>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Bull Evidence Chain">
+      <div class="eyebrow">
+        <span>Proof Stack</span>
+        <span class="tag">Bull Evidence</span>
+      </div>
+      <div class="title-block">
+        <h2>The bullish evidence forms a chain: orders, memory, cloud, optics, and software all reinforce one another</h2>
+      </div>
+      <div class="divider"></div>
+      <div class="content">
+        <div class="source-grid">
+          <div class="source-card">
+            <h4>NVIDIA pipeline</h4>
+            <p>The jump from $500 billion to $1 trillion matters because it spans architecture transitions, implying customers are underwriting future performance gains now.</p>
+          </div>
+          <div class="source-card">
+            <h4>Micron allocation</h4>
+            <p>Customers receiving only 50-67% of requested supply is the clearest sign that price has not yet rationed demand.</p>
+          </div>
+          <div class="source-card">
+            <h4>Memory margins</h4>
+            <p>DRAM and NAND pricing suggest the cycle is still in the scarcity phase, with peak economics likely still ahead rather than behind.</p>
+          </div>
+          <div class="source-card">
+            <h4>Cloud demand</h4>
+            <p>Software checks and hyperscaler forecasts both point to continued workload migration rather than a pause caused by macro stress.</p>
+          </div>
+        </div>
+        <div class="quote-band">
+          <div class="quote">
+            <strong>Example</strong>
+            Co-packaged optics and silicon photonics are important because they extend the AI capex story beyond GPUs. Once clusters reach scale, networking and power become mandatory spend, not optional upgrades.
+          </div>
+          <div class="quote">
+            <strong>Why investors care</strong>
+            A broadening capex stack makes the theme more durable, but it also creates more points where returns can disappoint if the end demand monetization lags the hardware build.
+          </div>
+        </div>
+        <div class="panel strong">
+          <p class="kicker">Bottom Line</p>
+          <p>The report is strongest when it avoids hero-company logic. The positive thesis works because many industries are reporting the same underlying pressure: more compute, more memory, more power, and more enterprise willingness to pay for AI capability.</p>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="source">Sources: UBS GTC, Micron earnings, Bernstein Asia Tech Tour, software checks, optical supply chain notes.</span>
+        <span class="slide-number">6</span>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Bear Case">
+      <div class="eyebrow">
+        <span>Story Beat 4</span>
+        <span class="tag">Bear Case</span>
+      </div>
+      <div class="title-block">
+        <h2>The bear case is not “AI is fake.” It is “AI capex is real, but the market may be overpaying for low-visibility returns in a stagflation shock.”</h2>
+      </div>
+      <div class="divider"></div>
+      <div class="content">
+        <div class="comparison-grid">
+          <div class="panel strong">
+            <p class="kicker">Return Quality Risk</p>
+            <ul class="bullets">
+              <li><strong>Capex is outrunning cash conversion.</strong><span class="detail">AWS is the clearest example of revenue acceleration arriving alongside negative free cash flow and declining ROIC.</span></li>
+              <li><strong>Concentration risk is high.</strong><span class="detail">If a few model developers drive most of the workload growth, even strong demand can leave providers exposed to abrupt customer mix changes.</span></li>
+              <li><strong>Cycle peaks can look strongest right before they break.</strong><span class="detail">Peak margins and peak order books do not eliminate the risk that supply catches up faster than consensus expects.</span></li>
+            </ul>
+          </div>
+          <div class="panel strong">
+            <p class="kicker">Macro Shock Risk</p>
+            <ul class="bullets">
+              <li><strong>Oil transmits quickly into earnings.</strong><span class="detail">The report cites a 2-5% EPS cut for each 10% rise in oil, making a sustained move above $110 much more than a headline issue.</span></li>
+              <li><strong>The Fed may not rescue growth immediately.</strong><span class="detail">Higher core PCE and sticky services inflation reduce the odds of aggressive cuts while war uncertainty remains unresolved.</span></li>
+              <li><strong>Credit is a latent amplifier.</strong><span class="detail">Private credit leverage and HY spread thresholds create a second channel where macro stress can spill into equity de-risking.</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="panel dark strong">
+          <p class="kicker">Strategic Reading</p>
+          <h3>The real bearish argument is about capital discipline and valuation discipline failing at the same time.</h3>
+          <p>If investors keep valuing infrastructure leaders as if spending intensity guarantees future monopoly economics, any sign of weaker ROIC or persistent macro inflation can trigger a much sharper multiple reset than fundamentals alone would suggest.</p>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="source">Source emphasis: Bear Case Summary, AWS Deep Dive, JPM Oil Strategy, Evercore macro commentary.</span>
+        <span class="slide-number">7</span>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Oil And Fed Transmission">
+      <div class="eyebrow">
+        <span>Risk Transmission</span>
+        <span class="tag">Macro</span>
+      </div>
+      <div class="title-block">
+        <h2>Oil matters because it pressures consumers, raises EPS risk, and narrows the Fed’s ability to underwrite equity multiples</h2>
+      </div>
+      <div class="divider"></div>
+      <div class="content">
+        <div class="timeline-grid">
+          <div class="step strong" data-step="1">
+            <h3>Supply shock</h3>
+            <p>JPM frames 8-12 mbd shut-ins as the largest supply disruption on record, making a move toward $120-130 plausible.</p>
+          </div>
+          <div class="step strong" data-step="2">
+            <h3>Consumer squeeze</h3>
+            <p>Gasoline near $4 per gallon is the historical breakpoint where spending growth slows and discretionary resilience starts to crack.</p>
+          </div>
+          <div class="step strong" data-step="3">
+            <h3>EPS revisions</h3>
+            <p>The report cites a 15-20 bp GDP drag and a 2-5% EPS hit for each 10% rise in oil, turning energy into an index-level earnings problem.</p>
+          </div>
+          <div class="step strong" data-step="4">
+            <h3>Fed restraint</h3>
+            <p>With core PCE marked up and services inflation sticky, Powell can sound dovish but still have less room to cut than markets prefer.</p>
+          </div>
+        </div>
+        <div class="metric-strip">
+          <div class="metric-card metric-bad">
+            <p class="metric-label">Recession Probability</p>
+            <p class="metric-value">31%</p>
+            <p class="metric-note">Up from 22% in two weeks, signaling a meaningful change in macro priors rather than a minor tactical adjustment.</p>
+          </div>
+          <div class="metric-card metric-warn">
+            <p class="metric-label">Core PCE</p>
+            <p class="metric-value">2.7%</p>
+            <p class="metric-note">The inflation drift higher matters because it makes “wait and see” more likely than an immediate Fed put.</p>
+          </div>
+          <div class="metric-card metric-warn">
+            <p class="metric-label">Gasoline Breakpoint</p>
+            <p class="metric-value">$4 / gal</p>
+            <p class="metric-note">That level is treated throughout the report as the practical threshold where macro pain becomes visible in behavior and earnings.</p>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="source">Sources: JPM Market Update, Evercore Uncertainty & Defiance, Evercore FOMC notes.</span>
+        <span class="slide-number">8</span>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Memory Super-Cycle">
+      <div class="eyebrow">
+        <span>Deep Dive</span>
+        <span class="tag">Memory</span>
+      </div>
+      <div class="title-block">
+        <h2>Memory is the clearest proof that AI demand is real, and the clearest warning that peak-cycle numbers can mislead investors</h2>
+      </div>
+      <div class="divider"></div>
+      <div class="content">
+        <div class="two-col">
+          <div class="panel strong">
+            <p class="kicker">Why The Current Data Is So Bullish</p>
+            <ul class="bullets">
+              <li><strong>DRAM ASP up 47% quarter on quarter.</strong><span class="detail">That scale of pricing acceleration indicates severe undersupply and real demand urgency.</span></li>
+              <li><strong>Micron’s gross margin guide reaches 81%.</strong><span class="detail">Margins at that level imply a market still rationed by constrained output rather than by weakening buyers.</span></li>
+              <li><strong>Customer allocation remains short.</strong><span class="detail">Receiving only half to two-thirds of requested supply means demand has not yet been satisfied despite higher prices.</span></li>
+            </ul>
+          </div>
+          <div class="panel strong">
+            <p class="kicker">Why The Current Data Is Also Dangerous</p>
+            <ul class="bullets">
+              <li><strong>Bernstein models a 1H27 peak.</strong><span class="detail">Peak pricing and peak margins usually produce the best-looking reported numbers shortly before expectations roll over.</span></li>
+              <li><strong>CY2028 estimates may be 30-44% too high.</strong><span class="detail">That gap matters because consensus still appears to be extrapolating scarcity economics too far forward.</span></li>
+              <li><strong>Capex intensity is escalating.</strong><span class="detail">As supply catches up, a small change in demand elasticity can produce a much larger earnings reset than investors expect.</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="bar-stack">
+          <div class="bar">
+            <div class="bar-label"><span>Current cycle strength</span><span>Very high</span></div>
+            <div class="track"><div class="fill" style="width: 92%;"></div></div>
+          </div>
+          <div class="bar">
+            <div class="bar-label"><span>Consensus confidence in 2028</span><span>Too high</span></div>
+            <div class="track"><div class="fill warn" style="width: 74%;"></div></div>
+          </div>
+          <div class="bar">
+            <div class="bar-label"><span>Cycle peak risk by 1H27</span><span>Material</span></div>
+            <div class="track"><div class="fill bad" style="width: 68%;"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="source">Sources: Micron earnings call, Bernstein Memory Pricing & Cycle Dynamics.</span>
+        <span class="slide-number">9</span>
+      </div>
+    </section>
+
+    <section class="slide" data-title="AWS Capex Paradox">
+      <div class="eyebrow">
+        <span>Deep Dive</span>
+        <span class="tag">Cloud Economics</span>
+      </div>
+      <div class="title-block">
+        <h2>AWS captures the entire debate: revenue acceleration is visible, but cash economics and customer concentration make the valuation case harder</h2>
+      </div>
+      <div class="divider"></div>
+      <div class="content">
+        <div class="metric-strip">
+          <div class="metric-card metric-good">
+            <p class="metric-label">2026E Revenue Growth</p>
+            <p class="metric-value">25-30%</p>
+            <p class="metric-note">The demand side is improving fast enough to confirm real cloud workload acceleration.</p>
+          </div>
+          <div class="metric-card metric-bad">
+            <p class="metric-label">2026E Free Cash Flow</p>
+            <p class="metric-value">-$7.4B</p>
+            <p class="metric-note">Cash conversion turns negative despite revenue growth, showing how expensive the build-out has become.</p>
+          </div>
+          <div class="metric-card metric-warn">
+            <p class="metric-label">ROIC Trend</p>
+            <p class="metric-value">22% → 12%</p>
+            <p class="metric-note">The projected decline in capital productivity is the core reason the bull case needs faith in future operating leverage.</p>
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="panel strong">
+            <p class="kicker">Bull Interpretation</p>
+            <ul class="bullets">
+              <li><strong>Returns still exceed cost of capital.</strong><span class="detail">Even compressed ROIC may remain value-creating if AI demand continues scaling and attach rates broaden.</span></li>
+              <li><strong>Platform optionality remains underappreciated.</strong><span class="detail">Faster model usage, tooling layers, and future silicon transitions can improve monetization later than the market initially expects.</span></li>
+              <li><strong>Capex secures strategic position.</strong><span class="detail">In a supply-constrained market, willingness to spend can itself be a competitive moat.</span></li>
+            </ul>
+          </div>
+          <div class="panel strong">
+            <p class="kicker">Bear Interpretation</p>
+            <ul class="bullets">
+              <li><strong>Negative FCF can become a funding issue.</strong><span class="detail">If capital markets get less forgiving, a still-growing business can nevertheless be re-rated lower.</span></li>
+              <li><strong>Concentration risk is acute.</strong><span class="detail">A few customers driving 60-70% of AI workload revenue is not a steady-state mix for a very large cloud platform.</span></li>
+              <li><strong>Incremental returns may keep compressing.</strong><span class="detail">If buyers shift to in-house silicon or pricing gets competed away, capex looks less like moat-building and more like peak-cycle overinvestment.</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="source">Source: Evercore ISI AWS Deep Dive & Cloud Economics.</span>
+        <span class="slide-number">10</span>
+      </div>
+    </section>
+
+    <section class="slide" data-title="NVIDIA And Agentic Demand">
+      <div class="eyebrow">
+        <span>Deep Dive</span>
+        <span class="tag">Compute Demand</span>
+      </div>
+      <div class="title-block">
+        <h2>NVIDIA’s order book validates the cycle, but the long-term upside still depends on whether agentic AI economics are as large as the narrative claims</h2>
+      </div>
+      <div class="divider"></div>
+      <div class="content">
+        <div class="comparison-grid">
+          <div class="panel strong">
+            <p class="kicker">What The Report Treats As Proven</p>
+            <ul class="bullets">
+              <li><strong>$1 trillion purchase pipeline.</strong><span class="detail">That magnitude indicates hyperscalers are funding more than one generation of deployment, reducing near-term demand doubt.</span></li>
+              <li><strong>Rubin and future roadmaps remain credible.</strong><span class="detail">Customers appear willing to buy into the roadmap rather than wait for proof at each node.</span></li>
+              <li><strong>Physical AI expands TAM.</strong><span class="detail">Robotics and edge use cases broaden the cycle beyond pure data center training and inference.</span></li>
+            </ul>
+          </div>
+          <div class="panel strong">
+            <p class="kicker">What Still Needs Proof</p>
+            <ul class="bullets">
+              <li><strong>The 100x token multiplier is still theoretical.</strong><span class="detail">Real-world deployments may grow token intensity 5-10x before they ever approach headline projections.</span></li>
+              <li><strong>In-house silicon is advancing.</strong><span class="detail">ASIC progress at hyperscalers is still small relative to NVIDIA, but directionally it matters for long-duration margin assumptions.</span></li>
+              <li><strong>Execution risk remains.</strong><span class="detail">Any delay in the roadmap or lower-than-expected perf-per-watt gains could turn 2027 into a capex reset year.</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="panel dark strong">
+          <p class="kicker">Strategic Implication</p>
+          <h3>The hardware thesis has moved from “can demand appear?” to “how durable is the profit pool once everyone knows demand exists?”</h3>
+          <p>That distinction matters because valuation can stay rich while scarcity lasts, then compress abruptly once alternatives, internal designs, or less explosive software economics become credible.</p>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="source">Sources: UBS GTC Keynote, Bernstein Asia Tech Tour.</span>
+        <span class="slide-number">11</span>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Positioning And Flow Mechanics">
+      <div class="eyebrow">
+        <span>Story Beat 5</span>
+        <span class="tag">Positioning</span>
+      </div>
+      <div class="title-block">
+        <h2>Positioning is extreme enough that the next catalyst is likely to create a squeeze or a cascade rather than a calm repricing</h2>
+      </div>
+      <div class="divider"></div>
+      <div class="content">
+        <div class="metric-strip">
+          <div class="metric-card metric-bad">
+            <p class="metric-label">NQ100 Short Interest</p>
+            <p class="metric-value">95th %-ile</p>
+            <p class="metric-note">Shorts are crowded enough to become fuel for an upside move if oil or policy pressure eases.</p>
+          </div>
+          <div class="metric-card metric-good">
+            <p class="metric-label">CTA Equity Exposure</p>
+            <p class="metric-value">11th %-ile</p>
+            <p class="metric-note">Systematic funds are underweight enough to buy aggressively on any credible positive catalyst.</p>
+          </div>
+          <div class="metric-card metric-bad">
+            <p class="metric-label">Gross Leverage</p>
+            <p class="metric-value">~95th %-ile</p>
+            <p class="metric-note">The same market that can squeeze higher can also unwind violently because little balance-sheet cushion remains.</p>
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="panel strong">
+            <p class="kicker">Why The Setup Is Bullish</p>
+            <ul class="bullets">
+              <li><strong>QQQ skew and HYG fear are already extreme.</strong><span class="detail">Panic hedging sometimes means a lot of bad news is already paid for.</span></li>
+              <li><strong>RMM flipped to buy.</strong><span class="detail">The model reads current stress as dip-buying terrain, provided the macro shock does not intensify.</span></li>
+              <li><strong>Underexposure can become demand.</strong><span class="detail">A stabilizing macro headline could convert today’s defensive positioning into forced upside participation.</span></li>
+            </ul>
+          </div>
+          <div class="panel strong">
+            <p class="kicker">Why The Setup Is Dangerous</p>
+            <ul class="bullets">
+              <li><strong>Risk control sells into weakness.</strong><span class="detail">A modest index decline can trigger systematic de-risking even if fundamentals have not fully changed.</span></li>
+              <li><strong>Credit remains the hidden fault line.</strong><span class="detail">If spreads widen toward recession thresholds, the protective options setup can stop being a contrarian signal and start confirming a real breakdown.</span></li>
+              <li><strong>False bottoms become likely.</strong><span class="detail">In highly crowded regimes, relief rallies can be sharp enough to look durable before the macro problem is actually resolved.</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="source">Sources: UBS Market Internals, Expanded Sentiment & Positioning, Evercore and JPM flow observations.</span>
+        <span class="slide-number">12</span>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Mechanical Squeeze Vs Cascade">
+      <div class="eyebrow">
+        <span>Market Structure</span>
+        <span class="tag">Mechanics</span>
+      </div>
+      <div class="title-block">
+        <h2>The same positioning data supports two completely different market paths depending on whether oil resolves or escalates</h2>
+      </div>
+      <div class="divider"></div>
+      <div class="content">
+        <div class="comparison-grid">
+          <div class="scenario good strong">
+            <span class="prob">Upside Path</span>
+            <h3>Oil cools, CTA exposure normalizes, shorts cover</h3>
+            <ul class="bullets">
+              <li><strong>Trigger:</strong><span class="detail">Brent stabilizes below roughly $100 and geopolitical escalation fades.</span></li>
+              <li><strong>Mechanics:</strong><span class="detail">$145B-$170B CTA re-leverage combines with short covering and improves market breadth.</span></li>
+              <li><strong>Likely result:</strong><span class="detail">A 10-15% rally can happen quickly because underweight investors are forced to chase instead of adding gradually.</span></li>
+            </ul>
+          </div>
+          <div class="scenario bad strong">
+            <span class="prob">Downside Path</span>
+            <h3>Oil persists, spreads widen, systematic selling takes over</h3>
+            <ul class="bullets">
+              <li><strong>Trigger:</strong><span class="detail">Oil stays above $125, recession odds rise, or HY CDX moves decisively through stress levels.</span></li>
+              <li><strong>Mechanics:</strong><span class="detail">A 3% index drop can trigger roughly $150B-$160B of selling, with larger drawdowns escalating the total dramatically.</span></li>
+              <li><strong>Likely result:</strong><span class="detail">Price action ceases to be a reflection of news flow and becomes a balance-sheet event dominated by forced de-risking.</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="panel strong">
+          <p class="kicker">Why This Matters</p>
+          <p>This is why the report argues for a neutral-with-hedge posture instead of a directional macro call. In a mechanically unstable market, being correct on fundamentals is not enough if positioning amplifies the move before fundamentals can reassert themselves.</p>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="source">Source: UBS Market Internals & Short Squeeze Setup.</span>
+        <span class="slide-number">13</span>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Scenario Matrix">
+      <div class="eyebrow">
+        <span>Story Beat 6</span>
+        <span class="tag">Risk Map</span>
+      </div>
+      <div class="title-block">
+        <h2>The report’s scenario matrix makes the main point explicit: the base case is survivable, but the left tail is too large to ignore</h2>
+      </div>
+      <div class="divider"></div>
+      <div class="content">
+        <div class="scenario-grid">
+          <div class="scenario warn strong">
+            <span class="prob">40% Probability</span>
+            <h3>Base: muddle through</h3>
+            <p>Oil eases enough to avoid a full consumer break, the Fed remains cautious but not restrictive enough to break growth, and tech corrects 8-12% before stabilizing.</p>
+          </div>
+          <div class="scenario bad strong">
+            <span class="prob">35% Probability</span>
+            <h3>Stress: stagflation</h3>
+            <p>Oil holds in the $120-130 range, policy cuts stall, margins compress, and tech drawdowns deepen toward 18-25% as the macro hit becomes visible in estimates.</p>
+          </div>
+          <div class="scenario bad strong">
+            <span class="prob">25% Probability</span>
+            <h3>Shock: escalation</h3>
+            <p>Strait of Hormuz closure or a broader conflict drives oil above $140 and turns recession from risk to event, pushing tech toward 35-45% downside.</p>
+          </div>
+        </div>
+        <div class="callout">
+          <div class="panel dark strong">
+            <p class="kicker">Weighted View</p>
+            <h3>Expected drawdown: about -19.5%</h3>
+            <p>That estimate is the bridge between the report’s tactical caution and its refusal to abandon the long-term AI thesis. The issue is timing and path, not belief in the theme itself.</p>
+          </div>
+          <div class="panel strong">
+            <p class="kicker">Investor Reading</p>
+            <ul class="bullets">
+              <li><strong>The base case is not the same as the expected value.</strong><span class="detail">Even if muddle-through is the most likely outcome, the size of the bad outcomes still dominates the payoff profile.</span></li>
+              <li><strong>Hedges are justified by distribution shape.</strong><span class="detail">Protection is not just insurance against a low-probability disaster; it is compensation for a meaningfully skewed return distribution.</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="source">Source emphasis: Risk Map, Bear Case scenarios, Tactical Bias.</span>
+        <span class="slide-number">14</span>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Business Relevance By Sector">
+      <div class="eyebrow">
+        <span>Business Relevance</span>
+        <span class="tag">Implications</span>
+      </div>
+      <div class="title-block">
+        <h2>The business impact is uneven: some sectors gain from the AI stack, while others are exposed to the cost of financing it or to second-order disruption</h2>
+      </div>
+      <div class="divider"></div>
+      <div class="content">
+        <div class="matrix">
+          <div class="mini-card">
+            <h4>Memory and HBM suppliers</h4>
+            <p>Best near-term earnings leverage in the stack, but also the most vulnerable to a 1H27 peak narrative and an eventual gross-margin reset.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Hyperscalers</h4>
+            <p>Revenue growth remains strong, yet investors need more evidence that capex-heavy expansion will translate into acceptable long-run cash returns.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Optics, power, and infrastructure</h4>
+            <p>These groups benefit when AI clusters scale because networking, power delivery, and thermal constraints become mandatory spending categories.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Enterprise software</h4>
+            <p>Data platforms look resilient, but BI and visualization layers face margin and TAM pressure as LLM workflows commoditize basic analytics output.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Energy and macro defensives</h4>
+            <p>These become hedge assets rather than pure alpha assets when oil is the key market transmission channel.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Consumer and credit-sensitive sectors</h4>
+            <p>They carry the hidden cost of the thesis because gasoline and financing stress can weaken demand even while AI leaders keep spending.</p>
+          </div>
+        </div>
+        <div class="panel strong">
+          <p class="kicker">Practical Example</p>
+          <p>A portfolio can be right on AI infrastructure demand and still suffer if it ignores where the economic pain lands. The report repeatedly shows that winners inside the AI stack and losers outside it can coexist for a while, but oil and credit stress eventually connect the two.</p>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="source">Sources: Memory, cloud, software, macro, and positioning sections across the report.</span>
+        <span class="slide-number">15</span>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Tactical Bias And Hedge Overlay">
+      <div class="eyebrow">
+        <span>Story Beat 7</span>
+        <span class="tag">Portfolio Posture</span>
+      </div>
+      <div class="title-block">
+        <h2>The recommended stance is neutral with a hedge overlay: stay exposed to structural winners, but do not leave the macro left tail unpriced</h2>
+      </div>
+      <div class="divider"></div>
+      <div class="content">
+        <div class="comparison-grid">
+          <div class="panel strong">
+            <p class="kicker">What To Keep Owning</p>
+            <ul class="bullets">
+              <li><strong>Core AI beneficiaries.</strong><span class="detail">Memory, NVIDIA-linked supply chain, optics, and select hyperscaler proxies still have earnings momentum behind them.</span></li>
+              <li><strong>Businesses with visible capacity bottlenecks.</strong><span class="detail">Scarcity economics still support pricing and margins where supply remains the gating factor.</span></li>
+              <li><strong>Second-order AI enablers.</strong><span class="detail">Power, networking, and silicon photonics matter more as cluster scale increases.</span></li>
+            </ul>
+          </div>
+          <div class="panel strong">
+            <p class="kicker">What To Hedge Or Limit</p>
+            <ul class="bullets">
+              <li><strong>Oil and credit tail risk.</strong><span class="detail">The report explicitly favors energy-correlated hedges, HY credit protection, and QQQ downside structures.</span></li>
+              <li><strong>Peak-cycle memory exposure into 1H27.</strong><span class="detail">The nearer the expected peak gets, the less investors should rely on spot economics to justify forward multiples.</span></li>
+              <li><strong>Businesses facing AI-led displacement.</strong><span class="detail">BI, generic CRM, and other layers where AI makes incumbent workflows easier to replace deserve more valuation skepticism.</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="panel dark strong">
+          <p class="kicker">Decision Logic</p>
+          <h3>This is a risk-budgeting recommendation, not indecision.</h3>
+          <p>The report is clear that the secular thesis remains valid. The hedge overlay exists because market structure, oil, and policy are likely to dominate price action before long-term AI economics can fully reassert themselves.</p>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="source">Source: Tactical Bias & Invalidation Triggers.</span>
+        <span class="slide-number">16</span>
+      </div>
+    </section>
+
+    <section class="slide" data-title="What Changes The Call">
+      <div class="eyebrow">
+        <span>Watch Dashboard</span>
+        <span class="tag">Triggers</span>
+      </div>
+      <div class="title-block">
+        <h2>The call should change quickly if the market resolves the oil shock, or if capital returns and credit conditions deteriorate further</h2>
+      </div>
+      <div class="divider"></div>
+      <div class="content">
+        <div class="watch-row">
+          <div class="watch good">
+            <h3>Bullish shift</h3>
+            <p>Oil below $95, a Fed cut, and improving AI ROIC data would justify moving from neutral to tactical long.</p>
+          </div>
+          <div class="watch bad">
+            <h3>Bearish shift</h3>
+            <p>Oil above $125, HY CDX above stress thresholds, and recession odds above 40% would argue for a much more defensive posture.</p>
+          </div>
+          <div class="watch warn">
+            <h3>Narrative invalidation</h3>
+            <p>Early memory ASP declines, AI workload ROIC below expectations, or stalled agentic adoption would weaken the dominant AI spending narrative.</p>
+          </div>
+          <div class="watch bad">
+            <h3>Regime break</h3>
+            <p>A sustained break of major equity support levels would signal that the market has moved from fragile-bull volatility into distribution.</p>
+          </div>
+        </div>
+        <div class="panel strong">
+          <p class="kicker">What Management Teams Should Watch</p>
+          <ul class="bullets">
+            <li><strong>Return disclosure quality.</strong><span class="detail">The market will increasingly reward companies that can prove economic yield on AI spend rather than just volume growth.</span></li>
+            <li><strong>Customer concentration and pricing durability.</strong><span class="detail">Both are likely to become more important discussion points as investors move from demand validation to profit-pool validation.</span></li>
+            <li><strong>Energy and financing assumptions.</strong><span class="detail">High-growth businesses funded in an easier macro regime may need to refresh those assumptions faster than expected.</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="source">Source emphasis: Tactical Bias, Bull/Bear invalidation conditions, Risk Map.</span>
+        <span class="slide-number">17</span>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Closing Synthesis">
+      <div class="eyebrow">
+        <span>Closing Synthesis</span>
+        <span class="tag">Conclusion</span>
+      </div>
+      <div class="title-block">
+        <h2>The report’s final message is disciplined optimism: believe the AI build-out, but do not confuse demand confirmation with immunity from macro and capital-cycle risk</h2>
+      </div>
+      <div class="divider"></div>
+      <div class="content">
+        <div class="hero-grid">
+          <div class="panel dark strong">
+            <p class="kicker">Closing Thesis</p>
+            <h3>AI remains the dominant growth engine, but Q2-Q3 2026 is likely to be decided by who can survive the funding, oil, and positioning shock around it.</h3>
+            <ul class="bullets">
+              <li><strong>Demand is real.</strong><span class="detail">The report gives multiple independent reasons to believe the infrastructure cycle is durable.</span></li>
+              <li><strong>Returns are still being tested.</strong><span class="detail">Cloud economics, concentration, and future margin durability remain the key unresolved questions.</span></li>
+              <li><strong>Portfolio construction must reflect path risk.</strong><span class="detail">The most defensible stance is to stay exposed to the theme while actively paying for protection against the macro left tail.</span></li>
+            </ul>
+          </div>
+          <div class="panel strong">
+            <p class="kicker">One-Line Investor Takeaway</p>
+            <h3>Long the secular winners, short the assumption that macro risk is irrelevant.</h3>
+            <p>The market is not debating whether AI matters. It is debating whether the current price, leverage, and policy backdrop can carry the theme without a meaningful reset first.</p>
+          </div>
+        </div>
+        <div class="source-grid">
+          <div class="source-card">
+            <h4>37 files analyzed</h4>
+            <p>Semis, cloud, macro, positioning, software, thematic notes, and earnings all contributed to the synthesis.</p>
+          </div>
+          <div class="source-card">
+            <h4>Best near-term alpha</h4>
+            <p>Separate structural AI winners from businesses where oil, rates, or customer concentration can undermine the same bullish narrative.</p>
+          </div>
+          <div class="source-card">
+            <h4>Main risk to the call</h4>
+            <p>A rapid oil resolution could force investors underweight risk assets to chase higher, making hedges look too early before they look necessary again.</p>
+          </div>
+          <div class="source-card">
+            <h4>Main opportunity</h4>
+            <p>If the left tail is managed well, the next phase of the AI cycle may broaden beyond chips into optics, power, software productivity, and enterprise workflow redesign.</p>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="source">Presentation based on: Multi-Agent-Market-Intelligence-Synthesis_2026-03-19.md.</span>
+        <span class="slide-number">18</span>
+      </div>
+    </section>
+  </div>
+
+  <div class="index-drawer" id="indexDrawer">
+    <h3>Slide Index</h3>
+    <div id="indexList"></div>
+  </div>
+
+  <div class="controls">
+    <button type="button" id="prevBtn">Previous</button>
+    <div class="counter" id="counter">1 / 18</div>
+    <div class="progress-rail" aria-hidden="true">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <button type="button" id="indexBtn">Index</button>
+    <button type="button" id="nextBtn">Next</button>
+  </div>
+
+  <script>
+    (function () {
+      const deck = document.getElementById("deck");
+      const slides = Array.from(document.querySelectorAll(".slide"));
+      const counter = document.getElementById("counter");
+      const progressBar = document.getElementById("progressBar");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      const indexBtn = document.getElementById("indexBtn");
+      const indexDrawer = document.getElementById("indexDrawer");
+      const indexList = document.getElementById("indexList");
+      const slideWidth = 1600;
+      const slideHeight = 900;
+      let current = 0;
+
+      function fitDeck() {
+        const reservedHeight = 72;
+        const availableWidth = window.innerWidth - 20;
+        const availableHeight = window.innerHeight - reservedHeight;
+        const scale = Math.min(availableWidth / slideWidth, availableHeight / slideHeight);
+        deck.style.transform = `scale(${scale})`;
+      }
+
+      function buildIndex() {
+        slides.forEach((slide, index) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.textContent = `${index + 1}. ${slide.dataset.title || "Slide"}`;
+          button.addEventListener("click", () => {
+            goTo(index);
+            indexDrawer.classList.remove("open");
+          });
+          indexList.appendChild(button);
+        });
+      }
+
+      function updateIndexState() {
+        Array.from(indexList.children).forEach((button, index) => {
+          button.classList.toggle("active", index === current);
+        });
+      }
+
+      function hashToIndex() {
+        const raw = window.location.hash.replace("#", "");
+        const parsed = Number.parseInt(raw, 10);
+        if (Number.isNaN(parsed) || parsed < 1 || parsed > slides.length) {
+          return null;
+        }
+        return parsed - 1;
+      }
+
+      function goTo(index) {
+        current = (index + slides.length) % slides.length;
+        slides.forEach((slide, slideIndex) => {
+          slide.classList.toggle("active", slideIndex === current);
+        });
+        counter.textContent = `${current + 1} / ${slides.length}`;
+        progressBar.style.width = `${((current + 1) / slides.length) * 100}%`;
+        if (window.location.hash !== `#${current + 1}`) {
+          history.replaceState(null, "", `#${current + 1}`);
+        }
+        updateIndexState();
+      }
+
+      prevBtn.addEventListener("click", () => goTo(current - 1));
+      nextBtn.addEventListener("click", () => goTo(current + 1));
+      indexBtn.addEventListener("click", () => indexDrawer.classList.toggle("open"));
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") {
+          event.preventDefault();
+          goTo(current + 1);
+        } else if (event.key === "ArrowLeft" || event.key === "PageUp") {
+          event.preventDefault();
+          goTo(current - 1);
+        } else if (event.key === "Home") {
+          goTo(0);
+        } else if (event.key === "End") {
+          goTo(slides.length - 1);
+        } else if (event.key.toLowerCase() === "i") {
+          indexDrawer.classList.toggle("open");
+        } else if (event.key === "Escape") {
+          indexDrawer.classList.remove("open");
+        }
+      });
+
+      window.addEventListener("resize", fitDeck);
+      window.addEventListener("hashchange", () => {
+        const target = hashToIndex();
+        if (target !== null && target !== current) {
+          goTo(target);
+        }
+      });
+      buildIndex();
+      fitDeck();
+      goTo(hashToIndex() ?? 0);
+    })();
+  </script>
+</body>
+</html>

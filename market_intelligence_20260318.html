@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Infrastructure & Semiconductor Intelligence — March 18, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700;800;900&family=DM+Sans:wght@300;400;500;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5ede0; --surface: #ffffff; --surface2: #f0e8d8;
+  --border: #e0d4c0; --border2: #ccc0a8;
+  --text: #1c1a14; --text2: #4a4438; --dim: #8a7d6a;
+  --teal: #1e6464; --teal-light: #e8f3f0; --teal-dark: #154848;
+  --amber: #c96a14; --amber-light: #fdf0e0;
+  --d1: #1e6464; --d1bg: #e8f3f0;
+  --d2: #c96a14; --d2bg: #fdf0e0;
+  --d3: #6b4ca8; --d3bg: #f0ecf8;
+  --d4: #1a6b3c; --d4bg: #e8f5ec;
+  --d5: #8a4020; --d5bg: #faeae0;
+  --font-display: 'Libre Franklin', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-ui: 'Syne', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 14px; overflow: hidden; }
+
+#progress-wrap { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: var(--border); z-index: 100; }
+#progress { height: 100%; width: 0; background: var(--teal); transition: width 0.3s ease; }
+
+#nav {
+  position: fixed; bottom: 0; left: 0; right: 0; height: 38px;
+  background: var(--surface); border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px; z-index: 100;
+  font-family: var(--font-ui); font-size: 10px;
+  color: var(--dim); letter-spacing: 0.12em; text-transform: uppercase;
+}
+#nav button {
+  background: none; border: 1px solid var(--border2);
+  color: var(--text2); padding: 4px 14px; cursor: pointer;
+  font-family: var(--font-ui); font-size: 10px;
+  letter-spacing: 0.1em; border-radius: 2px;
+  text-transform: uppercase; transition: all 0.2s;
+}
+#nav button:hover { border-color: var(--teal); color: var(--teal); }
+
+.slide { position: fixed; inset: 3px 0 38px 0; display: none; overflow: hidden; background: var(--bg); }
+.slide.active { display: flex; }
+.slide-inner { width: 100%; height: 100%; display: flex; flex-direction: column; padding: 24px 44px 16px; }
+
+.slide-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px; flex-shrink: 0;
+  padding-bottom: 8px; border-bottom: 1px solid var(--border);
+}
+.domain-tag { font-family: var(--font-ui); font-size: 10px; font-weight: 600; letter-spacing: 0.16em; color: var(--teal); text-transform: uppercase; }
+.slide-num { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.1em; color: var(--dim); text-transform: uppercase; }
+.slide-title { font-family: var(--font-display); font-size: 26px; font-weight: 800; line-height: 1.15; color: var(--text); margin-bottom: 12px; flex-shrink: 0; }
+
+.slide-content { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+.slide-content::-webkit-scrollbar { width: 4px; }
+.slide-content::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.two-col   { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.four-col  { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
+
+.featured-layout { display: grid; grid-template-columns: 1.5fr 1fr; gap: 12px; flex: 1; }
+.featured-layout .right-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-content: start; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 14px 16px; }
+.card-eyebrow { font-family: var(--font-ui); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: var(--teal); text-transform: uppercase; margin-bottom: 6px; }
+.card-title { font-family: var(--font-display); font-size: 20px; font-weight: 800; color: var(--text); line-height: 1.1; margin-bottom: 6px; }
+.card p { font-size: 13.5px; line-height: 1.6; color: var(--text2); }
+.card ul { padding-left: 16px; }
+.card ul li { font-size: 13.5px; line-height: 1.65; color: var(--text2); margin-bottom: 3px; }
+.card-accent { border-left: 3px solid var(--teal); border-radius: 0 6px 6px 0; }
+
+.featured-card { background: var(--teal-dark); border-radius: 8px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px; }
+.featured-card .card-eyebrow { color: rgba(255,255,255,0.55); }
+.featured-card .statement { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: #ffffff; line-height: 1.4; }
+.featured-card .body { font-size: 13px; line-height: 1.65; color: rgba(255,255,255,0.72); }
+
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 13px 15px; }
+.stat-eyebrow { font-family: var(--font-ui); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: var(--teal); text-transform: uppercase; margin-bottom: 4px; }
+.stat-value { font-family: var(--font-display); font-size: 28px; font-weight: 800; color: var(--text); line-height: 1; margin-bottom: 4px; }
+.stat-detail { font-size: 12.5px; line-height: 1.55; color: var(--text2); }
+
+.insight-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.insight-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 13px 15px; }
+.insight-card .insight-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 5px; line-height: 1.2; }
+.insight-card p { font-size: 13px; line-height: 1.6; color: var(--text2); }
+
+.hl-teal  { color: var(--teal);  font-weight: 600; }
+.hl-amber { color: var(--amber); font-weight: 600; }
+
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; flex-shrink: 0; }
+.stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 11px 13px; text-align: center; }
+.stat-box .val { font-family: var(--font-display); font-size: 26px; font-weight: 800; color: var(--teal); line-height: 1; }
+.stat-box .lbl { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.1em; color: var(--dim); margin-top: 4px; text-transform: uppercase; }
+
+.tbl-wrap { overflow-x: auto; border-radius: 6px; }
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; background: var(--surface); border-radius: 6px; overflow: hidden; }
+th { background: var(--teal-dark); color: rgba(255,255,255,0.78); font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 8px 11px; text-align: left; }
+td { border-bottom: 1px solid var(--border); padding: 8px 11px; color: var(--text2); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--surface2); }
+
+.pill { display: inline-block; padding: 2px 9px; border-radius: 2px; font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.08em; font-weight: 700; text-transform: uppercase; }
+.pill-teal   { background: var(--teal-light); color: var(--teal); }
+.pill-amber  { background: var(--amber-light); color: var(--amber); }
+.pill-green  { background: #e8f5ec; color: #1a6b3c; }
+.pill-red    { background: #faeaea; color: #8a1c1c; }
+.pill-purple { background: #f0ecf8; color: #6b4ca8; }
+
+.quote-block { background: var(--teal-light); border-left: 3px solid var(--teal); border-radius: 0 6px 6px 0; padding: 11px 15px; }
+.quote-source { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.12em; color: var(--teal); text-transform: uppercase; margin-bottom: 5px; }
+.quote-text { font-size: 13.5px; line-height: 1.6; color: var(--text); font-style: italic; }
+
+.timeline { display: flex; flex-direction: column; gap: 8px; }
+.tl-item { display: grid; grid-template-columns: 8px 110px 1fr; gap: 12px; align-items: start; }
+.tl-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); margin-top: 5px; flex-shrink: 0; }
+.tl-label { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.1em; color: var(--teal); padding-top: 3px; text-transform: uppercase; font-weight: 600; }
+.tl-text { font-size: 13.5px; line-height: 1.55; color: var(--text2); }
+
+/* Title slide */
+.title-slide .slide-inner { justify-content: center; align-items: flex-start; padding: 56px 64px; background: var(--bg); }
+.title-eyebrow { font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.2em; color: var(--teal); text-transform: uppercase; margin-bottom: 18px; font-weight: 600; }
+.title-main { font-family: var(--font-display); font-size: 52px; font-weight: 900; line-height: 1.0; color: var(--text); margin-bottom: 12px; max-width: 780px; }
+.title-sub { font-family: var(--font-display); font-size: 22px; font-weight: 600; color: var(--dim); margin-bottom: 32px; }
+.title-rule { width: 48px; height: 3px; background: var(--teal); margin-bottom: 28px; border-radius: 2px; }
+.title-meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; max-width: 760px; }
+.title-meta-item { display: flex; flex-direction: column; gap: 4px; }
+.title-meta-label { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.14em; color: var(--dim); text-transform: uppercase; }
+.title-meta-value { font-family: var(--font-body); font-size: 14px; font-weight: 500; color: var(--text); }
+
+/* Regime table colors */
+.regime-high { color: #8a1c1c; font-weight: 600; }
+.regime-mid  { color: var(--amber); font-weight: 600; }
+.regime-low  { color: var(--teal); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div id="progress-wrap"><div id="progress"></div></div>
+
+<!-- ═══════════════════════════════════════════ SLIDE 1: TITLE -->
+<div class="slide title-slide" id="slide-1">
+  <div class="slide-inner">
+    <div class="title-eyebrow">Research Intelligence Report · 35+ Sources · March 18, 2026</div>
+    <h1 class="title-main">AI Infrastructure &<br>Semiconductor Ecosystem</h1>
+    <div class="title-sub">Bull / Bear / Risk / Sentiment — Multi-Agent Synthesis</div>
+    <div class="title-rule"></div>
+    <div class="title-meta-grid">
+      <div class="title-meta-item">
+        <span class="title-meta-label">Core Thesis</span>
+        <span class="title-meta-value" style="color:var(--teal)">$1T+ demand backlog meets parabolic token growth; memory prices inflecting sharply; optical supply structurally constrained</span>
+      </div>
+      <div class="title-meta-item">
+        <span class="title-meta-label">Key Sources</span>
+        <span class="title-meta-value">UBS · Evercore ISI · J.P. Morgan · Bernstein · TMTB · Chinese Institutional Forums</span>
+      </div>
+      <div class="title-meta-item">
+        <span class="title-meta-label">Confidence</span>
+        <span class="title-meta-value">High — memory pricing, GPU demand · Medium — CPO timing, auto semis recovery</span>
+      </div>
+      <div class="title-meta-item">
+        <span class="title-meta-label">Regime Classification</span>
+        <span class="title-meta-value" style="color:var(--amber)">Mid-Cycle Consensus → Late-Stage Crowding in GPU/Optical; Early Narrative in Inference &amp; Robotics</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ SLIDE 2: EXECUTIVE SUMMARY -->
+<div class="slide" id="slide-2">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Executive Summary</span>
+      <span class="slide-num">Slide 2 / 16</span>
+    </div>
+    <h2 class="slide-title">Six Clusters, One Regime: Demand Confirmed, Crowding Elevated</h2>
+    <div class="slide-content">
+      <div class="featured-layout">
+        <div class="featured-card">
+          <div class="card-eyebrow">Synthesis Call</div>
+          <div class="statement">Regime is Mid-Cycle Consensus transitioning to Late-Stage Crowding in GPU and Optical. MU's massive beat shifts near-term asymmetry toward memory. Selective long bias — favor MU, FN, COHR over richly priced LITE.</div>
+          <div class="body">NVDA updated GTC backlog to $1T+ covering C2025–C2027 (Blackwell + Rubin only). AI CapEx hits $850B in 2026 — 6x in 3 years. MU Feb Q landed $23.9B revenue (+20% above Street), GM 74.9%, EPS $12.20 (+33% beat). May Q guide: $33.5B / ~81% GM / $19.15 EPS — all massively above consensus.</div>
+          <div class="body">Optical demand >> supply confirmed at OFC by every participant. No balance before FY27. LITE TAM expanding from $18B (CY25) to $90B+ (2030). Agentic token usage: 1T/week (Feb-25) → 15T/week (Feb-26) on OpenRouter — parabolic, not exponential.</div>
+        </div>
+        <div class="right-grid">
+          <div class="stat-card">
+            <div class="stat-eyebrow">NVDA Backlog</div>
+            <div class="stat-value">$1T+</div>
+            <div class="stat-detail">C2025–C2027 POs; Blackwell + Rubin only. CPX, LPX, enterprise RTX are <span class="hl-amber">incremental</span>.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">MU May Q Guide</div>
+            <div class="stat-value">$33.5B</div>
+            <div class="stat-detail">Rev guide <span class="hl-amber">+38%</span> above Street; GM ~<span class="hl-amber">81%</span>; EPS <span class="hl-amber">$19.15</span> (+59% above).</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Optical TAM 2030</div>
+            <div class="stat-value">$90B+</div>
+            <div class="stat-detail">LITE AI optical TAM from <span class="hl-amber">$18B</span> in CY25. COHR incremental SAM: <span class="hl-amber">$20B+</span> by 2030.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">AI CapEx 2026</div>
+            <div class="stat-value">$850B</div>
+            <div class="stat-detail">6x growth in 3 years per Evercore. Hyperscaler FCF rollover risk <span class="hl-amber">2026–2027</span> looms.</div>
+          </div>
+        </div>
+      </div>
+      <div class="insight-grid">
+        <div class="insight-card">
+          <div class="insight-title">1. Memory Is the Clearest Near-Term Trade</div>
+          <p>MU Feb Q beat magnitude was historic. May Q guide <span class="hl-amber">59%</span> above Street. DRAM ASP +<span class="hl-amber">65%</span> q/q. Bernstein sees pricing peak in <span class="hl-teal">1HCY27</span>. 5-year SCAs confirm structural shift.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">2. Optical Is Supply-Constrained Through FY27</div>
+          <p>Universal OFC consensus: demand >> supply. InP lasers are the primary bottleneck. LITE signed multi-billion OCS deal with <span class="hl-amber">$400M+</span> backlog. CPO timing pushed to 2027–2029.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">3. NVDA Architecture Is Expanding the TAM, Not Just the GPU</div>
+          <p>Groq 3 LPU disaggregates inference. Vera CPU addresses <span class="hl-amber">agentic orchestration</span>. CPUs re-emerging as gating factor. Non-cloud could exceed <span class="hl-amber">40%</span> of NVDA revenue.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">4. Crowding Risk Is Real in GPU/Optical</div>
+          <p>LITE at <span class="hl-amber">$649</span> vs JPM target <span class="hl-amber">$565</span> (15% over). Evercore universe 58% Buy / 37% Hold / 2% Sell. Analog semis at <span class="hl-teal">-36%</span> discount offer contrarian offset.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ SLIDE 3: NVDA GTC BACKLOG -->
+<div class="slide" id="slide-3">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">NVDA GTC 2026 — Cluster 1</span>
+      <span class="slide-num">Slide 3 / 16</span>
+    </div>
+    <h2 class="slide-title">$1T+ Backlog Resets the Revenue Build — C2027 Could Reach $600B</h2>
+    <div class="slide-content">
+      <div class="stat-row" style="grid-template-columns:repeat(5,1fr)">
+        <div class="stat-box"><div class="val">$1T+</div><div class="lbl">C2025–27 Backlog</div></div>
+        <div class="stat-box"><div class="val">$370B</div><div class="lbl">UBS C2026 DC Rev</div></div>
+        <div class="stat-box"><div class="val">$460B</div><div class="lbl">UBS C2027 DC Rev</div></div>
+        <div class="stat-box"><div class="val">$600B</div><div class="lbl">UBS C2027 Bull Case</div></div>
+        <div class="stat-box"><div class="val">$738B</div><div class="lbl">Evercore C2030 Rev</div></div>
+      </div>
+      <div class="featured-layout">
+        <div class="featured-card">
+          <div class="card-eyebrow">Backlog Structure</div>
+          <div class="statement">The $1T+ figure covers only Blackwell + Rubin GPUs and networking. CPX, LPX, standalone CPUs, and enterprise RTX are all incremental — suggesting UBS's $370B C2026 DC estimate is still conservative.</div>
+          <div class="body">Prior GTC (October) disclosed ~$500B through 2026. New slide implies $40–50B higher in C2026 than previously and ~22 months of additional order window through end-C2027. UBS PT: $245 (19x C2027E EPS of $12.68). Evercore PT: $352 (31x C2030 EPS of $16.62, discounted 4 years). Bear case $161, bull case $655.</div>
+          <div class="body">Evercore C2030 scenario: DC processors $170B + ecosystem (SW, HW, networking, Omniverse, services) $523B = $693B DC total. Operating income $514B. GM stays at ~75%.</div>
+        </div>
+        <div class="right-grid">
+          <div class="stat-card">
+            <div class="stat-eyebrow">Evercore FY2027E</div>
+            <div class="stat-value">$371.8B</div>
+            <div class="stat-detail">CY2026E <span class="hl-amber">$279B</span>; CY2027E <span class="hl-amber">$534B</span>. Wide range reflects execution uncertainty on Rubin timing.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">UBS PT</div>
+            <div class="stat-value">$245</div>
+            <div class="stat-detail">19x C2027E EPS <span class="hl-amber">$12.68</span>. Current price ~$183 = 34% implied upside. GM not expected above 75%.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">China Approval</div>
+            <div class="stat-value">H200</div>
+            <div class="stat-detail">Beijing approved <span class="hl-amber">H200 China sales</span>. NVDA preparing China-adapted Groq chip. Potential <span class="hl-amber">$40B+</span> revenue uplift.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Non-Cloud Mix</div>
+            <div class="stat-value">&gt;40%</div>
+            <div class="stat-detail">Customer mix broadening; physical AI industries driving sovereign + enterprise share vs current <span class="hl-amber">60/40</span> hyperscaler split.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ SLIDE 4: VERA RUBIN + GROQ 3 -->
+<div class="slide" id="slide-4">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">NVDA GTC 2026 — Architecture</span>
+      <span class="slide-num">Slide 4 / 16</span>
+    </div>
+    <h2 class="slide-title">GPU + LPU Disaggregation Splits Inference — Vera Rubin Addresses 75%, Groq 25%</h2>
+    <div class="slide-content">
+      <div class="two-col">
+        <div class="card card-accent" style="border-left-color:var(--d1)">
+          <div class="card-eyebrow">Vera Rubin System</div>
+          <ul>
+            <li><span class="hl-teal">7 chips + 5 rack systems</span> launching 2H:2026; Rubin Ultra and Feynman to follow</li>
+            <li>Rack options: Oberon NVL72, Oberon ETL256, Kyber NVL144/NVL1152</li>
+            <li><span class="hl-amber">~50x</span> performance/watt and <span class="hl-amber">~35x</span> lower cost per token vs H200 NVL8</li>
+            <li><span class="hl-teal">100% liquid cooling mandated</span> — net positive for DELL, CRWV, VRT</li>
+            <li>DSX Air digital twin: deployment timelines shrink from months to <span class="hl-amber">~1 week</span></li>
+            <li>Feynman (2028): 7 co-designed chips including Rosa CPU and BlueField-5</li>
+          </ul>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--d3)">
+          <div class="card-eyebrow">Groq 3 LPU</div>
+          <ul>
+            <li>SRAM-based LPU: <span class="hl-amber">1.2 PFLOPS</span> FP8/chip, <span class="hl-amber">500MB SRAM/chip</span>, 150TB/s bandwidth</li>
+            <li>LPX rack = <span class="hl-amber">315 PFLOPS</span>; already in production at Samsung</li>
+            <li>GPUs = "long-haul trucks"; LPUs = "delivery vans" — single architecture is suboptimal</li>
+            <li>GPU-LPU hybrid: attention on GPU (HBM), FFN matrix multiply on Groq SRAM</li>
+            <li>Connected via NVLink (intra-rack) and Spectrum-X (inter-rack)</li>
+            <li>Targets <span class="hl-teal">25%</span> of AI use cases (ultra-fast inference); Vera Rubin addresses <span class="hl-teal">75%</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="card card-accent" style="border-left-color:var(--d2)">
+        <div class="card-eyebrow">Vera CPU — In-House, Not Arm Neoverse</div>
+        <p>First fully NVDA-designed CPU optimized for AI/agentic workloads. <span class="hl-amber">~2x performance</span> vs Grace; <span class="hl-amber">~50%</span> higher per-core performance and <span class="hl-amber">~3x</span> more memory per core than x86. Uses LPDDR + SOCAMM delivering ~<span class="hl-teal">1.2 TB/s</span> memory bandwidth. CPUs re-emerging as gating factor for inference: handle tool execution, code compilation, validation, storage orchestration, workflow control. NVDA does not view LPX or standalone CPUs as margin-dilutive; GM not expected above 75%.</p>
+      </div>
+      <div class="two-col">
+        <div class="quote-block">
+          <div class="quote-source">Jonathan Ross, Groq Founder — GTC Panel</div>
+          <div class="quote-text">"Single architecture for all inference tasks is structurally suboptimal. NVLink opening to partners was what drew Groq to partner with NVDA."</div>
+        </div>
+        <div class="quote-block">
+          <div class="quote-source">UBS Day 2 — Infrastructure & Cooling</div>
+          <div class="quote-text">"800V DC architecture emerging; 45°C liquid cooling mandated; grid interconnection delays of 3–7 years driving on-site turbines and fuel cells."</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ SLIDE 5: AGENTIC AI + SOVEREIGN -->
+<div class="slide" id="slide-5">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">NVDA GTC 2026 — Agentic AI & Sovereign</span>
+      <span class="slide-num">Slide 5 / 16</span>
+    </div>
+    <h2 class="slide-title">Token Usage Growing Parabolically — Agentic Demand Is Boundless and Continuous</h2>
+    <div class="slide-content">
+      <div class="featured-layout">
+        <div class="featured-card">
+          <div class="card-eyebrow">Token Economics</div>
+          <div class="statement">Weekly tokens on OpenRouter: ~1T (Feb-25) → ~15T (Feb-26). Agentic AI drives 24/7 continuous inference — not episodic. Agents talking to agents creates machine-to-machine demand unconstrained by human interaction count.</div>
+          <div class="body">Three AI eras per Evercore: (1) GenAI, (2) Reasoning, (3) Agentic — where systems act autonomously. Agent fleets consume tens of millions of tokens/day at $50–100 cost; some software teams already justify daily token spend vs engineer compensation.</div>
+          <div class="body">Walmart running DGX systems: billions of daily AI decisions for 270M+ weekly customers, 100M+ SKUs, 4,600+ stores. AI "no longer just a science experience" — agents creating flywheel feeding data to other agents.</div>
+        </div>
+        <div class="right-grid">
+          <div class="stat-card">
+            <div class="stat-eyebrow">Token Growth</div>
+            <div class="stat-value">15x</div>
+            <div class="stat-detail">Weekly tokens: <span class="hl-teal">1T</span> (Feb-25) → <span class="hl-amber">15T</span> (Feb-26) on OpenRouter. Parabolic, not exponential.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">HUMAIN / Saudi</div>
+            <div class="stat-value">1.9GW</div>
+            <div class="stat-detail">HUMAIN + AWS: <span class="hl-amber">150,000</span> GB300 accelerators; targeting <span class="hl-teal">1.9GW</span> by 2030, <span class="hl-teal">6.0GW</span> by 2034. KSA has 15.7GW available DC capacity.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Humanoid Robotics</div>
+            <div class="stat-value">Data</div>
+            <div class="stat-detail">Primary bottleneck is <span class="hl-amber">intelligence and data</span>, not hardware. Agility, Tesla, Hexagon piloting in Amazon, BMW, Toyota factories.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Sovereign AI</div>
+            <div class="stat-value">EU+SEA</div>
+            <div class="stat-detail">Europe, SE Asia active; Middle East ramping. France: <span class="hl-amber">95%</span> carbon-free energy; 80% startups on open models. Additive to $1T+.</div>
+          </div>
+        </div>
+      </div>
+      <div class="insight-grid">
+        <div class="insight-card">
+          <div class="insight-title">NeMoClaw + OpenShell</div>
+          <p>NVDA announced NeMoClaw security framework and OpenShell open-source runtime for safe enterprise agentic deployment. Platforms for agent orchestration — not just chips.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">Isaac Sim & Digital Twins</div>
+          <p>Factory fleet deployments create flywheel through operational data. High-fidelity digital replicas compare simulated vs real outcomes. SK Hynix EVP: <span class="hl-amber">3 addressable factory problems</span> — skills shortage, inefficient timing, fragmented data.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">$60T OpEx Funding $1T AI CapEx</div>
+          <p>Hyperscalers enabled <span class="hl-amber">35–90%</span> revenue/employee gains via AI. The $60T in global enterprise OpEx is the funding source for $1T in AI capex — making demand structural, not cyclical.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ SLIDE 6: OFC DEMAND >> SUPPLY -->
+<div class="slide" id="slide-6">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Optical Networking — OFC 2026 · Cluster 2</span>
+      <span class="slide-num">Slide 6 / 16</span>
+    </div>
+    <h2 class="slide-title">Optical Is the New Lifeblood — Demand Exceeds Supply With No Balance Before FY27</h2>
+    <div class="slide-content">
+      <div class="stat-row" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat-box"><div class="val">10–14x</div><div class="lbl">BW/Deploy vs DCI</div></div>
+        <div class="stat-box"><div class="val">$90B+</div><div class="lbl">LITE TAM by 2030</div></div>
+        <div class="stat-box"><div class="val">$20B+</div><div class="lbl">COHR Incr. SAM 2030</div></div>
+        <div class="stat-box"><div class="val">FY27+</div><div class="lbl">Supply/Demand Balance</div></div>
+      </div>
+      <div class="featured-layout">
+        <div class="featured-card">
+          <div class="card-eyebrow">OFC 2026 Consensus</div>
+          <div class="statement">Every management team and analyst at OFC confirmed demand far exceeds supply. Bandwidth content per deployment is 10–14x higher in AI-centric use cases vs traditional DCI. No supply/demand balance in FY26 or FY27.</div>
+          <div class="body">Scale architecture hierarchy: scale-out (~500x BW vs WAN), scale-up (~50x), scale-across (~14x). "Copper if you can, fiber if you must" — copper dominates intra-rack for 2–4 more years; CPO adoption pushed to 2027–2029.</div>
+          <div class="body">OCS is the next growth vector after pluggables and CPO. Lasers and memory are the most-cited supply constraints. InP capacity is the main bottleneck — manageable but tight across all vendors.</div>
+        </div>
+        <div class="right-grid">
+          <div class="stat-card">
+            <div class="stat-eyebrow">5 OFC Themes (Evercore)</div>
+            <div class="stat-value" style="font-size:13px;font-weight:700;line-height:1.4;margin-top:4px">Scale-Up Optics Ramping</div>
+            <div class="stat-detail">1) Scale-up ramp underway. 2) InP manageable. 3) CPO timing debated. 4) OCS prominence growing. 5) Market fragmented — broad portfolios win.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">COHR OCS Progress</div>
+            <div class="stat-value">10+</div>
+            <div class="stat-detail">OCS customer engagements; shipping <span class="hl-amber">64×64</span> and <span class="hl-amber">320×320</span> systems. Liquid-crystal: more reliable, lower voltage than MEMS.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">LITE OCS Agreement</div>
+            <div class="stat-value">$400M+</div>
+            <div class="stat-detail">Backlog to be fulfilled <span class="hl-amber">2H CY26</span>; ramping to <span class="hl-amber">$1B+</span> run-rate by CY27. Multi-year, multi-billion-dollar OCS deal. 300×300 solution.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">COHR InP Expansion</div>
+            <div class="stat-value">4x+</div>
+            <div class="stat-detail">InP production expanding <span class="hl-amber">2x CY26</span>, another <span class="hl-amber">2x CY27</span>. Sites: Fremont CA, Sherman TX, Jarfalla SE, Zurich CH.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ SLIDE 7: OPTICAL COMPANY TABLE -->
+<div class="slide" id="slide-7">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Optical Networking — Company Matrix</span>
+      <span class="slide-num">Slide 7 / 16</span>
+    </div>
+    <h2 class="slide-title">Optical Beneficiary Stack: LITE and FN Lead on Backlog; COHR Offers More Valuation Runway</h2>
+    <div class="slide-content">
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>View</th>
+              <th>Price / PT</th>
+              <th>Key Metric / Catalyst</th>
+              <th>Risk / Watch</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>LITE (Lumentum)</strong></td>
+              <td><span class="pill pill-amber">Moderate — Crowded</span></td>
+              <td>$649 / JPM <span class="hl-amber">$565</span> · MS <span class="hl-amber">$595</span></td>
+              <td>$400M+ OCS backlog; $1B+ run-rate CY27; TAM $90B+ 2030; all four optical segments</td>
+              <td>Stock <span class="hl-amber">15%</span> above JPM target; wait for pullback or Q2 execution</td>
+            </tr>
+            <tr>
+              <td><strong>FN (Fabrinet)</strong></td>
+              <td><span class="pill pill-green">High Conviction</span></td>
+              <td>$500 / JPM <span class="hl-amber">$530</span></td>
+              <td>HPC/AWS ramp: $15M → $85M → $200M/Q; capacity to $11.5B; CPO + OCS dual exposure</td>
+              <td>EML supply (Lumentum now qualified as 2nd source — relief by Sep-Q)</td>
+            </tr>
+            <tr>
+              <td><strong>COHR (Coherent)</strong></td>
+              <td><span class="pill pill-green">High Conviction</span></td>
+              <td>$246 / JPM <span class="hl-amber">$245</span></td>
+              <td>$20B+ incremental SAM 2030: OCS $4B + CPO $15B+ + Thermal $2B + Multi-Rail $2B</td>
+              <td>JPM PT roughly in line; watch for upward revision; OCS qualification timing</td>
+            </tr>
+            <tr>
+              <td><strong>MRVL (Marvell)</strong></td>
+              <td><span class="pill pill-teal">Moderate — Upside</span></td>
+              <td>$91 / Evercore <span class="hl-amber">$155</span></td>
+              <td>1.6T DSP: $100M (2025) → $1B+ (2026) → multi-billions (2027); 55% interconnect growth FY27</td>
+              <td>NVDA internal DSP; CXL losing to NVLink/UALink at hyperscalers on latency</td>
+            </tr>
+            <tr>
+              <td><strong>CIEN (Ciena)</strong></td>
+              <td><span class="pill pill-amber">Hedge / Underweight</span></td>
+              <td>$364 / JPM <span class="hl-amber">$380</span></td>
+              <td>Scale-across TAM $8–14B; DCOM ramping (Meta); Nubis CPO multi-billion potential</td>
+              <td>Only 4% upside; consensus fully priced; laser supply constraining 28% guide</td>
+            </tr>
+            <tr>
+              <td><strong>CSCO (Cisco)</strong></td>
+              <td><span class="pill pill-teal">Monitor</span></td>
+              <td>$79 / JPM <span class="hl-amber">$95</span></td>
+              <td>700K+ 400G ZR shipped; multi-rail product at OFC; Acacia diversifying beyond AWS</td>
+              <td>CPO exuberance moderating; monitoring OCS but not investing; competition from CIEN</td>
+            </tr>
+            <tr>
+              <td><strong>SMTC (Semtech)</strong></td>
+              <td><span class="pill pill-teal">Emerging</span></td>
+              <td>— / —</td>
+              <td>FY27E "tremendous" growth +50% y/y incl. HieFo; 1.6T TIA/drivers for NVDA (2H)</td>
+              <td>Only 2 DSP vendors viable at advanced nodes; NVDA internal risk</td>
+            </tr>
+            <tr>
+              <td><strong>ADTN (Adtran)</strong></td>
+              <td><span class="pill pill-teal">Emerging</span></td>
+              <td>— / —</td>
+              <td>Huawei EU replacement ~$800–900M TAM; LiteWave 800G LPO &lt;1W vs 5–6W peers</td>
+              <td>BEAD funding starting; execution and ramp timing</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-eyebrow">Ayar Labs (Private)</div>
+          <p>CPO ramp 2H2027, meaningful 2028; 1M optical engines/month target. Only 4 companies on TSMC COUPE: NVDA, AMD, AVGO, and Ayar (only independent). Design win at Tier-1 GPU company (likely NVDA).</p>
+        </div>
+        <div class="card">
+          <div class="card-eyebrow">Lightmatter (Private)</div>
+          <p>Passage L20 chip (GFS fab) sampling → ramp 2027. GUIDE integrated laser: 100s of lasers per chip, no manual alignment, self-healing. Gen-2: 400TB/s (equivalent 72 ELSFPs from LITE/COHR). 3D photonics targeting 2028+.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ SLIDE 8: CPO TIMELINE DEBATE -->
+<div class="slide" id="slide-8">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Optical Networking — CPO Debate</span>
+      <span class="slide-num">Slide 8 / 16</span>
+    </div>
+    <h2 class="slide-title">CPO Is Inevitable — But Consensus Has Pushed Timing From "Imminent" to 2027–2029</h2>
+    <div class="slide-content">
+      <div class="two-col">
+        <div class="card card-accent" style="border-left-color:var(--d4)">
+          <div class="card-eyebrow">Bull View on CPO</div>
+          <ul>
+            <li><strong>Ayar Labs:</strong> Economically justified now — NVLink copper at <span class="hl-amber">40%</span> utilization means data idle. CPO ramp <span class="hl-teal">2H27</span>, meaningful 2028.</li>
+            <li><strong>LITE:</strong> Scale-out CPO near-term (UHP lasers), scale-up CPO starting <span class="hl-teal">late CY27</span>. Phase 2 intra-rack = 3–4x more CPO links than Phase 1.</li>
+            <li><strong>MRVL:</strong> Developing "at least 3" scale-up technologies — MZMs, MRMs (TSMC COUPE), EAMs (Celestial AI).</li>
+            <li><strong>Lightmatter:</strong> NPO 2027, 2D CPO 2028, 3D CPO beyond; GUIDE removes laser alignment bottleneck.</li>
+            <li><strong>Evercore:</strong> CPO penetration range: <span class="hl-amber">5–30%</span> in out-years for scale-up.</li>
+          </ul>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--d5)">
+          <div class="card-eyebrow">Bear View on CPO</div>
+          <ul>
+            <li><strong>JPM/Cisco:</strong> Exuberance has moderated; companies "tapping the brakes." Reliability path not yet adequate. Meta benchmarks at Executive Forum deemed "below-par."</li>
+            <li><strong>UBS:</strong> CPO adoption timing pushed out; broader GPU scale-up adoption only ~<span class="hl-amber">2029</span>.</li>
+            <li><strong>Barclays/GLW:</strong> CSCO sees CPO as longer-dated; GLW expects CPO ~2027 with material impact several years later.</li>
+            <li><strong>CRDO:</strong> ~11% selloff on CPO fears "largely misplaced" — AEC products serve front-of-rack, not exposed to scale-up CPO. Two technologies are complementary.</li>
+            <li><strong>Industry:</strong> Supply chain not ready — advanced packaging (CoWoS, hybrid bonding) and tester capacity lag demand.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-label">Now → 2H26</div>
+          <div class="tl-text">Scale-out CPO inter-rack first appearances. LITE UHP laser ramp. Copper dominates intra-rack.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-label">2H27 → 2028</div>
+          <div class="tl-text">Ayar Labs 1M units/month. LITE scale-up CPO shipments begin. Lightmatter NPO → 2D CPO. MRVL MZM/MRM at scale. Modest 100T switch adoption.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-label">2028 → 2030</div>
+          <div class="tl-text">3D CPO (Lightmatter, Ayar). Broad 400G SerDes shift. LITE Phase 2 intra-rack. CPO penetration 5–30% of scale-up depending on reliability milestones. Optical TAM expands to $90B+.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ SLIDE 9: MU EARNINGS -->
+<div class="slide" id="slide-9">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Memory — MU Feb Q Earnings · Cluster 3</span>
+      <span class="slide-num">Slide 9 / 16</span>
+    </div>
+    <h2 class="slide-title">MU Feb Q Was a Historic Beat — May Q Guide of $33.5B Revenue Is 38% Above Street</h2>
+    <div class="slide-content">
+      <div class="stat-row" style="grid-template-columns:repeat(5,1fr)">
+        <div class="stat-box"><div class="val">$23.9B</div><div class="lbl">Feb Q Revenue (+20% vs St)</div></div>
+        <div class="stat-box"><div class="val">74.9%</div><div class="lbl">Gross Margin (+640bp)</div></div>
+        <div class="stat-box"><div class="val">$12.20</div><div class="lbl">EPS (+33% vs Street)</div></div>
+        <div class="stat-box"><div class="val">$33.5B</div><div class="lbl">May Q Guide (+38% vs St)</div></div>
+        <div class="stat-box"><div class="val">~81%</div><div class="lbl">May Q GM Guide (+1080bp)</div></div>
+      </div>
+      <div class="featured-layout">
+        <div class="featured-card">
+          <div class="card-eyebrow">Beat Magnitude</div>
+          <div class="statement">This is not a beat — it's a regime reset. Revenue +20% above Street, GM +640bp, EPS +33%. May Q guide beats consensus by 38% on revenue and 59% on EPS. DRAM ASP +65% q/q in Feb Q alone.</div>
+          <div class="body">DRAM Revenue: $18.8B (+207% y/y). HBM Revenue: $3.0B (+22% q/q). NAND Revenue: $5.0B (+246% y/y). FCF: $6.9B vs Street $4.3B (+61%). Operating Margin: 69.0% vs Street 61.2% (+780bp).</div>
+          <div class="body">MU signing first-ever 5-year strategic customer agreements (SCAs). Customers only enter if they view memory as strategically critical with lasting structural change — confirms durable margin/ROE shift. MU no longer disclosing quarterly HBM revenue separately — share targets largely achieved.</div>
+        </div>
+        <div class="right-grid">
+          <div class="stat-card">
+            <div class="stat-eyebrow">May Q DRAM Guide</div>
+            <div class="stat-value">$26.3B</div>
+            <div class="stat-detail">+<span class="hl-amber">272%</span> y/y; blended ASP <span class="hl-amber">+36%</span> q/q; bits <span class="hl-amber">+3%</span> q/q. Volume + price both moving up.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">May Q NAND Guide</div>
+            <div class="stat-value">$7.5B</div>
+            <div class="stat-detail">ASP <span class="hl-amber">+42%</span> q/q; bits <span class="hl-amber">+5%</span> q/q. NAND outperforming DRAM on price.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">UBS FY27E Revision</div>
+            <div class="stat-value">$211B</div>
+            <div class="stat-detail">Raised from $150.5B (<span class="hl-amber">+40%</span>). EPS raised to <span class="hl-amber">$129.60</span> from $83.80 (+55%).</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">UBS PT</div>
+            <div class="stat-value">$510</div>
+            <div class="stat-detail">From $475. SOTP: HBM <span class="hl-amber">~$102/share</span> (6x P/S on C27E HBM) + Core DRAM+NAND <span class="hl-amber">~$407/share</span>. FCF yield 22.8% on FY27E.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ SLIDE 10: HBM + MEMORY PRICING -->
+<div class="slide" id="slide-10">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Memory — HBM Deep Dive & Pricing Inflection</span>
+      <span class="slide-num">Slide 10 / 16</span>
+    </div>
+    <h2 class="slide-title">DRAM ASP +47% QoQ, NAND +60% QoQ in 2QCY26 — Pricing Peak Visible at 1HCY27</h2>
+    <div class="slide-content">
+      <div class="two-col">
+        <div class="card card-accent" style="border-left-color:var(--d3)">
+          <div class="card-eyebrow">HBM Deep Dive (UBS)</div>
+          <ul>
+            <li>HBM bits: Q1:CY26E <span class="hl-amber">201MM GB</span> → Q2 228 → Q3 255 → Q4 288; CY26E total ~<span class="hl-amber">972MM GB</span> (+70% y/y)</li>
+            <li>HBM avg ASP/GB: <span class="hl-amber">$12.18</span> (Q1) → $13.17 (Q2) → $13.66 (Q3) → <span class="hl-amber">$14.22</span> (Q4)</li>
+            <li>HBM gross margin: ~60% (C2025) → <span class="hl-amber">~65%</span> (C2026E) → <span class="hl-amber">~70%</span> (C2027E)</li>
+            <li>HBM premium vs ex-HBM DRAM: <span class="hl-teal">1.9x</span> (C2026E) vs 4.2x (C2024) — premium compressing as scale grows</li>
+            <li>HBM4 1-beta yield: 62% (Q1:26E) → 67% (Q4:26E); HBM4E starting Q1:27E at 42%</li>
+            <li>MU HBM market share: <span class="hl-teal">~21%</span> stable; annual shipments: 0.97EB (CY25) → 1.51EB (CY27E)</li>
+          </ul>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--d2)">
+          <div class="card-eyebrow">Bernstein Memory Pricing (via TMTB)</div>
+          <ul>
+            <li>2QCY26 DRAM blended ASP: <span class="hl-amber">+47% QoQ</span> — above buyside expectations</li>
+            <li>2QCY26 NAND: <span class="hl-amber">+60% QoQ</span>; some SKUs near-100% QoQ increases</li>
+            <li>Server DRAM absorbing most supply; consumer weakness delayed; NAND outperforming</li>
+            <li>HBM pricing remaining tight; peak expected <span class="hl-teal">2H26 into 1HCY27</span></li>
+            <li>China clean rooms (YMTC/CXMT) arriving late CY26/CY27 — supply arrival = peak signal</li>
+            <li>Bernstein PT raises: MU <span class="hl-amber">$510</span> (from $330); Samsung <span class="hl-amber">KRW225K</span>; SK Hynix <span class="hl-amber">KRW1.15M</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-eyebrow">Capital Allocation & WFE Read-Across</div>
+          <p>MU bought back only ~$350M vs FCF $6.9B — constrained by CHIPS Act restrictions until 12/9/26. Modeling significant buybacks starting ~<span class="hl-amber">$3.5B/Q</span> from FQ2:27. F2027 capex implied at ~<span class="hl-amber">$40–45B</span> (+60–70% y/y). MU WFE assumptions: ~$10B too low for C2026, ~$5B too low for C2027. Shift to EUV adoption slightly negative for AMAT/LRCX multi-patterning.</p>
+        </div>
+        <div class="card">
+          <div class="card-eyebrow">Smartphone & PC Headwind</div>
+          <p>MU management expects smartphone/PC units <span class="hl-amber">down LDD% y/y</span> in CY26 as DRAM/NAND pricing surge squeezes device affordability. Negative for QCOM given Android exposure. Server DRAM content growing regardless: <span class="hl-teal">720GB (2025) → 858GB (2026E) → 1,047GB (2027E)</span> per unit (22% CAGR).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ SLIDE 11: AUTO/INDUSTRIAL SEMIS -->
+<div class="slide" id="slide-11">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Auto / Industrial Semis — Cluster 4</span>
+      <span class="slide-num">Slide 11 / 16</span>
+    </div>
+    <h2 class="slide-title">Recovery Is Real but Priced In — China NEV Down 20–30% YoY and Valuations at +2 Std Dev</h2>
+    <div class="slide-content">
+      <div class="stat-row" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat-box"><div class="val">+10%</div><div class="lbl">Auto Semis 2026E YoY</div></div>
+        <div class="stat-box"><div class="val">+14%</div><div class="lbl">Auto Semis 2027E YoY</div></div>
+        <div class="stat-box"><div class="val">8.5x</div><div class="lbl">BEV vs ICE Sem. Content</div></div>
+        <div class="stat-box"><div class="val">+2 σ</div><div class="lbl">Auto Semis EV/Sales Valuation</div></div>
+      </div>
+      <div class="featured-layout">
+        <div class="featured-card">
+          <div class="card-eyebrow">Tactical Call</div>
+          <div class="statement">Auto semis recovery is confirmed by 5 of 5 leading indicators — but the trade is already crowded. Valuations at +2 std dev on EV/Sales, China NEV wholesale collapsing 20–30% y/y. Underweight NXP and STM.</div>
+          <div class="body">UBS: industrial revenue growth ~16% 2026E. Analog semis y/y revenue turned positive Q2'25, accelerating to +18% by Q1'26E. Semis vs OEM revenue gap turned positive end FY25, now at +13%.</div>
+          <div class="body">Stock prices are leading revenue growth, not confirming it. Analog semis trade at -36% discount to semis market cap vs 10Y average — but that discount is a value signal, not a momentum signal. Forward P/E at 21.3x vs 10Y avg 19x.</div>
+        </div>
+        <div class="right-grid">
+          <div class="stat-card">
+            <div class="stat-eyebrow">China NEV Risk</div>
+            <div class="stat-value">-25%</div>
+            <div class="stat-detail">China NEV wholesale <span class="hl-amber">-20–30% y/y</span> Jan-Feb 2026. Global incumbents' China auto semi revenue expected <span class="hl-amber">flat 2026</span> after share loss.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Leading Indicators</div>
+            <div class="stat-value">5/5 ✓</div>
+            <div class="stat-detail">Semis YoY growth: <span class="hl-teal">18%</span>. OEM gap: +13%. Inventory days declining. Production +1.3% 2026E. All positive.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">EV Content Per Car</div>
+            <div class="stat-value">$550</div>
+            <div class="stat-detail">BEV <span class="hl-amber">$550</span> vs gasoline <span class="hl-amber">$65</span> = 8.5x content delta. Structural growth driver regardless of unit cycle.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Coverage Universe</div>
+            <div class="stat-value" style="font-size:11px;font-weight:700;line-height:1.6;margin-top:4px">ADI · RENESAS · ON Semi · STM · TXN · IFX · MCHP · MELEXIS · NXP</div>
+            <div class="stat-detail">UBS "Smooth Sailing into 2026" — but valuations demand caution.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ SLIDE 12: MACRO + MARKET FLOW -->
+<div class="slide" id="slide-12">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Macro & Market Flow — Cluster 5</span>
+      <span class="slide-num">Slide 12 / 16</span>
+    </div>
+    <h2 class="slide-title">Fed Holds Hawkish — Duration Headwind Persists; AI Hardware Subsectors Broadly Positive</h2>
+    <div class="slide-content">
+      <div class="two-col">
+        <div class="card card-accent" style="border-left-color:var(--d5)">
+          <div class="card-eyebrow">Fed Review — March 18, 2026</div>
+          <ul>
+            <li>Held rates at <span class="hl-amber">50–75bp</span>; Powell leaned hawkish on inflation persistence</li>
+            <li>GDP revised <span class="hl-teal">UP</span>: 2.4% (2026), 2.3% (2027), 2.1% (2028)</li>
+            <li>PCE and core PCE revised <span class="hl-amber">HIGHER</span> — stickier than expected</li>
+            <li>Median fed funds: unchanged at <span class="hl-amber">4.4%</span> for 2026; long-run rate nudged to <span class="hl-amber">3.1%</span></li>
+            <li>Cuts not imminent — duration headwind for high-multiple tech names</li>
+            <li>Dollar gained; US equities lower day-of; financials saw largest increase in credit loss provisions</li>
+          </ul>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--d4)">
+          <div class="card-eyebrow">AI Subsector Performance (Pre-Market)</div>
+          <ul>
+            <li>Optical: <span class="hl-teal">+2.20%</span> · Memory Exposed: <span class="hl-teal">+1.35%</span> · Google AI Infra: <span class="hl-teal">+1.62%</span></li>
+            <li>Electric Grid Enablers: <span class="hl-teal">+1.62%</span> · AI Tech Beneficiaries: <span class="hl-teal">+1.29%</span></li>
+            <li>Nuclear: <span class="hl-teal">+1.02%</span> · AI Power: <span class="hl-teal">+0.68%</span> · Broad AI Index: <span class="hl-teal">+0.95%</span></li>
+            <li><span class="hl-amber">AI Software: -0.27%</span> — only negative AI subsector</li>
+            <li>Asia overnight strong: Samsung/SK Hynix <span class="hl-teal">+8%</span>; KOSPI <span class="hl-teal">+5.04%</span>; NKY <span class="hl-teal">+2.87%</span></li>
+            <li>Pre-market movers: LITE +7.1%, COHR +4.6%, CIEN +2.4% | ETSY -4.9%, TTD -3.7%</li>
+          </ul>
+        </div>
+      </div>
+      <div class="insight-grid">
+        <div class="insight-card">
+          <div class="insight-title">NVDA H200 China Approval</div>
+          <p>Beijing approved H200 sales in China. NVDA preparing China-adapted Groq chip. Potential <span class="hl-amber">$40B+</span> revenue uplift. Geopolitical uncertainty remains on timing and volumes.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">BABA + Baidu Hiking AI Prices</div>
+          <p>Alibaba hiking AI prices up to <span class="hl-amber">34%</span>; Baidu +<span class="hl-amber">30%</span> to meet demand surge. Confirms demand-supply imbalance in China AI compute is real and monetizable.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">MSFT / OpenAI Dispute</div>
+          <p>Microsoft weighing legal action over <span class="hl-amber">$50B</span> Frontier cloud deal. Dispute over "Stateful Runtime Environment" on Amazon Bedrock. MSFT reorganizing AI leadership; Nadella taking direct Copilot oversight.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">DeepSeek "Hunter Alpha"</div>
+          <p>Mysterious model on OpenRouter: <span class="hl-amber">1T parameters</span>, <span class="hl-amber">1M token context</span>, Chinese-trained — specs matching DeepSeek V4 expectations. OpenClaw/Agentic AI usage spiking past two days on OpenRouter.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ SLIDE 13: ADVANCED NODE & TSMC -->
+<div class="slide" id="slide-13">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Advanced Node Capacity & TSMC — Cluster 6</span>
+      <span class="slide-num">Slide 13 / 16</span>
+    </div>
+    <h2 class="slide-title">TSMC Is Approaching 60% of Global WFE — Samsung and Intel Weakness Creates Concentration Risk</h2>
+    <div class="slide-content">
+      <div class="featured-layout">
+        <div class="featured-card">
+          <div class="card-eyebrow">TSMC Dominance Thesis</div>
+          <div class="statement">TSMC capex reaching $70B+ in 2027, approaching ~60% of global WFE. Elevated capex for 3+ years minimum through 1.0nm node. Samsung and Intel weakening creates a single-point-of-failure concentration in global AI infrastructure.</div>
+          <div class="body">Only 4 companies developing on TSMC COUPE (key CPO/photonics platform): NVDA, AMD, AVGO, and Ayar Labs. Advanced node capacity charts show exponential ramp through 2027–2028.</div>
+          <div class="body">Chinese institutional analysis (知识星球): detailed mapping of advanced packaging incumbents vs domestic Chinese players. Lead-frame semiconductor supply chain analysis covering global vs CXMT/YMTC competitive positioning. Equipment stock opportunities highlighted given TSMC dominance and WFE spending elevation.</div>
+        </div>
+        <div class="right-grid">
+          <div class="stat-card">
+            <div class="stat-eyebrow">TSMC Capex 2027</div>
+            <div class="stat-value">$70B+</div>
+            <div class="stat-detail">~<span class="hl-amber">60%</span> of global WFE. Elevated for <span class="hl-teal">3+ years</span> through 1.0nm node development. Positive for ASML, AMAT, LRCX, KLAC.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Groq 3 Architecture</div>
+            <div class="stat-value">Samsung</div>
+            <div class="stat-detail">Groq Gen3 in production at Samsung. SRAM-based LPU: <span class="hl-amber">1.2 PFLOPS</span> FP8, <span class="hl-amber">500MB SRAM</span>, 150TB/s BW. LPX rack = 315 PFLOPS.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">MU EUV Shift</div>
+            <div class="stat-value">EUV</div>
+            <div class="stat-detail">MU aggressively adopting EUV — saves fab space, improves yields. Slightly <span class="hl-amber">negative</span> for AMAT/LRCX multi-patterning growth.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Taiwan Tail Risk</div>
+            <div class="stat-value">⚠ High</div>
+            <div class="stat-detail">Taiwan geopolitical event disrupts TSMC supply chain — <span class="hl-amber">60%</span> of global WFE, single-node dependency. Narrative invalidation scenario #5.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ SLIDE 14: REGIME & CROWDING SCORES -->
+<div class="slide" id="slide-14">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Regime & Crowding Framework</span>
+      <span class="slide-num">Slide 14 / 16</span>
+    </div>
+    <h2 class="slide-title">Narrative Score 72 / Crowding Score 68 — Asymmetry Is Negatively Convex With Memory Exception</h2>
+    <div class="slide-content">
+      <div class="stat-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:2px">
+        <div class="stat-box"><div class="val" style="color:var(--amber)">72/100</div><div class="lbl">Narrative Stability Score</div></div>
+        <div class="stat-box"><div class="val" style="color:var(--amber)">68/100</div><div class="lbl">Crowding Risk Score</div></div>
+        <div class="stat-box"><div class="val" style="color:#8a1c1c">Neg. Convex</div><div class="lbl">Asymmetry Assessment</div></div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Sub-Theme</th>
+              <th>Stage</th>
+              <th>Key Evidence</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>GPU Capacity Constraint</strong></td>
+              <td><span class="pill pill-amber">Mid-Cycle Consensus</span></td>
+              <td>Universally held; $1T+ backlog; priced at 19–31x forward PE</td>
+            </tr>
+            <tr>
+              <td><strong>Optical TAM Expansion</strong></td>
+              <td><span class="pill pill-red">Mid → Late-Stage</span></td>
+              <td>All OFC presenters uniformly bullish; LITE price above all analyst targets</td>
+            </tr>
+            <tr>
+              <td><strong>Memory Pricing Upcycle</strong></td>
+              <td><span class="pill pill-teal">Mid-Cycle Strengthening</span></td>
+              <td>MU Feb Q +33% above Street; May Q +59% above; Bernstein peak 1HCY27</td>
+            </tr>
+            <tr>
+              <td><strong>OCS Market Scaling</strong></td>
+              <td><span class="pill pill-teal">Mid-Cycle</span></td>
+              <td>TAM doubled to $4B; LITE multi-billion deal; 10+ COHR customers engaged</td>
+            </tr>
+            <tr>
+              <td><strong>CPO Adoption</strong></td>
+              <td><span class="pill pill-purple">Debated / Uncertain</span></td>
+              <td>Universal "inevitable" but timing pushed to 2027–2029; 5–30% penetration range</td>
+            </tr>
+            <tr>
+              <td><strong>Auto Semis Recovery</strong></td>
+              <td><span class="pill pill-amber">Mid-Cycle — Priced In</span></td>
+              <td>UBS +10% growth; China -20–30% y/y; valuations at +2 std dev</td>
+            </tr>
+            <tr>
+              <td><strong>Disaggregated Inference (Groq)</strong></td>
+              <td><span class="pill pill-green">Early Narrative</span></td>
+              <td>Announced at GTC; production ramping; not yet in consensus models</td>
+            </tr>
+            <tr>
+              <td><strong>Analog Semis Value</strong></td>
+              <td><span class="pill pill-green">Early Narrative</span></td>
+              <td>-36% discount to semis market cap; revenue inflecting; positioning lags fundamentals</td>
+            </tr>
+            <tr>
+              <td><strong>Physical AI / Robotics</strong></td>
+              <td><span class="pill pill-green">Very Early Narrative</span></td>
+              <td>R&D → real deployments at inflection; data bottleneck, not hardware</td>
+            </tr>
+            <tr>
+              <td><strong>Sovereign AI</strong></td>
+              <td><span class="pill pill-teal">Early-Mid Cycle</span></td>
+              <td>Europe + SE Asia active; Middle East ramping; additive to $1T+</td>
+            </tr>
+            <tr>
+              <td><strong>Agentic Token Economics</strong></td>
+              <td><span class="pill pill-green">Early Narrative (Accel.)</span></td>
+              <td>Parabolic token growth 1T→15T weekly; agent fleets at $50–100/day; boundless demand thesis</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ SLIDE 15: TACTICAL BIAS -->
+<div class="slide" id="slide-15">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Tactical Bias & Positioning</span>
+      <span class="slide-num">Slide 15 / 16</span>
+    </div>
+    <h2 class="slide-title">Selective Long: Favor MU, FN, COHR — Hedge via Underweight LITE, Auto Semis, and AI Software</h2>
+    <div class="slide-content">
+      <div class="three-col">
+        <div class="card card-accent" style="border-left-color:var(--d4)">
+          <div class="card-eyebrow">Highest Conviction Longs</div>
+          <ul>
+            <li><strong>MU:</strong> Feb Q historic beat; May Q guide <span class="hl-amber">+59%</span> above Street; HBM scaling; 5-year SCAs. UBS PT <span class="hl-amber">$510</span> (+17% from ~$436). Risk: "juice played out" narrative.</li>
+            <li><strong>FN:</strong> PT <span class="hl-amber">$530</span> vs $500 price = 6% + catalyst. HPC/AWS ramp $15M→$85M→$200M/Q. CPO + OCS dual. Capacity runway to $11.5B.</li>
+            <li><strong>SK Hynix / Samsung:</strong> Asia +8% on pricing. Bernstein PTs imply <span class="hl-amber">30%+</span> upside. Leading HBM suppliers with best share positioning.</li>
+            <li><strong>COHR:</strong> $20B+ incremental SAM 2030; 4x InP expansion; more valuation headroom than LITE. JPM PT $245 roughly at price — watch for upward revision.</li>
+          </ul>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--amber)">
+          <div class="card-eyebrow">Moderate Conviction</div>
+          <ul>
+            <li><strong>NVDA:</strong> $183 vs UBS <span class="hl-amber">$245</span> (34% upside) / Evercore <span class="hl-amber">$352</span> (92%). Transformational but 19–31x forward PE. Near-term catalyst: H200 China and Rubin shipments.</li>
+            <li><strong>MRVL:</strong> 1.6T DSP >$1B in CY26; Evercore PT <span class="hl-amber">$155</span> (72% upside from $91). Multiple CPO tech paths. CXL attach wins.</li>
+            <li><strong>LITE:</strong> Strongest optical positioning but price $649 exceeds all targets (JPM $565, MS $595). Wait for pullback or Q2 execution confirmation before adding.</li>
+          </ul>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--d5)">
+          <div class="card-eyebrow">Hedge / Underweight</div>
+          <ul>
+            <li><strong>CIEN:</strong> $364 vs $380 = only <span class="hl-amber">4%</span> upside. Consensus fully priced despite scale-across growth.</li>
+            <li><strong>Auto Semis (NXP, STM):</strong> China flat 2026 after share loss; valuations at +2 std dev; inventory correction risk H2'26.</li>
+            <li><strong>AI Software:</strong> Only negative AI subsector (-0.27% pre-market). DOCU guide in-line, not upside. High multiples without hardware catalyst.</li>
+            <li><strong>LITE above $630:</strong> 15% above JPM target is the clearest crowding signal in the complex.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-eyebrow">Turn More Bullish If</div>
+          <ul>
+            <li>Memory pricing exceeds Bernstein forecasts through 2QCY26</li>
+            <li>CPO qualification timelines at LITE/COHR/Ayar accelerate to 1H27</li>
+            <li>NVDA China revenue materializes at scale ($40B+ potential)</li>
+            <li>Additional SCA announcements from memory customers</li>
+            <li>Fed pivots dovish; rate cut expectations return</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-eyebrow">Turn More Bearish If</div>
+          <ul>
+            <li>Hyperscaler capex guidance disappoints next cycle (MSFT, GOOGL, META)</li>
+            <li>Memory pricing peaks before 1HCY27 (China clean rooms arrive early)</li>
+            <li>CPO reliability concerns widen beyond Cisco/Google to consensus view</li>
+            <li>China auto correction deepens in H2'26; analog recovery stalls</li>
+            <li>MSFT/OpenAI legal dispute disrupts $50B cloud infrastructure deal</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ SLIDE 16: INVALIDATION TRIGGERS -->
+<div class="slide" id="slide-16">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Narrative Invalidation & Risk Map</span>
+      <span class="slide-num">Slide 16 / 16</span>
+    </div>
+    <h2 class="slide-title">Six Conditions That Break the $1T+ Demand Narrative — Monitor These, Not the Consensus</h2>
+    <div class="slide-content">
+      <div class="insight-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="insight-card" style="border-left:3px solid var(--d5);border-radius:0 8px 8px 0">
+          <div class="insight-title">1. Hyperscaler ROI Scrutiny Binding</div>
+          <p>Capex slows before supply constraints resolve. Hyperscaler FCF rollover already flagged by Evercore for 2026–2027. If MSFT/GOOGL/META capex guide disappoints, the $850B AI CapEx forecast gets cut.</p>
+        </div>
+        <div class="insight-card" style="border-left:3px solid var(--d5);border-radius:0 8px 8px 0">
+          <div class="insight-title">2. Custom ASIC Fragments GPU Market</div>
+          <p>Google TPU, Meta MTIA, and Amazon Trainium competing at scale compresses NVDA margins below <span class="hl-amber">70%</span>. Watch hyperscaler ASIC disclosure in earnings — any material revenue displacement changes thesis.</p>
+        </div>
+        <div class="insight-card" style="border-left:3px solid var(--d5);border-radius:0 8px 8px 0">
+          <div class="insight-title">3. Agentic Token Growth Flattens</div>
+          <p>15T weekly tokens (Feb-26) was described as parabolic, not exponential. If growth flattens — suggesting a temporary spike — the infinite compute demand thesis collapses. OpenRouter weekly data is the leading indicator.</p>
+        </div>
+        <div class="insight-card" style="border-left:3px solid var(--d5);border-radius:0 8px 8px 0">
+          <div class="insight-title">4. China Memory Supply Shock Early</div>
+          <p>YMTC and CXMT clean rooms expected late CY26/CY27. If supply arrives 2–3 quarters early, DRAM/NAND ASPs crash. Bernstein's +47%/+60% QoQ pricing calls would reverse violently. MU/SK Hynix most exposed.</p>
+        </div>
+        <div class="insight-card" style="border-left:3px solid var(--d5);border-radius:0 8px 8px 0">
+          <div class="insight-title">5. Taiwan Geopolitical Tail</div>
+          <p>TSMC accounts for ~60% of global WFE and is a single-node dependency. Any Taiwan disruption cascades across every AI infrastructure investment — GPUs, optical, memory packaging. Binary, not linear risk.</p>
+        </div>
+        <div class="insight-card" style="border-left:3px solid var(--d5);border-radius:0 8px 8px 0">
+          <div class="insight-title">6. Efficiency Breakthrough Compresses Tokens/Task</div>
+          <p>DeepSeek "Hunter Alpha" (1T params, 1M context) already showing model efficiency gains. A 10x compression in tokens-per-task reduces infrastructure requirement by 10x — without destroying revenue for inference providers.</p>
+        </div>
+      </div>
+      <div class="card" style="background:var(--teal-light);border-color:var(--teal)">
+        <div class="card-eyebrow">Key Monitoring Signals</div>
+        <p style="font-size:13px;line-height:1.7;color:var(--text2)">
+          <strong style="color:var(--text)">Memory:</strong> Bernstein weekly DRAM/NAND ASP tracker; YMTC/CXMT capacity announcements ·
+          <strong style="color:var(--text)">GPU/Cloud:</strong> MSFT/GOOGL/META quarterly capex guidance; NVDA Rubin shipment confirmation ·
+          <strong style="color:var(--text)">Optical:</strong> LITE Q2 execution vs JPM quarterly model ($1.25B / 45–48% GM); COHR InP yield progress ·
+          <strong style="color:var(--text)">Agentic:</strong> OpenRouter weekly token tracker; enterprise agentic deployment announcements ·
+          <strong style="color:var(--text)">Macro:</strong> PCE prints; Fed language shift; credit spreads ·
+          <strong style="color:var(--text)">Positioning:</strong> Quad witching <span class="hl-amber">3/21</span> gamma volatility in optionable names; LITE price relative to JPM/MS targets
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ NAV BAR -->
+<div id="nav">
+  <span id="nav-report-label">AI INFRA & SEMIS · MARCH 18, 2026</span>
+  <div style="display:flex;align-items:center;gap:12px">
+    <button onclick="go(current-1)">← PREV</button>
+    <span id="counter">1 / 16</span>
+    <button onclick="go(current+1)">NEXT →</button>
+  </div>
+  <span id="nav-slide-label">SLIDE 1</span>
+</div>
+
+<script>
+let current = 0;
+const slides = document.querySelectorAll('.slide');
+
+function go(n) {
+  slides[current].classList.remove('active');
+  current = Math.max(0, Math.min(n, slides.length - 1));
+  slides[current].classList.add('active');
+  document.getElementById('progress').style.width =
+    ((current + 1) / slides.length * 100) + '%';
+  document.getElementById('counter').textContent =
+    (current + 1) + ' / ' + slides.length;
+  document.getElementById('nav-slide-label').textContent =
+    'SLIDE ' + (current + 1);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(current + 1);
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   go(current - 1);
+});
+
+let tx = 0;
+document.addEventListener('touchstart', e => tx = e.touches[0].clientX, { passive: true });
+document.addEventListener('touchend', e => {
+  const dx = tx - e.changedTouches[0].clientX;
+  if (Math.abs(dx) > 40) go(current + (dx > 0 ? 1 : -1));
+});
+
+go(0);
+</script>
+</body>
+</html>

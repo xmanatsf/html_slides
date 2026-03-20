@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Market Intelligence — March 19, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700;800;900&family=DM+Sans:wght@300;400;500;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5ede0; --surface: #ffffff; --surface2: #f0e8d8;
+  --border: #e0d4c0; --border2: #ccc0a8;
+  --text: #1c1a14; --text2: #4a4438; --dim: #8a7d6a;
+  --teal: #1e6464; --teal-light: #e8f3f0; --teal-dark: #154848;
+  --amber: #c96a14; --amber-light: #fdf0e0;
+  /* Domain: AI/Compute | Macro/Oil | Policy/Fed | Markets/Equities | Risk/Credit */
+  --d1: #1e6464; --d1bg: #e8f3f0;
+  --d2: #c96a14; --d2bg: #fdf0e0;
+  --d3: #6b4ca8; --d3bg: #f0ecf8;
+  --d4: #1a6b3c; --d4bg: #e8f5ec;
+  --d5: #8a4020; --d5bg: #faeae0;
+  --font-display: 'Libre Franklin', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-ui: 'Syne', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 14px; overflow: hidden; }
+
+#progress-wrap { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: var(--border); z-index: 100; }
+#progress { height: 100%; width: 0; background: var(--teal); transition: width 0.3s ease; }
+
+#nav { position: fixed; bottom: 0; left: 0; right: 0; height: 38px; background: var(--surface); border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; z-index: 100; font-family: var(--font-ui); font-size: 10px; color: var(--dim); letter-spacing: 0.12em; text-transform: uppercase; }
+#nav button { background: none; border: 1px solid var(--border2); color: var(--text2); padding: 4px 14px; cursor: pointer; font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.1em; border-radius: 2px; text-transform: uppercase; transition: all 0.2s; }
+#nav button:hover { border-color: var(--teal); color: var(--teal); }
+
+.slide { position: fixed; inset: 3px 0 38px 0; display: none; overflow: hidden; background: var(--bg); }
+.slide.active { display: flex; }
+.slide-inner { width: 100%; height: 100%; display: flex; flex-direction: column; padding: 28px 44px 20px; }
+
+.slide-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-shrink: 0; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.domain-tag { font-family: var(--font-ui); font-size: 10px; font-weight: 600; letter-spacing: 0.16em; color: var(--teal); text-transform: uppercase; }
+.slide-num { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.1em; color: var(--dim); text-transform: uppercase; }
+
+.slide-title { font-family: var(--font-display); font-size: 27px; font-weight: 800; line-height: 1.15; color: var(--text); margin-bottom: 14px; flex-shrink: 0; }
+
+.slide-content { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+.slide-content::-webkit-scrollbar { width: 4px; }
+.slide-content::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.two-col   { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.four-col  { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
+
+.featured-layout { display: grid; grid-template-columns: 1.5fr 1fr; gap: 12px; flex: 1; }
+.featured-layout .right-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-content: start; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 14px 16px; }
+.card-eyebrow { font-family: var(--font-ui); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: var(--teal); text-transform: uppercase; margin-bottom: 6px; }
+.card-title { font-family: var(--font-display); font-size: 20px; font-weight: 800; color: var(--text); line-height: 1.1; margin-bottom: 6px; }
+.card p { font-size: 13.5px; line-height: 1.6; color: var(--text2); }
+.card ul { padding-left: 16px; }
+.card ul li { font-size: 13.5px; line-height: 1.65; color: var(--text2); margin-bottom: 3px; }
+.card-accent { border-left: 3px solid var(--teal); border-radius: 0 6px 6px 0; }
+
+.featured-card { background: var(--teal-dark); border-radius: 8px; padding: 20px 22px; display: flex; flex-direction: column; gap: 12px; }
+.featured-card .card-eyebrow { color: rgba(255,255,255,0.55); }
+.featured-card .statement { font-family: var(--font-display); font-size: 17px; font-weight: 700; color: #ffffff; line-height: 1.4; }
+.featured-card .body { font-size: 13px; line-height: 1.65; color: rgba(255,255,255,0.72); }
+
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 13px 15px; }
+.stat-eyebrow { font-family: var(--font-ui); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: var(--teal); text-transform: uppercase; margin-bottom: 4px; }
+.stat-value { font-family: var(--font-display); font-size: 28px; font-weight: 800; color: var(--text); line-height: 1; margin-bottom: 4px; }
+.stat-detail { font-size: 12.5px; line-height: 1.55; color: var(--text2); }
+
+.insight-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.insight-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 13px 15px; }
+.insight-card .insight-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 5px; line-height: 1.2; }
+.insight-card p { font-size: 13px; line-height: 1.6; color: var(--text2); }
+
+.hl-teal  { color: var(--teal);  font-weight: 600; }
+.hl-amber { color: var(--amber); font-weight: 600; }
+
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; flex-shrink: 0; }
+.stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; text-align: center; }
+.stat-box .val { font-family: var(--font-display); font-size: 26px; font-weight: 800; color: var(--teal); line-height: 1; }
+.stat-box .val.amber { color: var(--amber); }
+.stat-box .val.red { color: #8a1c1c; }
+.stat-box .lbl { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.1em; color: var(--dim); margin-top: 4px; text-transform: uppercase; }
+
+.tbl-wrap { overflow-x: auto; border-radius: 6px; }
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; background: var(--surface); border-radius: 6px; overflow: hidden; }
+th { background: var(--teal-dark); color: rgba(255,255,255,0.75); font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 8px 10px; text-align: left; }
+td { border-bottom: 1px solid var(--border); padding: 8px 10px; color: var(--text2); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--surface2); }
+
+.pill { display: inline-block; padding: 2px 8px; border-radius: 2px; font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.08em; font-weight: 700; text-transform: uppercase; }
+.pill-teal   { background: var(--teal-light); color: var(--teal); }
+.pill-amber  { background: var(--amber-light); color: var(--amber); }
+.pill-green  { background: #e8f5ec; color: #1a6b3c; }
+.pill-red    { background: #faeaea; color: #8a1c1c; }
+.pill-purple { background: #f0ecf8; color: #6b4ca8; }
+
+.quote-block { background: var(--teal-light); border-left: 3px solid var(--teal); border-radius: 0 6px 6px 0; padding: 12px 16px; }
+.quote-source { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.12em; color: var(--teal); text-transform: uppercase; margin-bottom: 5px; }
+.quote-text { font-size: 13.5px; line-height: 1.6; color: var(--text); font-style: italic; }
+
+.chain { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; }
+.chain-node { font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.06em; padding: 4px 10px; border-radius: 3px; }
+.chain-arrow { color: var(--dim); font-size: 14px; }
+
+/* Title slide */
+.title-slide .slide-inner { justify-content: center; align-items: flex-start; padding: 60px 64px; }
+.title-eyebrow { font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.2em; color: var(--teal); text-transform: uppercase; margin-bottom: 18px; font-weight: 600; }
+.title-main { font-family: var(--font-display); font-size: 52px; font-weight: 900; line-height: 1.0; color: var(--text); margin-bottom: 10px; max-width: 760px; }
+.title-sub { font-family: var(--font-display); font-size: 22px; font-weight: 600; color: var(--dim); margin-bottom: 32px; }
+.title-rule { width: 48px; height: 3px; background: var(--teal); margin-bottom: 28px; border-radius: 2px; }
+.title-meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; max-width: 760px; }
+.title-meta-item { display: flex; flex-direction: column; gap: 4px; }
+.title-meta-label { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.14em; color: var(--dim); text-transform: uppercase; }
+.title-meta-value { font-family: var(--font-body); font-size: 14px; font-weight: 500; color: var(--text); }
+</style>
+</head>
+<body>
+<div id="progress-wrap"><div id="progress"></div></div>
+
+<!-- ═══════════════════════════════════════════════ SLIDE 1: TITLE -->
+<div class="slide title-slide active" id="slide-1">
+  <div class="slide-inner">
+    <div class="title-eyebrow">Multi-Agent Equity Research · 37 Sources · March 19, 2026</div>
+    <h1 class="title-main">MARKET<br>INTELLIGENCE<br>SYNTHESIS</h1>
+    <div class="title-sub">Bull / Bear / Risk / Sentiment Framework</div>
+    <div class="title-rule"></div>
+    <div class="title-meta-grid">
+      <div class="title-meta-item">
+        <span class="title-meta-label">Regime</span>
+        <span class="title-meta-value" style="color:var(--teal)">Fragile Bull — Geopolitical Overhang</span>
+      </div>
+      <div class="title-meta-item">
+        <span class="title-meta-label">Tactical Bias</span>
+        <span class="title-meta-value">Neutral with Hedge Overlay</span>
+      </div>
+      <div class="title-meta-item">
+        <span class="title-meta-label">Expected Drawdown (Prob-Weighted)</span>
+        <span class="title-meta-value" style="color:var(--amber)">−19.5% vs Consensus +5%</span>
+      </div>
+      <div class="title-meta-item">
+        <span class="title-meta-label">Key Source Categories</span>
+        <span class="title-meta-value">UBS · JPM · Evercore · Bernstein · Goldman</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SLIDE 2: EXECUTIVE SUMMARY -->
+<div class="slide" id="slide-2">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Executive Summary</span>
+      <span class="slide-num">Slide 2 / 16</span>
+    </div>
+    <h2 class="slide-title">Structural AI Thesis Intact, but Asymmetric Risk Inverted Against Consensus</h2>
+    <div class="slide-content">
+      <div class="featured-layout">
+        <div class="featured-card">
+          <div class="card-eyebrow">Regime Assessment</div>
+          <div class="statement">Fragile Bull: AI infrastructure spending cycle is structural and self-reinforcing — but an Iran-driven oil supply shock (8mbd shut-ins, oil +40%) creates stagflationary tail risk that consensus has not de-risked for.</div>
+          <div class="body">Probability-weighted 12-month expected drawdown: <span style="color:#f5c06a;font-weight:600;">−19.5%</span> (Risk Agent) vs. consensus +5% upside. Asymmetry is decisively inverted. Tactical bias: Neutral with hedge overlay — long structural AI beneficiaries, hedge oil/credit tail.</div>
+        </div>
+        <div class="right-grid">
+          <div class="stat-card">
+            <div class="stat-eyebrow">Positioning Extreme</div>
+            <div class="stat-value">95th</div>
+            <div class="stat-detail">NQ100 short interest percentile (5Y) — imminent mechanical squeeze mechanics embedded</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">CTA Underweight</div>
+            <div class="stat-value">11th</div>
+            <div class="stat-detail">CTA equity exposure percentile — <span class="hl-amber">$145–170B</span> violent re-leverage potential on any catalyst</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Memory Super-Cycle</div>
+            <div class="stat-value">+47%</div>
+            <div class="stat-detail">DRAM ASP QoQ in 2QCY26; NAND <span class="hl-amber">+60%</span> QoQ — cycle peaks 1HCY27</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">AWS FCF</div>
+            <div class="stat-value">−$7.4B</div>
+            <div class="stat-detail">AWS free cash flow 2026E on <span class="hl-amber">$155B</span> capex; ROIC compresses 22% → 12%</div>
+          </div>
+        </div>
+      </div>
+      <div class="insight-grid">
+        <div class="insight-card">
+          <div class="insight-title">Fed Dovish but Constrained</div>
+          <p>Median sees one cut; core PCE marked up to <span class="hl-amber">2.7%</span>. Powell's "interim posture" admits uncertainty. Neutral rate at <span class="hl-teal">3.1%</span> — limited cutting runway.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">Crowding Risk at Extreme</div>
+          <p>Gross leverage at <span class="hl-amber">95th %-ile</span>. QQQ skew more bearish than April '25 Tariff Tantrum. HYG credit skew only exceeded during COVID (March 2020).</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">NVIDIA $1trn PO Pipeline</div>
+          <p>Blackwell + Rubin purchase orders raised to <span class="hl-amber">$1 trillion</span> (from $500B), validating multi-year AI capex supercycle through 2027.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">Recession Risk Rising</div>
+          <p>JPM recession probability: <span class="hl-amber">31%</span> (up from 22% two weeks prior). $4/gal gasoline approaching historical consumer breakpoint.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SLIDE 3: KEY STATS -->
+<div class="slide" id="slide-3">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Key Data Dashboard</span>
+      <span class="slide-num">Slide 3 / 16</span>
+    </div>
+    <h2 class="slide-title">Critical Numbers Across 37 Sources — March 19, 2026</h2>
+    <div class="slide-content">
+      <div class="stat-row" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat-box"><div class="val">$1trn</div><div class="lbl">NVIDIA PO Pipeline (Blackwell + Rubin)</div></div>
+        <div class="stat-box"><div class="val amber">−19.5%</div><div class="lbl">Prob-Weighted Expected Drawdown</div></div>
+        <div class="stat-box"><div class="val">+47%</div><div class="lbl">DRAM ASP QoQ (2QCY26)</div></div>
+        <div class="stat-box"><div class="val amber">8–12mbd</div><div class="lbl">Iran Oil Shut-ins (Record High)</div></div>
+      </div>
+      <div class="stat-row" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat-box"><div class="val">$33.5B</div><div class="lbl">Micron FQ3 Revenue Guide (81% GM)</div></div>
+        <div class="stat-box"><div class="val amber">31%</div><div class="lbl">JPM Recession Probability</div></div>
+        <div class="stat-box"><div class="val">$553B</div><div class="lbl">AWS RPO (Remaining Perf. Obligation)</div></div>
+        <div class="stat-box"><div class="val">95th</div><div class="lbl">Gross Leverage %-ile (Systemic Risk)</div></div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-eyebrow">AI Infrastructure Demand Signals</div>
+          <ul>
+            <li>NVIDIA Blackwell+Rubin PO pipeline raised to <span class="hl-amber">$1 trillion</span> (from $500B) — UBS GTC</li>
+            <li>HBM bit shipment growth: <span class="hl-amber">+117% YoY</span> in CY2026 — Bernstein</li>
+            <li>AWS revenue acceleration: <span class="hl-amber">25–30%</span> for 2026E (~$163B), 30–35% 2027E — Evercore ISI</li>
+            <li>Palantir PT raised $180 → <span class="hl-amber">$200</span>; ~70% revenue growth — UBS AIPCon</li>
+            <li>Micron customers receiving only <span class="hl-amber">50–67%</span> of requested DRAM allocation</li>
+            <li>UBER: 5 autonomous vehicle deals in 1 week; Rivian <span class="hl-amber">50K robotaxi</span> commitment</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-eyebrow">Risk & Bear Case Signals</div>
+          <ul>
+            <li>Oil supply shock: <span class="hl-amber">8–12mbd</span> shut-ins — highest on record — JPM Strategy</li>
+            <li>−3% SPX move triggers <span class="hl-amber">$150–160B</span> systematic selling cascade</li>
+            <li>Bernstein CY2028 memory estimates <span class="hl-amber">30–44% below</span> Street consensus</li>
+            <li>AWS ROIC: <span class="hl-amber">22% (2024) → 7% (2028E)</span> — Evercore ISI Deep Dive</li>
+            <li>Anthropic + OpenAI = <span class="hl-amber">60–70%</span> of AWS AI workload revenue (concentration risk)</li>
+            <li>QQQ options skew more bearish than <span class="hl-amber">April '25 Tariff Tantrum</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SLIDE 4: BULL CASE -->
+<div class="slide" id="slide-4">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="color:var(--d4)">Bull Case — AI Infrastructure</span>
+      <span class="slide-num">Slide 4 / 16</span>
+    </div>
+    <h2 class="slide-title">AI Capex Supercycle Is Structural, Self-Reinforcing, and Physically Supply-Constrained</h2>
+    <div class="slide-content">
+      <div class="featured-layout">
+        <div class="featured-card">
+          <div class="card-eyebrow">Core Bull Thesis</div>
+          <div class="statement">$1 trillion NVIDIA PO pipeline (2025–27), agentic AI creating 100x token demand multiplier, memory pricing surging above expectations, and hyperscaler revenue acceleration all validate a multi-year capex supercycle that has not yet reached peak elasticity.</div>
+          <div class="body">Micron's FQ3 guidance ($33.5B revenue, 81% GM, $19.15 EPS) confirms customers are receiving only 50–67% of requested DRAM allocation — demand is not price-constrained, it is physics-constrained. Bernstein Asia Tech Tour (25 companies) validates memory demand "stronger and longer than expected." Bull invalidation requires memory softening before 1HCY27 OR hyperscaler ROIC failing to recover OR agentic adoption below 50% penetration in top-100 enterprises by 2027.</div>
+        </div>
+        <div class="right-grid">
+          <div class="stat-card">
+            <div class="stat-eyebrow">NVIDIA Demand</div>
+            <div class="stat-value">$1trn</div>
+            <div class="stat-detail">Blackwell+Rubin POs raised from $500B; 2-year sustained demand validated — UBS GTC (Mar 17)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Memory Pricing</div>
+            <div class="stat-value">+47%</div>
+            <div class="stat-detail">DRAM ASP QoQ; NAND <span class="hl-amber">+60%</span> QoQ in 2QCY26; HBM <span class="hl-amber">+117%</span> YoY — Bernstein</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">AWS Acceleration</div>
+            <div class="stat-value">~$163B</div>
+            <div class="stat-detail">AWS 2026E revenue at <span class="hl-amber">25–30%</span> growth; 30–35% 2027E — Evercore ISI</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Agentic Token Multiplier</div>
+            <div class="stat-value">100x</div>
+            <div class="stat-detail">OpenClaw + Claude Code inference loop implies 100x input/output token demand increase — UBS/Bernstein</div>
+          </div>
+        </div>
+      </div>
+      <div class="insight-grid">
+        <div class="insight-card">
+          <div class="insight-title">Forward Catalyst Map</div>
+          <p><strong>Q2–Q3 2026:</strong> Rubin production ramp + OpenClaw agentic adoption. <strong>1H2027:</strong> Memory ASP peak; DRAM margins at 90%; record EPS for Samsung/SK Hynix/Micron. <strong>2H2027:</strong> AWS ROIC recovery inflection.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">Vera Rubin — 50x Perf/Watt</div>
+          <p>NVIDIA's next architecture solves power/density constraints. Multi-generational roadmap (Blackwell → Rubin → Feynman 2028) provides supply visibility through 2028 and creates customer lock-in via CUDA software stack.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">Robotaxi & Physical AI TAM</div>
+          <p>UBER's 5 AV deals in 1 week — including Rivian <span class="hl-amber">50K robotaxi</span> commitment and NVIDIA Orin standardization — creates <span class="hl-amber">$5–10B</span> incremental hardware demand TAM 2026–2028 beyond data centers.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">Fed Validates AI Productivity</div>
+          <p>FOMC revised growth UP to <span class="hl-amber">2.4%</span>, explicitly embracing AI productivity tailwind — validating the structural demand narrative and reducing rate hike risk if AI thesis holds.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SLIDE 5: BEAR CASE -->
+<div class="slide" id="slide-5">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="color:var(--d5)">Bear Case — Stagflation & ROIC Destruction</span>
+      <span class="slide-num">Slide 5 / 16</span>
+    </div>
+    <h2 class="slide-title">AI Capex Euphoria Masks Deteriorating Returns While an Oil Shock Creates Stagflationary Pressure</h2>
+    <div class="slide-content">
+      <div class="featured-layout">
+        <div class="featured-card">
+          <div class="card-eyebrow">Core Bear Thesis</div>
+          <div class="statement">AI capex euphoria masks deteriorating marginal returns on capital. AWS ROIC compressing from 22% to 7% while FCF goes negative (−$7.4B) creates refinance risk in 2027–28. Meanwhile, an Iran-driven oil supply shock (8mbd shut-ins, highest on record) creates stagflationary pressure the market has hedged against but not de-risked.</div>
+          <div class="body">Each 10% oil increase = 2–5% EPS cut. At current ~$110 Brent, a move to $125 = −2.5% to −6.25% EPS impact. Systematic forced selling ($190B–$320B) sits behind a −3% SPX drawdown in an already 95th-percentile leveraged market. Private credit ($1.75T) is the hidden transmission mechanism.</div>
+        </div>
+        <div class="right-grid">
+          <div class="stat-card">
+            <div class="stat-eyebrow">Oil Supply Shock</div>
+            <div class="stat-value">8–12mbd</div>
+            <div class="stat-detail">Shut-ins at highest level ever; approaching <span class="hl-amber">12mbd</span>. Each $10/bbl → GDP drag 15–20bp — JPM Strategy</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">AWS ROIC Compression</div>
+            <div class="stat-value">22%→7%</div>
+            <div class="stat-detail">AWS ROIC: 22% (2024) → 12% (2026E) → 7% (2028E) on $155–228B capex cycle — Evercore ISI</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Memory Cycle Peak</div>
+            <div class="stat-value">1HCY27</div>
+            <div class="stat-detail">Bernstein CY2028 estimates <span class="hl-amber">30–44% below</span> Street; DRAM/NAND margins normalize from 87–90% to 55–60%</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Recession Probability</div>
+            <div class="stat-value">31%</div>
+            <div class="stat-detail">JPM recession odds up from 22% two weeks prior; $4/gal gasoline approaches <span class="hl-amber">consumer cliff</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th>Downside Scenario</th><th>Conditions</th><th>SPX Impact</th><th>Probability</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Stress — Stagflation</strong></td><td>Oil $120–130, no Fed cuts, margin pressure</td><td><span class="hl-amber">−18% to −25%</span></td><td>35%</td></tr>
+            <tr><td><strong>Shock — Escalation</strong></td><td>Oil $140+, Strait closure, recession confirmed</td><td><span class="hl-amber">−35% to −45%</span></td><td>15%</td></tr>
+            <tr><td><strong>Deflation Trap</strong></td><td>Demand destruction, forced capex cutback</td><td><span class="hl-amber">−12% to −15%</span></td><td>10%</td></tr>
+            <tr><td><strong>Base — Muddle Through</strong></td><td>Oil moderates, Fed delivers 1–2 cuts</td><td>−8% to −12%</td><td>40%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SLIDE 6: RISK MAP -->
+<div class="slide" id="slide-6">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="color:var(--d2)">Risk Map — Macro, Policy, Credit</span>
+      <span class="slide-num">Slide 6 / 16</span>
+    </div>
+    <h2 class="slide-title">Three Converging Risk Vectors Create a Non-Linear Drawdown Profile</h2>
+    <div class="slide-content">
+      <div class="three-col">
+        <div class="card card-accent" style="border-left-color:var(--d2)">
+          <div class="card-eyebrow">Macro / Energy Risk</div>
+          <ul>
+            <li>Oil at <span class="hl-amber">$110+</span> trajectory implies 40bp+ cumulative GDP pressure and 8–12% sector EPS headwind over 12 months</li>
+            <li>$4/gal gasoline breakpoint imminent; historically triggers −3% to −8% consumption growth</li>
+            <li>Neutral rate at <span class="hl-teal">3.1%</span> constrains easing; Fed "on the border of neutral and restrictive"</li>
+            <li>China fuel export ban = escalation signal with semiconductor supply chain implications</li>
+          </ul>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--d3)">
+          <div class="card-eyebrow">Policy / Geopolitical Risk</div>
+          <ul>
+            <li>Geopolitical Risk Index at one of highest readings of the 21st century — Evercore ISI</li>
+            <li>Strait of Hormuz closure risk persists; European allies reluctant on shipping enforcement</li>
+            <li>Republican Senate retention: <span class="hl-amber">70% → 51%</span> probability — war-end acceleration priced in</li>
+            <li>China 15-FYP tech self-sufficiency creates bifurcated risk: benefits WFE demand but threatens US supply chains</li>
+            <li>Powell credibility risk if inflation re-accelerates; market will lose faith in Fed put</li>
+          </ul>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--d5)">
+          <div class="card-eyebrow">Credit / Funding Risk</div>
+          <ul>
+            <li>Gross leverage near <span class="hl-amber">95th %-ile</span>; private credit ($1.75T) under scrutiny at cycle peak</li>
+            <li>HY CDX key levels: <span class="hl-teal">400</span> = growth stress, <span class="hl-amber">480</span> = recession signal; currently 385</li>
+            <li>AWS at $155B capex with negative FCF creates refinance risk window 2027–28</li>
+            <li>Software credit deterioration and retail fund redemptions flagged — JPM</li>
+            <li>HYG credit skew only more bearish during COVID (March 2020)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th>Scenario</th><th>Probability</th><th>Tech Drawdown</th><th>SPX Level</th><th>Timeframe</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Base — Muddle Through</strong></td><td>40%</td><td>−8% to −12%</td><td>6,200–6,500</td><td>6–9 months</td></tr>
+            <tr><td><strong>Stress — Stagflation</strong></td><td>35%</td><td>−18% to −25%</td><td>5,500–5,800</td><td>3–6 months</td></tr>
+            <tr><td><strong>Shock — Escalation</strong></td><td>25%</td><td>−35% to −45%</td><td>4,200–4,500</td><td>1–3 months</td></tr>
+            <tr><td><strong>Probability-Weighted Expected Drawdown</strong></td><td>100%</td><td colspan="2"><strong style="color:var(--amber)">−19.5%</strong></td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="quote-block">
+        <div class="quote-source">Liquidity Vulnerability — UBS Market Internals, March 18, 2026</div>
+        <div class="quote-text">A 1-day −3% SPX move triggers $190B–$220B systematic selling. A 2-day sustained −3% triggers $275B–$320B selling cascade. Monthly rebalance adds −$120B to −$140B if markets decline. CTA trend-followers already short — additional weakness accelerates a waterfall.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SLIDE 7: SENTIMENT & POSITIONING -->
+<div class="slide" id="slide-7">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Sentiment & Positioning Extremes</span>
+      <span class="slide-num">Slide 7 / 16</span>
+    </div>
+    <h2 class="slide-title">Both Sides of the Trade Are at Multi-Year Extremes — Binary Outcome Setup</h2>
+    <div class="slide-content">
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th>Metric</th><th>Current Level</th><th>%-ile</th><th>Signal</th><th>Risk / Opportunity</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>NQ100 Short Interest</strong></td>
+              <td>Extreme</td>
+              <td><span class="hl-amber">95th (5Y)</span>, 79th (1Y)</td>
+              <td>Imminent squeeze mechanics; −3% SPX triggers $190B+ covering</td>
+              <td><span class="pill pill-red">High Squeeze Risk</span></td>
+            </tr>
+            <tr>
+              <td><strong>CTA Equity Exposure</strong></td>
+              <td>−2% underweight</td>
+              <td><span class="hl-amber">11th (1Y)</span></td>
+              <td>Radical underweight → violent re-leverage potential <span class="hl-amber">$145–170B</span></td>
+              <td><span class="pill pill-teal">Violent Re-Entry Risk</span></td>
+            </tr>
+            <tr>
+              <td><strong>SPX Risk Control</strong></td>
+              <td>Elevated</td>
+              <td>87th overall</td>
+              <td>Rebalance fragility; breakeven <span class="hl-amber">+0.7%</span> daily to avoid selling</td>
+              <td><span class="pill pill-amber">Mechanical Selling</span></td>
+            </tr>
+            <tr>
+              <td><strong>Gross Leverage</strong></td>
+              <td>Near maximum</td>
+              <td><span class="hl-amber">~95th %-ile</span></td>
+              <td>Zero cushion for de-risk without forced selling cascade</td>
+              <td><span class="pill pill-red">Systemic Fragility</span></td>
+            </tr>
+            <tr>
+              <td><strong>QQQ Options Skew</strong></td>
+              <td>Extreme bear</td>
+              <td>More bearish than Apr '25</td>
+              <td>Contrarian bullish signal; puts priced for capitulation</td>
+              <td><span class="pill pill-green">Flow-Driven Reversal</span></td>
+            </tr>
+            <tr>
+              <td><strong>HYG Credit Skew</strong></td>
+              <td>Extreme fear</td>
+              <td>Only exceeded COVID Mar '20</td>
+              <td>Credit hedging at panic extremes; only route lower = forced selling</td>
+              <td><span class="pill pill-red">Credit Cliff Risk</span></td>
+            </tr>
+            <tr>
+              <td><strong>Oil Outperformers Crowding</strong></td>
+              <td>Crowded</td>
+              <td>84th %-ile</td>
+              <td>High positioning but below prior peaks; room for further compression</td>
+              <td><span class="pill pill-amber">Extreme But Not Max</span></td>
+            </tr>
+            <tr>
+              <td><strong>Oil Underperformers Short</strong></td>
+              <td>Empty</td>
+              <td><span class="hl-teal">5th %-ile</span></td>
+              <td>Asymmetric short-covering room; energy defensives appear to have bottomed</td>
+              <td><span class="pill pill-green">Contrarian Setup</span></td>
+            </tr>
+            <tr>
+              <td><strong>UBS RMM Signal</strong></td>
+              <td>Buy (flipped 3/17)</td>
+              <td>68% accuracy (5Y)</td>
+              <td>Dip-buying deeply embedded; prior signals 3/5, 3/3 both recovered</td>
+              <td><span class="pill pill-teal">Resilience Signal</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-eyebrow">Flow Environment</div>
+          <p>Asia hedge funds <span class="hl-amber">−4% in March</span>, global YTD flat — defensive but not capitulating. Retail slowing at $4/gal threshold; institutions accumulating Quality/Low Vol factors. MSCI World ex-US <span class="hl-amber">−7%</span>, DXY <span class="hl-teal">+3%</span> — safe-haven flows concentrating in US equities.</p>
+        </div>
+        <div class="card">
+          <div class="card-eyebrow">Environment Classification</div>
+          <p><strong>Mid-Cycle Consensus → Late-Stage Crowding Transition.</strong> Narrative stability: <span class="hl-amber">62/100</span> (cracks emerging on ROIC, oil). Crowding risk: <span class="hl-amber">78/100</span> (NQ100 95th + leverage 95th creates binary outcomes). Approximately <span class="hl-teal">70%</span> of S&P 500 market cap now in Quality/Growth factors vs 55% in prior cycle.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SLIDE 8: SQUEEZE vs CASCADE -->
+<div class="slide" id="slide-8">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Market Structure — Mechanical Flows</span>
+      <span class="slide-num">Slide 8 / 16</span>
+    </div>
+    <h2 class="slide-title">A 3% SPX Move Triggers Binary Outcome — Squeeze or $575B Selling Cascade</h2>
+    <div class="slide-content">
+      <div class="two-col" style="flex:1">
+        <div class="card card-accent" style="border-left-color:var(--d4)">
+          <div class="card-eyebrow">Bull Trigger — Squeeze Mechanics</div>
+          <p style="margin-bottom:10px">If oil declines below <span class="hl-teal">$100</span> (Strait stays open, Iran resolves), CTA equity exposure flips from −2% to +2–3%, requiring purchase of <span class="hl-amber">$145–170B</span> of equities.</p>
+          <ul>
+            <li>Initial short covering: <span class="hl-teal">$30–50B</span> from NQ100 short unwind</li>
+            <li>Momentum layering forces additional covering: <span class="hl-teal">$50–100B</span></li>
+            <li>CTA rebalance to neutral: <span class="hl-teal">$145–170B</span></li>
+            <li>Net result: <span class="hl-teal">+10–15%</span> SPX rally over 2–4 weeks</li>
+          </ul>
+          <br>
+          <p>QQQ skew more bearish than April '25 is a contrarian bullish signal — April '25 skew marked the bottom before a <span class="hl-teal">+22%</span> NDX rally.</p>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--d5)">
+          <div class="card-eyebrow">Bear Trigger — Cascade Mechanics</div>
+          <p style="margin-bottom:10px">If oil sustains above <span class="hl-amber">$125</span> or recession odds spike above 45%, systematic selling triggers with no natural buyer floor at 95th %-ile leverage.</p>
+          <ul>
+            <li>−3% SPX (6,948 → 6,740): <span class="hl-amber">$150–160B</span> initial forced selling</li>
+            <li>−5% SPX (→ 6,600): additional <span class="hl-amber">$175–205B</span> momentum cascade</li>
+            <li>−8% SPX (→ 6,391): total cascade potential <span class="hl-amber">$575–620B</span></li>
+            <li>200DMA at <span class="hl-amber">6,520</span> — break below = distribution regime confirmed</li>
+          </ul>
+          <br>
+          <p>Critical: RMM Buy signal has only 68% accuracy. False signal during geopolitical escalation would make "buy the dip" the last trade before the crash.</p>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th>Scenario</th><th>SPX Decline</th><th>Margin Calls</th><th>CTA Short Cover</th><th>Rebalance Selling</th><th>Risk Control</th><th>Total Cascade</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Stress (−3%)</strong></td><td>6,948 → 6,740</td><td>$50B</td><td>$30–50B</td><td>$40B</td><td>$30–40B</td><td><span class="hl-amber">$150–160B</span></td></tr>
+            <tr><td><strong>Shock (−5%)</strong></td><td>6,948 → 6,600</td><td>$95B</td><td>$75–100B</td><td>$80B</td><td>$75–90B</td><td><span class="hl-amber">$325–365B</span></td></tr>
+            <tr><td><strong>Capitulation (−8%)</strong></td><td>6,948 → 6,391</td><td>$160B</td><td>$145–170B</td><td>$150B</td><td>$120–140B</td><td><span class="hl-amber">$575–620B</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SLIDE 9: REGIME & CROWDING -->
+<div class="slide" id="slide-9">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Regime Classification</span>
+      <span class="slide-num">Slide 9 / 16</span>
+    </div>
+    <h2 class="slide-title">Fragile Bull Transitioning to Late-Stage Crowding — No Middle Ground</h2>
+    <div class="slide-content">
+      <div class="stat-row" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat-box"><div class="val">Fragile<br>Bull</div><div class="lbl">Regime Classification</div></div>
+        <div class="stat-box"><div class="val amber">62/100</div><div class="lbl">Narrative Stability Score</div></div>
+        <div class="stat-box"><div class="val amber">78/100</div><div class="lbl">Crowding Risk Score</div></div>
+        <div class="stat-box"><div class="val red">↓ Skewed</div><div class="lbl">Asymmetry Assessment</div></div>
+      </div>
+      <div class="featured-layout">
+        <div class="featured-card">
+          <div class="card-eyebrow">Transition Mechanics — Phase Map</div>
+          <div class="statement">Phase 0 (Now): Consensus intact, positioning extreme, oil volatility = squeeze/capitulation binary.</div>
+          <div class="body">
+            <strong style="color:rgba(255,255,255,0.85)">Phase 1 (2–4 weeks):</strong> Oil stabilization or recession signals force 10–15% memory reset; cycle peak narrative emerges in earnings commentary.<br><br>
+            <strong style="color:rgba(255,255,255,0.85)">Phase 2 (1–3 months):</strong> Memory and semis leadership deteriorates; sector rotation accelerates from AI beneficiaries to defensives and energy.<br><br>
+            <strong style="color:rgba(255,255,255,0.85)">Phase 3 (3–6 months):</strong> New equilibrium — AI beneficiaries sustained but re-rated lower; cyclicals/energy steady; credit stabilizes around HY CDX 380–400.
+          </div>
+        </div>
+        <div class="right-grid">
+          <div class="card">
+            <div class="card-eyebrow">Narrative Challenges</div>
+            <ul style="font-size:12.5px">
+              <li>AWS ROIC &lt;5% confirmed → <span class="hl-amber">−8–12%</span> SPX (25% prob)</li>
+              <li>Memory ASP decline before 1HCY27 → <span class="hl-amber">−12–18%</span> (30%)</li>
+              <li>Agentic token volumes &lt;5x → <span class="hl-amber">−5–8%</span> (20%)</li>
+              <li>Fed forced to hike → <span class="hl-amber">−15–25%</span> (15%)</li>
+              <li>Hormuz closure → <span class="hl-amber">−35–45%</span> (10%)</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-eyebrow">Crowding Evidence</div>
+            <ul style="font-size:12.5px">
+              <li>Narrative dominance 90% — last seen late 2020 (FAANG) and Mar 2024 (Mag7)</li>
+              <li>NQ100 95th %-ile shorts + leverage 95th %-ile = binary resolution 1–3 months</li>
+              <li>Dip-buying robust (RMM Buy) but systematic re-leverage potential is binary</li>
+              <li><span class="hl-amber">40–50%</span> probability something breaks consensus within 8 weeks</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SLIDE 10: MEMORY SUPER-CYCLE -->
+<div class="slide" id="slide-10">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="color:var(--d1)">AI / Semis — Memory Super-Cycle</span>
+      <span class="slide-num">Slide 10 / 16</span>
+    </div>
+    <h2 class="slide-title">Memory Reaches Peak Elasticity in 1HCY27 — but Bernstein's CY2028 Estimates Are 30–44% Below Street</h2>
+    <div class="slide-content">
+      <div class="featured-layout">
+        <div class="featured-card">
+          <div class="card-eyebrow">Micron FQ3 Guidance — Cycle Inflection Confirmed</div>
+          <div class="statement">Micron's FQ3 guidance ($33.5B revenue, 81% GM, $19.15 EPS) is a +57% sequential step — but customers only receiving 50–67% of requested DRAM allocation confirms the cycle is physics-constrained, not demand-constrained.</div>
+          <div class="body">ROIC &gt;30% is a red herring for cycle duration. What matters is capex/sales approaching 75% ($25B+ capex on $33.5B revenue) — unsustainable and fully consistent with Bernstein's 1HCY27 peak thesis. Historical precedent: 2014–2015 cycle saw ASP collapse −50% when supply overcame demand. Current peak margins (87–90%) to normalized (55–60%) implies same magnitude. Timeline: 1HCY27 peak → 2HCY28 trough = 18 months of downside compression.</div>
+        </div>
+        <div class="right-grid">
+          <div class="stat-card">
+            <div class="stat-eyebrow">DRAM ASP Peak</div>
+            <div class="stat-value">+47%</div>
+            <div class="stat-detail">QoQ in 2QCY26; Bernstein models <span class="hl-amber">−40%</span> from peak by 2HCY27 as supply accelerates</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">NAND ASP</div>
+            <div class="stat-value">+60%</div>
+            <div class="stat-detail">QoQ 2QCY26; ADATA margin <span class="hl-amber">+100%</span> QoQ — extreme cycle elasticity near peak</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">HBM Bit Growth</div>
+            <div class="stat-value">+117%</div>
+            <div class="stat-detail">YoY in CY2026; HBM4 ramp beginning; Broadwell/Rubin enabler critical</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Bernstein vs Street</div>
+            <div class="stat-value">−30–44%</div>
+            <div class="stat-detail">Bernstein CY2028 EBIT estimates vs consensus — largest divergence in memory research universe</div>
+          </div>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th>Metric</th><th>2QCY26 Peak</th><th>1HCY27 Peak</th><th>2HCY28 Trough (Bernstein)</th><th>Consensus 2028</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>DRAM Gross Margin</strong></td><td><span class="hl-teal">87–90%</span></td><td>90% (record)</td><td><span class="hl-amber">55–60%</span></td><td>70–75% (optimistic)</td></tr>
+            <tr><td><strong>NAND Gross Margin</strong></td><td><span class="hl-teal">86%</span></td><td>88%</td><td><span class="hl-amber">40–50%</span></td><td>60–65% (optimistic)</td></tr>
+            <tr><td><strong>HBM Gross Margin</strong></td><td>Elevated</td><td>Record</td><td><span class="hl-amber">−50% from peak</span></td><td>Consensus assumes gradual decline</td></tr>
+            <tr><td><strong>Samsung/SK Hynix/Micron EBIT</strong></td><td>Record</td><td>Record</td><td><span class="hl-amber">30–44% below consensus</span></td><td>Assumes sustained cycle</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SLIDE 11: AI INFRA — NVIDIA & AWS -->
+<div class="slide" id="slide-11">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="color:var(--d1)">AI Infrastructure — NVIDIA & Cloud</span>
+      <span class="slide-num">Slide 11 / 16</span>
+    </div>
+    <h2 class="slide-title">NVIDIA's $1trn Lock-In Is Real — AWS Is Investing $228B for 7% ROIC by 2028</h2>
+    <div class="slide-content">
+      <div class="two-col" style="flex:1">
+        <div class="card">
+          <div class="card-eyebrow">NVIDIA — $1trn PO Pipeline (UBS GTC, Mar 17)</div>
+          <ul>
+            <li>Blackwell + Rubin purchase orders raised to <span class="hl-amber">$1 trillion</span> (from $500B baseline) — firm contractual commitment 2025–2027</li>
+            <li>Vera Rubin: 50x perf/watt vs Blackwell; solves power/density constraints for 1GW+ clusters</li>
+            <li>Feynman (2028): multi-generational roadmap provides supply visibility; CUDA software stack = customer lock-in vs Groq/AMD/in-house ASIC</li>
+            <li>1GW factory spec at <span class="hl-teal">&lt;$500M</span> build cost — hyperscaler in-house fab economics beginning to be viable</li>
+            <li>OpenClaw (Claude + inference loop) implies <span class="hl-amber">100x</span> input/output token multiplier — actual achievable likely 5–10x given latency constraints</li>
+            <li>Physical AI (Optimus robotics) and Space-1 Module = new TAMs beyond data centers</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-eyebrow">AWS Deep Dive — ROIC Paradox (Evercore ISI, Mar 18)</div>
+          <ul>
+            <li>2026E revenue: <span class="hl-teal">~$214B</span> (+25–30% growth) on <span class="hl-amber">$155B</span> capex — capex/sales ratio 72%</li>
+            <li>ROIC compression: <span class="hl-amber">22% (2024) → 12% (2026E) → 7% (2028E)</span> — incremental ROIC only 5–7%</li>
+            <li>FCF goes negative: <span class="hl-amber">−$7.4B</span> (2026E), −$7.2B (2027E), −$5.1B (2028E)</li>
+            <li>Customer concentration: Anthropic + OpenAI = <span class="hl-amber">60–70%</span> of AWS AI workload revenue — unsustainable at $214B scale</li>
+            <li>Three convergent architectures (Rubin + Feynman + Vera Rubin) with attach rate upside of $1–6B/GW — wide range masks deep uncertainty</li>
+            <li>Historical precedent: Intel 2007–08 had 90% revenue in 3 customers; collapse followed diversification</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th>Metric</th><th>2024A</th><th>2026E</th><th>2027E</th><th>2028E</th><th>Trend</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>AWS Revenue</strong></td><td>$163B</td><td><span class="hl-teal">$214B</span></td><td>$276B</td><td>$335B</td><td>+25–30% CAGR</td></tr>
+            <tr><td><strong>AWS Capex</strong></td><td>Normalized</td><td><span class="hl-amber">$155B</span></td><td>$199B</td><td>$228B</td><td>Accelerating</td></tr>
+            <tr><td><strong>AWS EBIT Margin</strong></td><td>34%</td><td>32%</td><td>31%</td><td><span class="hl-amber">29%</span></td><td>−500bps compression</td></tr>
+            <tr><td><strong>AWS ROIC</strong></td><td>22%</td><td><span class="hl-amber">12%</span></td><td>9%</td><td><span class="hl-amber">7%</span></td><td>Severe compression</td></tr>
+            <tr><td><strong>AWS FCF</strong></td><td>Positive</td><td><span class="hl-amber">−$7.4B</span></td><td>−$7.2B</td><td>−$5.1B</td><td>Negative through 2028</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SLIDE 12: EMERGING THEMES -->
+<div class="slide" id="slide-12">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag" style="color:var(--d1)">Emerging Themes — CPO / Robotaxi / Space</span>
+      <span class="slide-num">Slide 12 / 16</span>
+    </div>
+    <h2 class="slide-title">Three Non-Consensus Themes Extend the AI Capex Cycle Beyond 2027</h2>
+    <div class="slide-content">
+      <div class="three-col" style="flex:1">
+        <div class="card">
+          <div class="card-eyebrow">Co-Packaged Optics (CPO) Inflection</div>
+          <div class="card-title" style="font-size:16px">$2–3B TAM by 2028</div>
+          <p style="margin-bottom:8px">Copper interconnect reaches physical limits at <span class="hl-teal">5–10GW</span> clusters. CPO reduces power overhead from 30–50% to 10–15% and latency from 20µs to 1–5µs.</p>
+          <ul>
+            <li>Lumentum: CPO design wins accelerating; <span class="hl-amber">30–50% revenue CAGR</span> 2026–2028</li>
+            <li>Broadcom: 35% CPO market share; co-packaging standard emerging</li>
+            <li>Coherent: board-level integration — bifurcation between CPU-side vs board-level optics</li>
+            <li>Timeline: 2H2026 trials → 1H2027 ramp → 2H2027 mainstream (aligns with Vera Rubin)</li>
+            <li>Extends memory/semis capex cycle into 2028; may delay Bernstein's CY2028 down-cycle</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-eyebrow">Autonomous Vehicles / Robotaxi</div>
+          <div class="card-title" style="font-size:16px">$5–10B TAM 2026–28</div>
+          <p style="margin-bottom:8px">UBER announced 5 AV deals in 1 week — inflection from hype to commercial reality.</p>
+          <ul>
+            <li>Rivian <span class="hl-amber">50K robotaxi</span> commitment — largest single AV order ever; validates L4/L5 economics</li>
+            <li>NVIDIA Orin standardization: every robotaxi = <span class="hl-teal">$15–20K</span> NVIDIA compute; 50K vehicles = $750M–$1B TAM from UBER alone</li>
+            <li>Waabi: <span class="hl-teal">$250M</span> simulation investment — reduces training data requirement 5x, accelerating 2026–2028 deployment</li>
+            <li>Autonomous trucking 100K+ units adds additional $5B+ TAM</li>
+            <li>UBER valuation: 12x FCF, 17x P/E — attractive vs memory comps at 30–40x</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-eyebrow">Space Data Centers</div>
+          <div class="card-title" style="font-size:16px">2030E: 230–240GW Required</div>
+          <p style="margin-bottom:8px">Grid queue delays of 5–10 years are the real demand driver. Space becomes necessary alternative if US/EU grid can't support 2030 data center demand.</p>
+          <ul>
+            <li>NVIDIA Space-1 Module announced; production 2026–27 — strategic optionality, not material revenue yet</li>
+            <li>SpaceX 1M satellite filing; Starship reusability to reduce launch costs 10x by 2028</li>
+            <li>Current space data center cost: 4–5x ground; declining to 2–3x by 2030E</li>
+            <li>Viable verticals: satellite imaging, edge compute, latency-sensitive workloads</li>
+            <li>If space captures 5–10% of new capacity = <span class="hl-amber">$6–12B incremental capex</span> over 4 years</li>
+          </ul>
+        </div>
+      </div>
+      <div class="chain">
+        <div class="chain-node" style="background:var(--teal-light);color:var(--teal)">AI Compute Clusters Scale to 1GW+</div>
+        <span class="chain-arrow">→</span>
+        <div class="chain-node" style="background:var(--surface2);color:var(--text2)">Copper Interconnect Hits Physical Limit</div>
+        <span class="chain-arrow">→</span>
+        <div class="chain-node" style="background:var(--teal-light);color:var(--teal)">CPO Becomes Mandatory (2027)</div>
+        <span class="chain-arrow">→</span>
+        <div class="chain-node" style="background:var(--amber-light);color:var(--amber)">Grid Capacity Exhausted</div>
+        <span class="chain-arrow">→</span>
+        <div class="chain-node" style="background:var(--teal-light);color:var(--teal)">Space Data Centers (2028–30)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SLIDE 13: COMPANY MATRIX -->
+<div class="slide" id="slide-13">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Company Positioning Matrix</span>
+      <span class="slide-num">Slide 13 / 16</span>
+    </div>
+    <h2 class="slide-title">Beneficiaries Validated by Data — Legacy Platforms Face LLM Displacement by 2027</h2>
+    <div class="slide-content">
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th>Company / Sector</th><th>View</th><th>Key Thesis</th><th>Critical Metric</th><th>Risk / Monitor</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>NVIDIA</strong></td>
+              <td><span class="pill pill-green">Core Long</span></td>
+              <td>$1trn PO pipeline; CUDA lock-in; Vera Rubin solves power density; ROIC 30%+</td>
+              <td>Gross margin <span class="hl-teal">60%+</span> through 2027</td>
+              <td>In-house ASIC momentum (MediaTek $1B+, Alchip $1.5B+); Groq 3x LPU competition</td>
+            </tr>
+            <tr>
+              <td><strong>Micron / SK Hynix / Samsung</strong></td>
+              <td><span class="pill pill-teal">Hold / Rotate</span></td>
+              <td>Super-cycle peak 1HCY27; specialty DRAM extends cycle; FQ3 at $33.5B rev / 81% GM</td>
+              <td>ASP trend; allocation fill rate (currently <span class="hl-amber">50–67%</span>)</td>
+              <td>Bernstein CY2028 −30–44% vs consensus; rotate before 1HCY27 peak</td>
+            </tr>
+            <tr>
+              <td><strong>Palantir</strong></td>
+              <td><span class="pill pill-green">Core Long</span></td>
+              <td>70% revenue growth; Salesforce replacement active in 10+ checks; supply chain TAM $500M–$1B</td>
+              <td>PT <span class="hl-teal">$200</span>; revenue sustaining 60%+ through 2027</td>
+              <td>Open-source ontology risk 2027–28; ServiceNow building competing AI-native CRM</td>
+            </tr>
+            <tr>
+              <td><strong>AWS / Amazon</strong></td>
+              <td><span class="pill pill-amber">Cautious</span></td>
+              <td>25–30% revenue growth confirmed; but ROIC 22% → 7%, FCF −$7.4B</td>
+              <td>Customer concentration: Anthropic + OpenAI = <span class="hl-amber">60–70%</span></td>
+              <td>Incremental ROIC only 5–7%; refinance risk 2027–28; in-house silicon threat</td>
+            </tr>
+            <tr>
+              <td><strong>TSMC</strong></td>
+              <td><span class="pill pill-green">Core Long</span></td>
+              <td>Rubin/Vera Rubin supply intact; no disruption flagged (Bernstein 25-co tour); 90%+ capacity utilization</td>
+              <td>5nm/3nm yield; no supply disruption</td>
+              <td>China geopolitical retaliation; US-Taiwan tension; AMD competing for advanced node allocation</td>
+            </tr>
+            <tr>
+              <td><strong>Lumentum / Broadcom / Coherent</strong></td>
+              <td><span class="pill pill-teal">Tactical Long</span></td>
+              <td>CPO inflection 2H2026; 40–50% GM vs 35–40% traditional; $2–3B TAM by 2028</td>
+              <td>CPO design wins; qualification timelines</td>
+              <td>Silicon photonics displacement; hyperscaler vertical integration of optics</td>
+            </tr>
+            <tr>
+              <td><strong>UBER</strong></td>
+              <td><span class="pill pill-teal">Tactical Long</span></td>
+              <td>Rivian 50K robotaxi; 5 AV deals in 1 week; 12x FCF / 17x P/E attractive vs semis</td>
+              <td>PT <span class="hl-teal">$150</span> (+35% upside); AV deal flow velocity</td>
+              <td>Tesla FSD competitive threat; regulatory delays; AV accident liability</td>
+            </tr>
+            <tr>
+              <td><strong>Salesforce / Traditional CRM</strong></td>
+              <td><span class="pill pill-red">Avoid</span></td>
+              <td>Palantir + open-source LLM displacement underway; 10 UBS checks show active replacement</td>
+              <td>Net revenue retention; churn rate to Palantir</td>
+              <td>AI-native CRM wins accelerate; CRM TAM contracts to "decision-making" vs "contact management"</td>
+            </tr>
+            <tr>
+              <td><strong>BI / Visualization Layer</strong> (Tableau, Qlik, Looker)</td>
+              <td><span class="pill pill-red">Avoid</span></td>
+              <td>~$6B TAM at risk from LLM disruption; 12–18 month lag before commodity displacement</td>
+              <td>AI-native visualization adoption rate</td>
+              <td>TAM compression −30–50% by 2027–28; UBS software checks confirm disruption underway</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SLIDE 14: PORTFOLIO CONSTRUCTION -->
+<div class="slide" id="slide-14">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Portfolio Construction</span>
+      <span class="slide-num">Slide 14 / 16</span>
+    </div>
+    <h2 class="slide-title">Four-Tier Positioning: Long AI Structural Beneficiaries, Hedge Oil/Credit Tail, Avoid Legacy</h2>
+    <div class="slide-content">
+      <div class="two-col">
+        <div class="card card-accent" style="border-left-color:var(--d4)">
+          <div class="card-eyebrow">Tier 1 — Core Long (60–70% allocation)</div>
+          <ul>
+            <li><strong>NVIDIA</strong> — Blackwell+Rubin $1trn PO validated; moat intact; ROIC 30%+ sustained</li>
+            <li><strong>Micron / SK Hynix / Samsung</strong> — Memory super-cycle 1HCY27 peak; specialty DRAM mix extends cycle; plan rotation before peak</li>
+            <li><strong>Palantir</strong> — 70% growth, Salesforce replacement, supply chain TAM; <span class="hl-amber">$200 PT</span></li>
+            <li><strong>Alibaba Cloud</strong> — 30%+ cloud growth, China domestic demand tail, capex sustained through 2027</li>
+            <li><strong>TSMC</strong> — Rubin/Vera Rubin supply on track, 5nm intact, geopolitical risk mitigated by CHIPS Act redundancy</li>
+          </ul>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--d2)">
+          <div class="card-eyebrow">Tier 2 — Tactical Rotations (20–30% allocation)</div>
+          <ul>
+            <li><strong>Energy basket</strong> (JPM JPRCRUDH/JPRCRUDX) — hedge oil tail; short coverage room (5th %-ile); gamma upside on Hormuz resolution</li>
+            <li><strong>Lumentum / Broadcom / Coherent</strong> — CPO inflection 2H2026; 30–50% CAGR potential; supply constrained through 2028</li>
+            <li><strong>UBER</strong> — Robotaxi TAM $5–10B; Rivian 50K validates commercial economics; 12x FCF attractive vs memory 30–40x</li>
+            <li><strong>Tesla</strong> — Optimus robotics optionality; in-house FSD validation; Gigafactory capex extends AI demand</li>
+          </ul>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card card-accent" style="border-left-color:var(--d5)">
+          <div class="card-eyebrow">Tier 3 — Hedges (10–15% allocation)</div>
+          <ul>
+            <li><strong>QQQ put spreads</strong> — extreme bear skew &gt; Apr 2025; protective positioning at panic extremes; reversal risk embedded but tail is real</li>
+            <li><strong>HY CDX protection</strong> — HYG skew only exceeded during COVID; credit cliff risk at −3% SPX; 400 stress, 480 recession signal</li>
+            <li><strong>Oil volatility (JPRCRUDH/JPRCRUDX)</strong> — short positioning creates squeezing risk; tactical short if oil sustains &gt;$125</li>
+          </ul>
+        </div>
+        <div class="card card-accent" style="border-left-color:var(--dim)">
+          <div class="card-eyebrow">Tier 4 — Avoid / De-Prioritize</div>
+          <ul>
+            <li><strong>Salesforce</strong> — Palantir + open-source LLM displacement underway; CRM consolidation to AI-native; multi-year multiple compression</li>
+            <li><strong>BI / Visualization</strong> (Tableau, Qlik, Looker, Microstrategy) — LLM disruption 2027–28; −30–50% TAM compression likely</li>
+            <li><strong>Nokia</strong> — telecom capex mature; no AI upside; secular decline thesis intact; yield play only</li>
+            <li><strong>Xiaomi</strong> — SU7 EV demand is already in memory consensus; MiMo-V2 ranked 8th globally; no AI moat</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SLIDE 15: TACTICAL BIAS & TRIGGERS -->
+<div class="slide" id="slide-15">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Tactical Bias & Invalidation Triggers</span>
+      <span class="slide-num">Slide 15 / 16</span>
+    </div>
+    <h2 class="slide-title">Neutral with Hedge Overlay — Watching Four Triggers That Would Shift the Entire Framework</h2>
+    <div class="slide-content">
+      <div class="featured-layout">
+        <div class="featured-card">
+          <div class="card-eyebrow">Tactical Bias — Neutral with Hedge Overlay</div>
+          <div class="statement">Structural AI thesis is intact. Geopolitical/oil shock creates non-trivial stagflationary tail consensus has not priced. With NQ100 shorts at 95th percentile and gross leverage at 95th percentile, the market is set up for violent moves in either direction.</div>
+          <div class="body">
+            1. <strong style="color:#f5c06a">Maintain core long exposure</strong> to structural AI beneficiaries (memory, NVIDIA supply chain, select hyperscaler proxies).<br><br>
+            2. <strong style="color:#f5c06a">Hedge oil/credit tail</strong> via energy-correlated baskets (JPRCRUDH/JPRCRUDX), HY CDX protection, QQQ put spreads.<br><br>
+            3. <strong style="color:#f5c06a">Watch for squeeze entry</strong> — CTA re-leveraging (+$145–170B potential) on oil resolution would trigger rapid NQ100 recovery.<br><br>
+            4. <strong style="color:#f5c06a">Reduce on memory cycle peak approach</strong> — rotate from Samsung/SK Hynix/Micron as 1HCY27 approaches; Bernstein CY28 estimates 30–44% below consensus.
+          </div>
+        </div>
+        <div class="right-grid">
+          <div class="card">
+            <div class="card-eyebrow">Bullish Shift Conditions</div>
+            <ul style="font-size:12.5px">
+              <li>Oil below <span class="hl-teal">$95</span> sustained</li>
+              <li>Fed delivers 2+ cuts</li>
+              <li>AWS AI incremental ROIC confirmed &gt;12%</li>
+              <li>Memory ASP holds through 2HCY27</li>
+              <li>Agentic adoption &gt;50% penetration in top-100 enterprises</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-eyebrow">Bearish Shift Conditions</div>
+            <ul style="font-size:12.5px">
+              <li>Oil &gt;<span class="hl-amber">$125</span> sustained &gt;4 weeks</li>
+              <li>HY CDX &gt;<span class="hl-amber">400</span> (stress signal)</li>
+              <li>Recession odds &gt;<span class="hl-amber">40%</span></li>
+              <li>SPX breaks below 200DMA (<span class="hl-amber">6,520</span>)</li>
+              <li>NDX below <span class="hl-amber">23,850</span> — distribution confirmed</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-eyebrow">Narrative Invalidation</div>
+            <ul style="font-size:12.5px">
+              <li>AWS incremental ROIC confirmed &lt;5% (Q2–Q3 earnings)</li>
+              <li>Memory ASP declines before 1HCY27</li>
+              <li>OpenClaw token volumes &lt;5x (not 100x)</li>
+              <li>Fed forced to hike on inflation</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-eyebrow">Regime Change Signal</div>
+            <ul style="font-size:12.5px">
+              <li>SPX break below <span class="hl-amber">6,520</span> (200DMA)</li>
+              <li>NDX below <span class="hl-amber">23,850</span></li>
+              <li>HY CDX &gt;<span class="hl-amber">480</span> (recession)</li>
+              <li>Strait of Hormuz closure</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SLIDE 16: INSTITUTIONAL TAKEAWAYS -->
+<div class="slide" id="slide-16">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <span class="domain-tag">Institutional Takeaways — 4 Bottom-Line Calls</span>
+      <span class="slide-num">Slide 16 / 16</span>
+    </div>
+    <h2 class="slide-title">Four Calls Consensus Has Not Fully Priced — Asymmetric Downside Inverts the Risk/Reward</h2>
+    <div class="slide-content">
+      <div class="featured-layout">
+        <div class="featured-card">
+          <div class="card-eyebrow">Bottom-Line Synthesis — March 19, 2026</div>
+          <div class="statement">The AI structural thesis is real and supported by unprecedented physical demand evidence. The bear case is not that AI is wrong — it's that the market is paying too much for an uncertain ROIC profile during a geopolitical shock that has a 50% probability of breaking consensus within 8 weeks.</div>
+          <div class="body">Probability-weighted expected drawdown of <span style="color:#f5c06a;font-weight:600">−19.5%</span> vs consensus +5% upside means the asymmetry is decisively inverted. The correct posture is not to be bearish on AI — it is to be disciplined about the price of AI while hedging the geopolitical/oil tail that the market has acknowledged but not de-risked.</div>
+        </div>
+        <div class="right-grid">
+          <div class="stat-card">
+            <div class="stat-eyebrow">Call 1 — Memory</div>
+            <div class="stat-value">Rotate</div>
+            <div class="stat-detail">Buy now, <span class="hl-amber">rotate by 1HCY27</span>. Bernstein's −30–44% CY2028 divergence is the most important call in the universe.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Call 2 — NVIDIA</div>
+            <div class="stat-value">Hold</div>
+            <div class="stat-detail">$1trn PO is real; CUDA lock-in is durable. Watch ASIC momentum (MediaTek + Alchip <span class="hl-amber">$2.5B+</span>) as early erosion signal.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Call 3 — Oil/Credit</div>
+            <div class="stat-value">Hedge</div>
+            <div class="stat-detail">HYG skew and QQQ skew both at extreme fear. Buy protection — the <span class="hl-amber">$575B</span> cascade is in visible distance.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-eyebrow">Call 4 — Software</div>
+            <div class="stat-value">Shift</div>
+            <div class="stat-detail">Out of BI/viz layer ($6B at risk). Into AI-native (<span class="hl-teal">Palantir $200 PT</span>) and data platforms (Snowflake, Databricks).</div>
+          </div>
+        </div>
+      </div>
+      <div class="insight-grid">
+        <div class="insight-card">
+          <div class="insight-title">Squeeze or Crash — No Middle Ground</div>
+          <p>NQ100 at 95th %-ile shorts + leverage at 95th %-ile = binary outcome. Oil resolution triggers <span class="hl-teal">+$145–170B</span> CTA re-leverage. Oil escalation triggers <span class="hl-amber">$575–620B</span> cascade. Position for both.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">AWS ROIC Compression Is Unpriced</div>
+          <p>Market is pricing 22% normalized ROIC through 2028. Evercore models show <span class="hl-amber">7%</span> by 2028E with negative FCF. When Q2–Q3 2026 earnings confirm incremental ROIC is 5–7%, re-rate risk is −15–20%.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">CPO / Optics — Hidden Cycle Extender</div>
+          <p>Co-Packaged Optics inflects 2H2026–2027. Lumentum, Broadcom, Coherent have supply constraint through 2028. Consensus is not pricing this TAM (<span class="hl-teal">$2–3B by 2028</span>) — buy optics supply chain before the ramp.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">China Self-Sufficiency — Underpriced Headwind</div>
+          <p>China 15-FYP explicitly targets semiconductor self-sufficiency. WFE demand <span class="hl-teal">+30%</span> from China, but it's reallocation away from TSMC/Samsung. NVIDIA China revenue (15–20% of total) faces medium-term margin compression — consensus ignores this.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ NAV -->
+<div id="nav">
+  <span>Market Intelligence · March 19, 2026 · 37 Sources</span>
+  <div style="display:flex;align-items:center;gap:12px">
+    <button onclick="go(current-1)">← Prev</button>
+    <span id="counter">1 / 16</span>
+    <button onclick="go(current+1)">Next →</button>
+  </div>
+  <span id="nav-slide-label">Slide 1</span>
+</div>
+
+<script>
+let current = 0;
+const slides = document.querySelectorAll('.slide');
+
+function go(n) {
+  slides[current].classList.remove('active');
+  current = Math.max(0, Math.min(n, slides.length - 1));
+  slides[current].classList.add('active');
+  document.getElementById('progress').style.width =
+    ((current + 1) / slides.length * 100) + '%';
+  document.getElementById('counter').textContent =
+    (current + 1) + ' / ' + slides.length;
+  document.getElementById('nav-slide-label').textContent = 'Slide ' + (current + 1);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(current + 1);
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   go(current - 1);
+});
+
+let tx = 0;
+document.addEventListener('touchstart', e => tx = e.touches[0].clientX, { passive: true });
+document.addEventListener('touchend', e => {
+  const dx = tx - e.changedTouches[0].clientX;
+  if (Math.abs(dx) > 40) go(current + (dx > 0 ? 1 : -1));
+});
+
+go(0);
+</script>
+</body>
+</html>

@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GTC 2026 – The Inference Kingdom Expands</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+:root {
+  --cream: #F5F5F0; --cream-dark: #EAEAE3; --navy: #1A1A2E; --navy-mid: #1E3A5F;
+  --blue: #3B82F6; --teal: #0EA5E9; --green: #10B981; --amber: #F59E0B;
+  --red: #DC2626; --text-1: #1A1A2E; --text-2: #4A4A5A; --text-3: #6B7280;
+  --text-4: #9CA3AF; --border: rgba(30,58,95,0.10);
+  --c1:#3B82F6;--c2:#10B981;--c3:#F59E0B;--c4:#EF4444;--c5:#8B5CF6;--c6:#EC4899;
+  --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --slide-w:1280px;--slide-h:720px;
+  --pad:60px;--pad-sm:40px;--gap-lg:40px;--gap-md:24px;--gap-sm:16px;
+  --shadow-slide:0 32px 80px rgba(0,0,0,0.45),0 8px 24px rgba(0,0,0,0.25);
+  --shadow-card:0 2px 12px rgba(0,0,0,0.07);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;background:var(--navy);font-family:var(--font);color:var(--text-1);overflow:hidden;-webkit-font-smoothing:antialiased;}
+.stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--navy);}
+.presentation{position:relative;width:var(--slide-w);height:var(--slide-h);transform-origin:top left;box-shadow:var(--shadow-slide);border-radius:2px;overflow:hidden;flex-shrink:0;}
+.slide{position:absolute;inset:0;width:var(--slide-w);height:var(--slide-h);background:var(--cream);display:flex;flex-direction:column;overflow:hidden;}
+.slide:not(.active){display:none;}
+.slide.active{display:flex;}
+
+/* TITLE SLIDE */
+.title-slide{align-items:center;justify-content:center;text-align:center;padding:var(--pad);background:var(--cream);position:relative;}
+.title-slide::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 15% 20%,rgba(30,58,95,0.06) 0%,transparent 50%),radial-gradient(circle at 85% 80%,rgba(59,130,246,0.05) 0%,transparent 50%),linear-gradient(135deg,transparent 45%,rgba(30,58,95,0.025) 45%,rgba(30,58,95,0.025) 55%,transparent 55%),linear-gradient(45deg,transparent 45%,rgba(30,58,95,0.025) 45%,rgba(30,58,95,0.025) 55%,transparent 55%);background-size:auto,auto,36px 36px,36px 36px;pointer-events:none;}
+.title-slide::after{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--navy-mid),var(--blue),var(--teal));}
+.title-slide h1{font-size:50px;font-weight:800;color:var(--navy);line-height:1.15;max-width:860px;margin-bottom:24px;position:relative;letter-spacing:-0.02em;}
+.title-slide .subtitle{font-size:22px;font-weight:400;color:var(--text-2);max-width:760px;line-height:1.55;margin-bottom:48px;position:relative;}
+.title-slide .meta{font-size:14px;font-weight:500;color:var(--text-3);letter-spacing:0.04em;text-transform:uppercase;position:relative;}
+.title-slide .logo{position:absolute;bottom:28px;right:36px;font-size:13px;font-weight:600;color:var(--text-3);letter-spacing:0.03em;text-transform:uppercase;}
+
+/* CONTENT SLIDES */
+.content-slide{padding:var(--pad) var(--pad) 32px var(--pad);display:flex;flex-direction:column;position:relative;}
+.content-slide::before{content:'';position:absolute;top:0;left:0;width:5px;height:100%;background:linear-gradient(180deg,var(--navy-mid) 0%,var(--blue) 60%,transparent 100%);}
+.slide-header{margin-bottom:var(--gap-lg);padding-left:16px;}
+.slide-header h2{font-size:34px;font-weight:700;color:var(--navy);line-height:1.2;margin-bottom:8px;letter-spacing:-0.01em;}
+.slide-header .subtitle{font-size:17px;font-weight:400;color:var(--text-2);max-width:820px;line-height:1.5;}
+.slide-body{flex:1;display:flex;flex-direction:column;min-height:0;}
+.slide-footer{margin-top:auto;padding-top:16px;padding-left:16px;font-size:11px;font-weight:400;color:var(--text-4);display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid var(--border);}
+
+/* LAYOUTS */
+.two-column{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap-lg);flex:1;min-height:0;}
+.two-column.text-chart{grid-template-columns:44% 56%;}
+.two-column.chart-text{grid-template-columns:56% 44%;}
+.two-column.wide-text{grid-template-columns:58% 42%;}
+.three-column{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap-md);flex:1;min-height:0;}
+.column{display:flex;flex-direction:column;min-height:0;}
+
+/* METRIC BOXES */
+.metric-row{display:flex;gap:var(--gap-md);margin-bottom:var(--gap-md);}
+.metric-box{flex:1;background:linear-gradient(135deg,#FAFAFA 0%,#F3F4F6 100%);border-left:4px solid var(--blue);border-radius:0 8px 8px 0;padding:20px 24px;display:flex;flex-direction:column;gap:6px;box-shadow:var(--shadow-card);}
+.metric-box.positive{border-left-color:var(--green);}
+.metric-box.negative{border-left-color:var(--red);}
+.metric-box.warning{border-left-color:var(--amber);}
+.metric-box.neutral{border-left-color:var(--text-3);}
+.metric-value{font-size:38px;font-weight:800;color:var(--navy-mid);line-height:1;letter-spacing:-0.02em;}
+.metric-box.positive .metric-value{color:var(--green);}
+.metric-box.negative .metric-value{color:var(--red);}
+.metric-box.warning .metric-value{color:var(--amber);}
+.metric-label{font-size:12px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;}
+.metric-sublabel{font-size:13px;font-weight:400;color:var(--text-3);line-height:1.4;}
+.hero-metric{text-align:center;padding:32px 0;}
+.hero-metric .hero-value{font-size:80px;font-weight:900;color:var(--blue);letter-spacing:-0.03em;line-height:1;display:block;}
+.hero-metric .hero-label{font-size:18px;font-weight:500;color:var(--text-2);margin-top:12px;display:block;}
+
+/* INSIGHT CARDS */
+.insight-card{background:var(--cream-dark);border-radius:10px;padding:28px 26px;display:flex;flex-direction:column;position:relative;overflow:hidden;border:1px solid var(--border);}
+.insight-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--teal));}
+.insight-card .card-number{font-size:56px;font-weight:900;color:var(--navy-mid);opacity:0.12;line-height:1;margin-bottom:8px;letter-spacing:-0.03em;}
+.insight-card h3{font-size:18px;font-weight:700;color:var(--navy);margin-bottom:10px;line-height:1.3;}
+.insight-card p{font-size:15px;font-weight:400;color:var(--text-2);line-height:1.6;flex:1;}
+.insight-card .card-stat{margin-top:16px;padding-top:14px;border-top:1px solid var(--border);font-size:22px;font-weight:800;color:var(--blue);}
+
+/* CHARTS */
+.chart-container{background:white;border-radius:10px;padding:20px 20px 16px;flex:1;display:flex;align-items:stretch;justify-content:center;min-height:200px;position:relative;border:1px solid var(--border);box-shadow:var(--shadow-card);}
+.chart-container canvas{width:100%!important;height:100%!important;}
+.chart-title{font-size:13px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px;}
+
+/* BULLETS */
+.bullet-list{list-style:none;padding:0;}
+.bullet-list li{position:relative;padding:0 0 14px 26px;font-size:17px;font-weight:400;color:var(--text-1);line-height:1.6;border-bottom:1px solid rgba(0,0,0,0.04);margin-bottom:2px;}
+.bullet-list li:last-child{border-bottom:none;}
+.bullet-list li::before{content:'';position:absolute;left:0;top:9px;width:9px;height:9px;background:var(--blue);border-radius:50%;}
+.bullet-list li strong{font-weight:600;color:var(--navy-mid);}
+.bullet-list.compact li{padding-bottom:10px;font-size:15px;}
+
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse;font-size:15px;}
+.data-table th{text-align:left;padding:12px 16px;background:var(--navy);color:white;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;}
+.data-table th:first-child{border-radius:6px 0 0 0;}
+.data-table th:last-child{border-radius:0 6px 0 0;}
+.data-table td{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--text-1);font-size:14px;}
+.data-table tr:nth-child(even) td{background:rgba(0,0,0,0.02);}
+.data-table tr:hover td{background:rgba(59,130,246,0.05);}
+.data-table .positive{color:var(--green);font-weight:700;}
+.data-table .negative{color:var(--red);font-weight:700;}
+.data-table .neutral{color:var(--text-3);}
+
+/* QUOTE */
+.quote-slide{align-items:center;justify-content:center;padding:var(--pad) 100px;background:var(--cream);}
+blockquote.pull-quote{font-size:24px;font-weight:400;font-style:italic;color:var(--text-2);line-height:1.65;border-left:5px solid var(--blue);padding:12px 0 12px 36px;max-width:900px;}
+blockquote.pull-quote cite{display:block;margin-top:20px;font-size:14px;font-style:normal;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;}
+
+/* TIMELINE */
+.timeline-track{position:relative;display:flex;justify-content:space-between;align-items:flex-start;padding:40px 0 0;margin-top:24px;}
+.timeline-track::before{content:'';position:absolute;top:17px;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--navy-mid),var(--blue));}
+.timeline-item{display:flex;flex-direction:column;align-items:center;text-align:center;flex:1;position:relative;}
+.timeline-dot{width:18px;height:18px;background:var(--blue);border:3px solid var(--cream);border-radius:50%;margin-bottom:16px;position:relative;z-index:1;box-shadow:0 0 0 3px var(--blue);}
+.timeline-dot.complete{background:var(--green);box-shadow:0 0 0 3px var(--green);}
+.timeline-dot.future{background:var(--text-4);box-shadow:0 0 0 3px var(--text-4);}
+.timeline-date{font-size:13px;font-weight:700;color:var(--navy-mid);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.04em;}
+.timeline-label{font-size:14px;font-weight:500;color:var(--text-2);max-width:140px;line-height:1.4;}
+
+/* RISK/OPPTY CARDS */
+.risk-card{background:#FEF2F2;border:1px solid #FECACA;border-left:4px solid var(--red);border-radius:0 8px 8px 0;padding:18px 20px;margin-bottom:var(--gap-sm);}
+.risk-card h4{font-size:15px;font-weight:700;color:var(--red);margin-bottom:6px;}
+.risk-card p{font-size:14px;color:#7F1D1D;line-height:1.5;}
+.opportunity-card{background:#ECFDF5;border:1px solid #A7F3D0;border-left:4px solid var(--green);border-radius:0 8px 8px 0;padding:18px 20px;margin-bottom:var(--gap-sm);}
+.opportunity-card h4{font-size:15px;font-weight:700;color:#065F46;margin-bottom:6px;}
+.opportunity-card p{font-size:14px;color:#064E3B;line-height:1.5;}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;padding:4px 12px;border-radius:100px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;}
+.badge.green{background:#DCFCE7;color:#166534;}
+.badge.red{background:#FEE2E2;color:#991B1B;}
+.badge.blue{background:#DBEAFE;color:#1E40AF;}
+.badge.amber{background:#FEF3C7;color:#92400E;}
+.badge.gray{background:#F3F4F6;color:#4B5563;}
+
+/* CLOSING */
+.closing-slide{align-items:center;justify-content:center;text-align:center;padding:var(--pad);background:var(--navy);position:relative;}
+.closing-slide::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 30%,rgba(59,130,246,0.12) 0%,transparent 55%),radial-gradient(circle at 80% 70%,rgba(14,165,233,0.10) 0%,transparent 50%);pointer-events:none;}
+.closing-slide h1{font-size:52px;font-weight:800;color:white;letter-spacing:-0.02em;position:relative;}
+.closing-slide .subtitle{font-size:22px;font-weight:400;color:rgba(255,255,255,0.65);margin-top:20px;position:relative;}
+.closing-slide .meta{font-size:13px;color:rgba(255,255,255,0.35);margin-top:48px;position:relative;text-transform:uppercase;letter-spacing:0.06em;}
+
+/* PROGRESS */
+.progress-bar{position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,255,255,0.1);z-index:2000;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--teal));transition:width 0.35s cubic-bezier(0.4,0,0.2,1);width:0%;}
+
+/* CONTROLS */
+.controls{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:4px;background:rgba(26,26,46,0.88);padding:8px 16px;border-radius:100px;backdrop-filter:blur(12px);z-index:1000;box-shadow:0 4px 24px rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);opacity:0.6;transition:opacity 0.2s;}
+.controls:hover{opacity:1;}
+.controls button{background:transparent;border:none;color:rgba(255,255,255,0.85);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;padding:6px 14px;border-radius:100px;transition:background 0.15s,color 0.15s;white-space:nowrap;}
+.controls button:hover{background:rgba(255,255,255,0.12);color:white;}
+#slide-counter{color:rgba(255,255,255,0.5);font-size:12px;font-family:var(--font);min-width:56px;text-align:center;padding:0 8px;}
+#fullscreen-btn{font-size:16px;padding:6px 10px;opacity:0.7;}
+.key-hint{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);font-family:var(--font);font-size:12px;color:rgba(255,255,255,0.4);background:rgba(0,0,0,0.3);padding:5px 14px;border-radius:100px;z-index:999;pointer-events:none;transition:opacity 0.5s;}
+
+/* UTILS */
+.text-blue{color:var(--blue);}.text-green{color:var(--green);}.text-red{color:var(--red);}.text-amber{color:var(--amber);}.text-muted{color:var(--text-3);}.text-navy{color:var(--navy-mid);}
+.fw-800{font-weight:800;}.fw-700{font-weight:700;}.fw-600{font-weight:600;}
+.fs-large{font-size:22px;}.fs-normal{font-size:17px;}.fs-small{font-size:14px;}.fs-xs{font-size:12px;}
+.mt-auto{margin-top:auto;}.mb-md{margin-bottom:var(--gap-md);}.mb-sm{margin-bottom:var(--gap-sm);}
+.divider{height:1px;background:var(--border);margin:var(--gap-md) 0;}
+.pct-bar-track{background:#E5E7EB;height:12px;border-radius:100px;overflow:hidden;margin:8px 0;}
+.pct-bar-fill{height:100%;border-radius:100px;background:var(--blue);transition:width 0.6s ease;}
+.pct-bar-fill.green{background:var(--green);}.pct-bar-fill.red{background:var(--red);}.pct-bar-fill.amber{background:var(--amber);}
+  </style>
+</head>
+<body>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+
+<div class="stage">
+  <div class="presentation">
+
+    <!-- SLIDE 1: TITLE -->
+    <div class="slide title-slide active" id="slide-1">
+      <h1>Nvidia – The Inference Kingdom Expands</h1>
+      <p class="subtitle">GTC 2026 Deep Dive: Groq LPX, Attention-FFN Disaggregation, CPO Roadmap Reality, Kyber Architecture &amp; Supply Chain Winners</p>
+      <p class="meta">SemiAnalysis · Dylan Patel, Myron Xie, Daniel Nishball et al. · March 24, 2026</p>
+      <div class="logo">SemiAnalysis</div>
+    </div>
+
+    <!-- SLIDE 2: EXECUTIVE SUMMARY -->
+    <div class="slide content-slide" id="slide-2">
+      <div class="slide-header">
+        <h2>Three Findings That Change the Investment Calculus</h2>
+        <p class="subtitle">Executive summary — GTC 2026 delivers ground-breaking system architecture across inference, networking, and storage</p>
+      </div>
+      <div class="slide-body three-column">
+        <div class="insight-card">
+          <div class="card-number">01</div>
+          <h3>$20B Regulatory Arbitrage Unlocks Instant LPU Integration</h3>
+          <p>Nvidia structured the Groq deal as a license, not an acquisition, deliberately sidestepping antitrust review. LP30 on Samsung SF4 adds incremental compute capacity without touching constrained TSMC N3 or HBM supply.</p>
+          <div class="card-stat">$20B License</div>
+        </div>
+        <div class="insight-card">
+          <div class="card-number">02</div>
+          <h3>AFD on GPU+LPU is the New Inference Architecture Standard</h3>
+          <p>Attention-FFN Disaggregation exploits the fundamental mismatch between attention (stateful, HBM-bound) and FFN (stateless, SRAM-optimal). As MoE model sparsity grows, AFD becomes more — not less — critical.</p>
+          <div class="card-stat">150 TB/s LPU SRAM BW</div>
+        </div>
+        <div class="insight-card">
+          <div class="card-number">03</div>
+          <h3>CPO Volume Ramp is a Feynman 2028 Event, Not Rubin Ultra</h3>
+          <p>No CPO for Rubin Ultra NVL144 Kyber scale-up. CPO appears only at inter-rack level for NVL576 (low volume/test) and NVL1152 Feynman. Investors pricing in near-term CPO TAM should recalibrate by 1–2+ years.</p>
+          <div class="card-stat">2028 est. volume ramp</div>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Source: SemiAnalysis GTC 2026 Report</span><span>Slide 2 / 18</span></div>
+    </div>
+
+    <!-- SLIDE 3: GROQ DEAL STRUCTURE -->
+    <div class="slide content-slide" id="slide-3">
+      <div class="slide-header">
+        <h2>The Groq "Acquisition" Was Engineered to Bypass Antitrust Review</h2>
+        <p class="subtitle">License + team hire = all functional benefits of acquisition, none of the regulatory friction</p>
+      </div>
+      <div class="slide-body two-column wide-text">
+        <div class="column">
+          <div class="metric-row">
+            <div class="metric-box warning">
+              <div class="metric-value">$20B</div>
+              <div class="metric-label">IP License Value</div>
+              <div class="metric-sublabel">Paid to license Groq IP + hire most of the team</div>
+            </div>
+            <div class="metric-box positive">
+              <div class="metric-value">&lt;4mo</div>
+              <div class="metric-label">Time to System Concept</div>
+              <div class="metric-sublabel">LPX rack concept ready &lt;4 months post-deal</div>
+            </div>
+          </div>
+          <ul class="bullet-list">
+            <li><strong>Regulatory arbitrage:</strong> Full acquisition would have triggered antitrust review given Nvidia's market share — license structure avoids this entirely</li>
+            <li><strong>LPU Gen 2 was never shipped</strong> — C2C SerDes failed to hit 112G, causing design malfunction. LP30 (Gen 3) skips Gen 2 entirely</li>
+            <li><strong>Samsung SF4 is strategically additive</strong> — LP30 requires no TSMC N3 or HBM allocation, making LPX capacity genuinely incremental</li>
+            <li><strong>LP40 (Feynman gen) returns to TSMC N3P</strong> with NVLink protocol, replacing Groq's C2C — Nvidia progressively absorbs Groq IP</li>
+          </ul>
+        </div>
+        <div class="column">
+          <p class="chart-title">LPU Generation Roadmap</p>
+          <div class="chart-container" style="height:340px;">
+            <canvas id="chartLPU"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Source: SemiAnalysis GTC 2026 Report · Nvidia</span><span>Slide 3 / 18</span></div>
+    </div>
+
+    <!-- SLIDE 4: LPU CHIP SPECS -->
+    <div class="slide content-slide" id="slide-4">
+      <div class="slide-header">
+        <h2>SRAM Latency Advantage Makes the LPU Irreplaceable for FFN Decode</h2>
+        <p class="subtitle">Memory hierarchy comparison — LPU SRAM is 7× faster bandwidth and 8–20× lower latency than HBM</p>
+      </div>
+      <div class="slide-body two-column text-chart">
+        <div class="column">
+          <div class="mb-md">
+            <p style="font-size:16px;color:var(--text-2);line-height:1.6;margin-bottom:16px;">The LP30 chip dedicates most of its die area to <strong style="color:var(--navy-mid);">500 MB of on-chip SRAM</strong> — up from 230 MB in Gen 1. This SRAM enables ultra-low latency FFN execution that HBM simply cannot match at the token-per-user granularity required by interactive AI.</p>
+          </div>
+          <table class="data-table">
+            <thead><tr><th>Memory</th><th>Bandwidth</th><th>Latency</th></tr></thead>
+            <tbody>
+              <tr><td><strong>LPU SRAM</strong></td><td class="positive">150 TB/s</td><td class="positive">5–20 ns</td></tr>
+              <tr><td>HBM4 12-Hi</td><td class="neutral">~22 TB/s</td><td class="neutral">100–150 ns</td></tr>
+              <tr><td>GDDR7</td><td class="neutral">1.5–1.8 TB/s</td><td class="neutral">50–80 ns</td></tr>
+              <tr><td>DDR5</td><td class="neutral">307–614 GB/s</td><td class="neutral">60–100 ns</td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:16px;padding:14px 18px;background:rgba(59,130,246,0.06);border-radius:8px;border-left:3px solid var(--blue);">
+            <p style="font-size:14px;color:var(--text-2);">LP30 specs: <strong style="color:var(--navy-mid);">500 MB SRAM · 1.2 PFLOPs FP8 · 96 C2C links · 112 Gbps SerDes · Samsung SF4</strong></p>
+          </div>
+        </div>
+        <div class="column">
+          <p class="chart-title">Memory Bandwidth Comparison (TB/s)</p>
+          <div class="chart-container" style="height:360px;">
+            <canvas id="chartMemBW"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Source: SemiAnalysis · Nvidia · Groq ISCA 2020</span><span>Slide 4 / 18</span></div>
+    </div>
+
+    <!-- SLIDE 5: AFD ARCHITECTURE -->
+    <div class="slide content-slide" id="slide-5">
+      <div class="slide-header">
+        <h2>Attention-FFN Disaggregation (AFD) Solves a Structural GPU Underutilization Problem</h2>
+        <p class="subtitle">Attention is stateful and KV-cache bound; FFN is stateless and SRAM-optimal — the system exploits both simultaneously</p>
+      </div>
+      <div class="slide-body two-column chart-text">
+        <div class="column">
+          <p class="chart-title">GPU Utilization: Attention vs FFN vs Batch Size</p>
+          <div class="chart-container" style="height:360px;">
+            <canvas id="chartAFD"></canvas>
+          </div>
+        </div>
+        <div class="column">
+          <div style="display:flex;flex-direction:column;gap:14px;height:100%;">
+            <div class="opportunity-card">
+              <h4>Attention → GPU (Stateful)</h4>
+              <p>GPU HBM (288 GB) stores KV cache. Attention utilization barely improves with batch size — memory-bound. Disaggregation lets full HBM capacity be dedicated to KV cache, doubling token capacity per GPU.</p>
+            </div>
+            <div class="opportunity-card">
+              <h4>FFN → LPU (Stateless)</h4>
+              <p>LPU SRAM (500 MB) hosts FFN weights. FFN is deterministic with no KV state — inherently suited to LPU's static compute model. Each FFN expert is hundreds of MB; draft models need 256 GB DDR5 via FPGAs.</p>
+            </div>
+            <div style="padding:14px 18px;background:rgba(245,158,11,0.08);border-radius:8px;border-left:3px solid var(--amber);">
+              <p style="font-size:14px;color:var(--text-2);"><strong style="color:var(--amber);">MoE tailwind:</strong> As frontier models become sparser, AFD value grows — more experts = fewer tokens per expert = greater benefit from disaggregation.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Source: SemiAnalysis · MegaScale-Infer · Nvidia</span><span>Slide 5 / 18</span></div>
+    </div>
+
+    <!-- SLIDE 6: LPX RACK SYSTEM -->
+    <div class="slide content-slide" id="slide-6">
+      <div class="slide-header">
+        <h2>LPX Rack: 256 LPUs Per Rack, 640 TB/s Scale-Up Bandwidth</h2>
+        <p class="subtitle">GTC showed a 32×1U tray version — the actual production config shipping 3Q differs; key details remain in transition</p>
+      </div>
+      <div class="slide-body">
+        <div class="metric-row">
+          <div class="metric-box">
+            <div class="metric-value">256</div>
+            <div class="metric-label">LPUs per LPX Rack</div>
+            <div class="metric-sublabel">16 nodes × 16 LPUs per tray</div>
+          </div>
+          <div class="metric-box positive">
+            <div class="metric-value">640 TB/s</div>
+            <div class="metric-label">Scale-Up BW per Rack</div>
+            <div class="metric-sublabel">256 LPUs × 90 lanes × 112Gbps/8 × 2 dirs</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-value">256 GB</div>
+            <div class="metric-label">DDR5 via FPGAs</div>
+            <div class="metric-sublabel">Per FPGA — for KVcache / draft model storage</div>
+          </div>
+          <div class="metric-box warning">
+            <div class="metric-value">8,160</div>
+            <div class="metric-label">Differential Pairs / Rack</div>
+            <div class="metric-sublabel">Cable backplane (inter-node C2C + FPGA)</div>
+          </div>
+        </div>
+        <div class="two-column" style="gap:20px;flex:1;min-height:0;">
+          <div>
+            <p style="font-size:15px;font-weight:600;color:var(--navy-mid);margin-bottom:12px;">LPX Compute Tray Components</p>
+            <ul class="bullet-list compact">
+              <li><strong>16 LP30 LPUs</strong> (belly-to-belly on PCB — reduces X/Y trace lengths)</li>
+              <li><strong>2 Altera FPGAs</strong> ("Fabric Expansion Logic") — C2C-to-Ethernet bridge to Spectrum-X, C2C-to-PCIe to host CPU</li>
+              <li><strong>1 Intel Granite Rapids CPU</strong> + 1 BlueField-4 front-end module</li>
+              <li><strong>8× OSFP cages</strong> for cross-rack C2C; 2 QSFP-DD for GPU scale-out via Spectrum-X</li>
+              <li><strong>PCB ASP ~$7k</strong> per main board (Victory Giant / WUS)</li>
+            </ul>
+          </div>
+          <div>
+            <p style="font-size:15px;font-weight:600;color:var(--navy-mid);margin-bottom:12px;">LPU Network Topology</p>
+            <ul class="bullet-list compact">
+              <li><strong>Intra-tray:</strong> All-to-all mesh — each LPU connects to 15 others via 4×100G C2C (PCB traces)</li>
+              <li><strong>Inter-node:</strong> 15×2×100G per LPU via copper cable backplane</li>
+              <li><strong>Inter-rack:</strong> 4×100G per LPU to OSFP cages; daisy chain/ring for 4–8 racks</li>
+              <li><strong>Scale-out (to GPUs):</strong> via Spectrum-X Ethernet through FPGAs</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Source: SemiAnalysis Accelerator Model · Networking Model</span><span>Slide 6 / 18</span></div>
+    </div>
+
+    <!-- SLIDE 7: CPO ROADMAP REALITY -->
+    <div class="slide content-slide" id="slide-7">
+      <div class="slide-header">
+        <h2>CPO Is a 2028 Volume Event — Consensus Is Pricing It In Too Early</h2>
+        <p class="subtitle">Nvidia's "copper where possible, optics where necessary" strategy delays meaningful CPO TAM by 1–2+ years vs. market expectations</p>
+      </div>
+      <div class="slide-body">
+        <div class="timeline-track">
+          <div class="timeline-item">
+            <div class="timeline-dot complete"></div>
+            <div class="timeline-date">2024–2025</div>
+            <div class="timeline-label">Blackwell NVL72<br><span style="color:var(--green);font-weight:700;">All Copper</span></div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot complete"></div>
+            <div class="timeline-date">2026</div>
+            <div class="timeline-label">Rubin NVL72<br><span style="color:var(--green);font-weight:700;">All Copper</span></div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-date">2026–2027</div>
+            <div class="timeline-label">Rubin Ultra NVL144<br><span style="color:var(--green);font-weight:700;">All Copper</span></div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-date">2027</div>
+            <div class="timeline-label">Rubin Ultra NVL576<br><span style="color:var(--amber);font-weight:700;">CPO inter-rack<br>(low vol / test)</span></div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot future"></div>
+            <div class="timeline-date">2028+</div>
+            <div class="timeline-label">Feynman NVL1152<br><span style="color:var(--blue);font-weight:700;">CPO inter-rack<br>(volume ramp)</span></div>
+          </div>
+        </div>
+        <div class="two-column" style="margin-top:32px;gap:20px;">
+          <div class="risk-card">
+            <h4>Kyber NVL144: Zero CPO for Scale-Up</h4>
+            <p>"For Rubin Ultra NVL144 Kyber, there will be no CPO used for scale up, despite rumors from other analysts." — SemiAnalysis. Pluggables and copper remain POR within the rack.</p>
+          </div>
+          <div class="risk-card">
+            <h4>NVL1152 "All CPO" Is Likely Just Inter-Rack</h4>
+            <p>Jensen Huang's "all CPO" characterization conflicts with Nvidia's technical blog, which only references CPO for rack-to-rack. In-rack copper is current POR. 448G PAM4 SerDes and echo cancellation remain unsolved at volume.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Source: SemiAnalysis AI Networking Model · Nvidia · Jensen Huang Financial Analyst Q&A, March 2026</span><span>Slide 7 / 18</span></div>
+    </div>
+
+    <!-- SLIDE 8: KYBER RACK ARCHITECTURE -->
+    <div class="slide content-slide" id="slide-8">
+      <div class="slide-header">
+        <h2>Kyber Rack Has Materially Densified From 2025 Prototype</h2>
+        <p class="subtitle">NVL144: 144 Rubin Ultra GPUs, 72 NVLink 7 switches, 14.4 Tbit/s per GPU — but design is still in flux</p>
+      </div>
+      <div class="slide-body two-column text-chart">
+        <div class="column">
+          <table class="data-table" style="margin-bottom:16px;">
+            <thead><tr><th>Parameter</th><th>NVL72 Oberon</th><th>NVL144 Kyber</th></tr></thead>
+            <tbody>
+              <tr><td>Total GPUs</td><td>72</td><td class="positive">144</td></tr>
+              <tr><td>GPU per blade</td><td>4</td><td class="positive">4 RU + 2 Vera</td></tr>
+              <tr><td>Compute blades</td><td>18</td><td class="positive">36 (2 canisters)</td></tr>
+              <tr><td>NVLink switches</td><td>36 (NVLink 6)</td><td class="positive">72 (NVLink 7)</td></tr>
+              <tr><td>BW per GPU</td><td>7.2 Tbit/s</td><td class="positive">14.4 Tbit/s</td></tr>
+              <tr><td>Switch BW</td><td>14.4T uni-di</td><td class="positive">28.8T uni-di</td></tr>
+              <tr><td>Within-rack</td><td>Copper PCB</td><td>Copper midplane + flyover</td></tr>
+              <tr><td>Scale-out optics</td><td>OSFP cages</td><td class="negative">MBOM (contested)</td></tr>
+            </tbody>
+          </table>
+          <div style="padding:12px 16px;background:rgba(245,158,11,0.08);border-radius:8px;border-left:3px solid var(--amber);">
+            <p style="font-size:14px;color:var(--text-2);"><strong style="color:var(--amber);">Design flux warning:</strong> Voronoi connector spec, MBOM vs OSFP, canister count — all still evolving. Rubin Ultra Kyber will be "redone" per source material.</p>
+          </div>
+        </div>
+        <div class="column">
+          <p class="chart-title">Scale-Up BW per GPU by System (Tbit/s uni-di)</p>
+          <div class="chart-container" style="height:360px;">
+            <canvas id="chartKyberBW"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Source: SemiAnalysis Networking Model · Nvidia GTC 2026</span><span>Slide 8 / 18</span></div>
+    </div>
+
+    <!-- SLIDE 9: WORLD SIZE SCALING -->
+    <div class="slide content-slide" id="slide-9">
+      <div class="slide-header">
+        <h2>Nvidia's Multi-Rack World Sizes Expand Compute Density by 8× Each Step</h2>
+        <p class="subtitle">NVL288 is supply-chain-explored but unannounced; NVL576 is low-volume test; NVL1152 is the volume CPO target</p>
+      </div>
+      <div class="slide-body">
+        <div class="metric-row">
+          <div class="metric-box">
+            <div class="metric-value">NVL144</div>
+            <div class="metric-label">Kyber Rack</div>
+            <div class="metric-sublabel">All copper · 1 rack · 144 GPUs · BW 14.4T/GPU</div>
+          </div>
+          <div class="metric-box neutral">
+            <div class="metric-value">NVL288</div>
+            <div class="metric-label">2× Kyber (unannounced)</div>
+            <div class="metric-sublabel">41,472 DPs required · NVSwitch 7 radix uncertain</div>
+          </div>
+          <div class="metric-box warning">
+            <div class="metric-value">NVL576</div>
+            <div class="metric-label">8× Oberon Racks</div>
+            <div class="metric-sublabel">CPO inter-rack · low volume test · 576 GPUs</div>
+          </div>
+          <div class="metric-box positive">
+            <div class="metric-value">NVL1152</div>
+            <div class="metric-label">8× Kyber (Feynman)</div>
+            <div class="metric-sublabel">CPO inter-rack volume · 1,152 GPUs · 2028 est.</div>
+          </div>
+        </div>
+        <div class="chart-container" style="height:300px;margin-top:8px;">
+          <canvas id="chartWorldSize"></canvas>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Source: SemiAnalysis Accelerator Model · Nvidia GTC 2026 Roadmap</span><span>Slide 9 / 18</span></div>
+    </div>
+
+    <!-- SLIDE 10: MID-BOARD OPTICS / KYBER MBOM -->
+    <div class="slide content-slide" id="slide-10">
+      <div class="slide-header">
+        <h2>Nvidia's MBOM Design Strips Out OSFP Cages — Hyperscalers Are Saying "CP-Hell No"</h2>
+        <p class="subtitle">Mid-board optical module replaces pluggable transceivers; hyperscalers demand OSFP cages for vendor flexibility</p>
+      </div>
+      <div class="slide-body two-column">
+        <div class="column">
+          <div class="opportunity-card">
+            <h4>Nvidia's MBOM Vision</h4>
+            <p>Midboard Optical Module (LGA socket) handles driver and TIA functions on-board. Two CX-9s share one MBOM. Provides 2 MPO ports at 2×800G each = 1.6T total per MBOM. Only 4× MPO ports per compute tray — no OSFP cages visible on GTC show floor Kyber rack.</p>
+          </div>
+          <div class="risk-card" style="margin-top:14px;">
+            <h4>Hyperscaler Pushback</h4>
+            <p>MBOM blocks use of any pluggable transceiver or AEC cable. Hyperscalers are pushing back hard — they need OSFP cages to continue using their own pluggables and switch optical vendors independently. This is a significant architectural standoff with Nvidia's largest customers.</p>
+          </div>
+          <div style="margin-top:14px;padding:14px 18px;background:rgba(245,158,11,0.08);border-radius:8px;border-left:3px solid var(--amber);">
+            <p style="font-size:14px;color:var(--text-2);">Nvidia is also exploring <strong>co-packaged copper (NPC)</strong> on the NVLink switch connector path as a loss-reduction measure. Supply chain is being told to prepare for fully co-packaged copper.</p>
+          </div>
+        </div>
+        <div class="column">
+          <p style="font-size:15px;font-weight:600;color:var(--navy-mid);margin-bottom:16px;">Optical Integration Architecture Comparison</p>
+          <table class="data-table">
+            <thead><tr><th>Approach</th><th>Vendor Control</th><th>Serviceability</th><th>BOM Cost</th></tr></thead>
+            <tbody>
+              <tr><td><strong>OSFP Pluggable</strong></td><td class="positive">Hyperscaler</td><td class="positive">High</td><td class="neutral">Higher</td></tr>
+              <tr><td><strong>MBOM (Nvidia)</strong></td><td class="negative">Nvidia</td><td class="negative">Low</td><td class="positive">Lower</td></tr>
+              <tr><td><strong>CPO (future)</strong></td><td class="neutral">Mixed</td><td class="neutral">Medium</td><td class="positive">Lowest</td></tr>
+              <tr><td><strong>AEC Copper</strong></td><td class="positive">Hyperscaler</td><td class="positive">High</td><td class="positive">Low</td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:16px;padding:14px 18px;background:rgba(220,38,38,0.06);border-radius:8px;">
+            <p style="font-size:14px;color:var(--text-2);">⚠️ <strong style="color:var(--red);">Key risk:</strong> Kyber design may revert to OSFP cages under hyperscaler pressure — multiple design elements remain in flux before production deployment.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Source: SemiAnalysis GTC 2026 Report · Nvidia Kyber prototype analysis</span><span>Slide 10 / 18</span></div>
+    </div>
+
+    <!-- SLIDE 11: VERA ETL256 + CMX/STX -->
+    <div class="slide content-slide" id="slide-11">
+      <div class="slide-header">
+        <h2>Vera ETL256 and CMX/STX: Nvidia Captures CPU and Storage Layers</h2>
+        <p class="subtitle">Having locked compute and networking, Nvidia is now standardizing adjacent layers — expanding vertical integration systematically</p>
+      </div>
+      <div class="slide-body two-column">
+        <div class="column">
+          <div style="background:var(--cream-dark);border-radius:10px;padding:24px;border:1px solid var(--border);height:100%;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+              <div style="background:var(--blue);width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                <span style="color:white;font-size:18px;font-weight:800;">V</span>
+              </div>
+              <div>
+                <p style="font-size:17px;font-weight:700;color:var(--navy);">Vera ETL256 — CPU Bottleneck Solved</p>
+                <p style="font-size:13px;color:var(--text-3);">256 Vera CPUs per single liquid-cooled rack</p>
+              </div>
+            </div>
+            <ul class="bullet-list compact">
+              <li><strong>256 CPUs per rack</strong> (32 compute trays × 8 Vera CPUs each)</li>
+              <li><strong>Spectrum-X multiplane topology</strong> — 200 Gb/s lanes, single flat all-to-all Ethernet network</li>
+              <li>32 front-facing OSFP cages for optical POD connectivity</li>
+              <li><strong>Rationale:</strong> RL, code execution, and agentic workloads drive CPU demand independently of GPU scaling; CPUs are now a growing bottleneck</li>
+              <li>Same design philosophy as NVL rack — copper intra-rack, optics to POD</li>
+            </ul>
+          </div>
+        </div>
+        <div class="column">
+          <div style="background:var(--cream-dark);border-radius:10px;padding:24px;border:1px solid var(--border);height:100%;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+              <div style="background:var(--green);width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                <span style="color:white;font-size:18px;font-weight:800;">S</span>
+              </div>
+              <div>
+                <p style="font-size:17px;font-weight:700;color:var(--navy);">CMX / STX — Storage Layer Standardization</p>
+                <p style="font-size:13px;color:var(--text-3);">BF-4 DPU embeds in every compliant storage rack</p>
+              </div>
+            </div>
+            <ul class="bullet-list compact">
+              <li><strong>CMX</strong> (ICMS rebranded) = "Tier G3.5" NVMe — sits between local SSD (G3) and shared storage (G4)</li>
+              <li><strong>STX reference rack:</strong> 32 Vera CPUs, 64 CX-9 NICs, 64 SOCAMMs — endorsed by 15+ major storage vendors</li>
+              <li>STX mandates BlueField-4 DPUs in storage racks — expands NIC/DPU revenue attached to storage deployments</li>
+              <li><strong>Strategic implication:</strong> BF-4/CMX/STX = Nvidia has now captured compute → network → storage layers</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Source: SemiAnalysis GTC 2026 · Nvidia CMX/STX announcement</span><span>Slide 11 / 18</span></div>
+    </div>
+
+    <!-- SLIDE 12: SUPPLY CHAIN WINNERS -->
+    <div class="slide content-slide" id="slide-12">
+      <div class="slide-header">
+        <h2>Supply Chain Realignment: FIT Emerges, Amphenol Faces Structural Displacement</h2>
+        <p class="subtitle">GTC 2026 reveals non-obvious supply chain shifts — Nvidia captures connector IP, AlphaWave wins LP30 SerDes</p>
+      </div>
+      <div class="slide-body two-column text-chart">
+        <div class="column">
+          <div class="opportunity-card">
+            <h4>FIT — Biggest Emerging Winner</h4>
+            <p>Licensed Amphenol's VR NVL72 backplane + Paladin HD connectors. Appears to be leading the Kyber Voronoi connector competition. Positioned to win both LPX backplane and Kyber midplane volume.</p>
+          </div>
+          <div class="opportunity-card">
+            <h4>AlphaWave (Qualcomm) — Surprise LP30 SerDes Win</h4>
+            <p>Only SerDes IP provider qualified for Samsung SF4. Supplies 112G SerDes for LP30/LP35 C2C. Nvidia reverts to its own NVLink SerDes from LP40 (TSMC) — dependency ends after LP35.</p>
+          </div>
+          <div class="opportunity-card">
+            <h4>Victory Giant / WUS — High-ASP PCB</h4>
+            <p>LPX compute tray main board PCB: ~$7k ASP. Requires 52-layer M9 spec PCB. Belly-to-belly LPU layout demands premium HDI routing capability.</p>
+          </div>
+          <div class="risk-card">
+            <h4>Amphenol — Licensing Revenue, Losing Design Seat</h4>
+            <p>Earned licensing fees from FIT for Paladin/backplane tech. But Kyber "Voronoi" connector is Nvidia-proprietary — Amphenol is competing for a spec it no longer controls. Structural displacement from prior dominance.</p>
+          </div>
+        </div>
+        <div class="column">
+          <p class="chart-title">Supply Chain Positioning by Participant</p>
+          <div class="chart-container" style="height:380px;">
+            <canvas id="chartSupplyChain"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Source: SemiAnalysis GTC 2026 Report · Supply Chain Intelligence</span><span>Slide 12 / 18</span></div>
+    </div>
+
+    <!-- SLIDE 13: FEYNMAN SIGNALS -->
+    <div class="slide content-slide" id="slide-13">
+      <div class="slide-header">
+        <h2>Feynman Pushes Three Simultaneous Architectural Firsts — Highest Execution Risk in Nvidia's Roadmap</h2>
+        <p class="subtitle">A16 + hybrid bonding/SoIC + CPO + custom HBM in a single platform; SK Hynix wins DRAM for LP40 3D stacking</p>
+      </div>
+      <div class="slide-body three-column">
+        <div class="insight-card">
+          <div class="card-number">A16</div>
+          <h3>TSMC A16 Process Node</h3>
+          <p>First Nvidia GPU platform on TSMC A16 — a next-generation process with backside power delivery (Super Power Rail). LP40 LPU also moves to TSMC N3P + CoWoS-R. Both represent first-of-kind node transitions co-timed with new system architecture.</p>
+          <div class="card-stat"><span class="badge amber">High Exec Risk</span></div>
+        </div>
+        <div class="insight-card">
+          <div class="card-number">3D</div>
+          <h3>Hybrid Bonding / SoIC + Custom HBM</h3>
+          <p>LP40 will use hybrid-bonded DRAM (SK Hynix as named supplier) to extend on-chip memory with near-SRAM performance characteristics. This replaces conventional DRAM packaging with die-to-die bonding — a technical first for the LPU platform.</p>
+          <div class="card-stat"><span class="badge blue">SK Hynix Win</span></div>
+        </div>
+        <div class="insight-card">
+          <div class="card-number">CPO</div>
+          <h3>Co-Packaged Optics at Volume</h3>
+          <p>NVL1152 (8× Kyber racks) is the first volume CPO deployment — for inter-rack scale-up. Jensen Huang's "all CPO" characterization likely refers to rack-to-rack only, not intra-rack. Two topology options: 2-layer CLOS fat tree or reconfigurable dragonfly with OCS.</p>
+          <div class="card-stat"><span class="badge gray">2028+ est.</span></div>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Source: SemiAnalysis GTC 2026 Report · Nvidia Feynman keynote sneak peek</span><span>Slide 13 / 18</span></div>
+    </div>
+
+    <!-- SLIDE 14: RISK REGISTER -->
+    <div class="slide content-slide" id="slide-14">
+      <div class="slide-header">
+        <h2>Five Material Execution Risks That Could Alter the Investment Thesis</h2>
+        <p class="subtitle">Risk register — ranked by probability and investment impact</p>
+      </div>
+      <div class="slide-body two-column">
+        <div class="column" style="gap:12px;display:flex;flex-direction:column;">
+          <div class="risk-card">
+            <h4>🔴 AlphaWave LP30 SerDes Repeat (HIGH)</h4>
+            <p>Same vendor that caused LPU Gen 2 failure is supplying Gen 3 SerDes. Report states issues "appear fixed" without yield data. Repeat failure would delay LPX production substantially.</p>
+          </div>
+          <div class="risk-card">
+            <h4>🔴 Feynman Co-Execution Risk (HIGH, long-dated)</h4>
+            <p>A16 qualification, hybrid bonding, CPO, and custom HBM all simultaneously in one platform. Any slippage pushes the first real CPO volume ramp further out, compressing TAM timelines.</p>
+          </div>
+          <div class="risk-card">
+            <h4>🟡 Kyber Design Flux (MEDIUM-HIGH)</h4>
+            <p>Voronoi connector spec, MBOM vs. OSFP, canister architecture — all explicitly in flux. "Rubin Ultra will be redone." Supply chain positioning for Kyber carries meaningful revision risk.</p>
+          </div>
+        </div>
+        <div class="column" style="gap:12px;display:flex;flex-direction:column;">
+          <div class="risk-card">
+            <h4>🟡 NVSwitch 7 Radix Uncertainty (MEDIUM-HIGH)</h4>
+            <p>Supply chain evidence suggests NVSwitch 7 = same BW as NVSwitch 6. If true, NVL288 all-to-all topology is infeasible. Authors believe 2×BW/radix is more likely — unresolved. Impacts NVL288 cable demand by ~20,000+ DPs.</p>
+          </div>
+          <div class="risk-card">
+            <h4>🟡 CPO Scope in NVL1152 (MEDIUM)</h4>
+            <p>Jensen's "all CPO" vs. technical blog's "rack-to-rack only" is unresolved. Models pricing full intra-rack CPO would materially overestimate CPO content. Base case: inter-rack only.</p>
+          </div>
+          <div style="padding:16px 18px;background:rgba(59,130,246,0.06);border-radius:8px;border-left:3px solid var(--blue);margin-top:auto;">
+            <p style="font-size:14px;color:var(--text-2);">⚠️ LPX production config shown at GTC (32×1U trays) <strong>is not the shipping version</strong>. Key production architecture details not yet public — timing risk for supply chain participants.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Source: SemiAnalysis GTC 2026 Analysis · Risk &amp; Uncertainty Register</span><span>Slide 14 / 18</span></div>
+    </div>
+
+    <!-- SLIDE 15: BULL vs BEAR -->
+    <div class="slide content-slide" id="slide-15">
+      <div class="slide-header">
+        <h2>Bull vs. Bear: The Inference Kingdom Expansion in Two Scenarios</h2>
+        <p class="subtitle">The bull case requires execution on five simultaneous first-of-kind technologies by 2028</p>
+      </div>
+      <div class="slide-body two-column">
+        <div class="column">
+          <div style="background:#ECFDF5;border-radius:10px;padding:24px;border:1px solid #A7F3D0;height:100%;">
+            <p style="font-size:18px;font-weight:700;color:#065F46;margin-bottom:16px;">🟢 Bull Case</p>
+            <ul class="bullet-list compact">
+              <li><strong>LP30 ramps without SerDes issues</strong> — adds true incremental inference capacity outside TSMC/HBM constraints</li>
+              <li><strong>AFD becomes the inference standard</strong> for all interactive MoE deployments — every new frontier model drives LPX demand</li>
+              <li><strong>Kyber volume ramp in 2027</strong> with 144-GPU all-copper all-to-all scale-up; Voronoi connector locks in FIT/Amphenol volume</li>
+              <li><strong>Vera ETL256 opens new TAM</strong> — CPU cluster demand grows independently from RL and agentic workloads</li>
+              <li><strong>STX/CMX embedded in storage layer</strong> — BF-4 DPU volume attached to every storage deployment</li>
+              <li><strong>Feynman delivers on schedule (2028)</strong> with first volume CPO + hybrid bonding — multi-year technology moat</li>
+            </ul>
+          </div>
+        </div>
+        <div class="column">
+          <div style="background:#FEF2F2;border-radius:10px;padding:24px;border:1px solid #FECACA;height:100%;">
+            <p style="font-size:18px;font-weight:700;color:#991B1B;margin-bottom:16px;">🔴 Bear Case</p>
+            <ul class="bullet-list compact">
+              <li><strong>AlphaWave SerDes fails again on LP30</strong> — LPX production delayed; incremental capacity thesis doesn't materialize in 2026</li>
+              <li><strong>Hyperscalers reject Kyber MBOM</strong> — design reverts to OSFP, pushing Kyber production later; supply chain locked on wrong components</li>
+              <li><strong>NVSwitch 7 radix = same as NVSwitch 6</strong> — NVL288 infeasible; world size scaling hits bottleneck at 144 GPUs until new switch generation</li>
+              <li><strong>CPO economics don't work for NVL576</strong> — similar to prior pluggable optics BOM blowout; NVL576 stays low volume indefinitely</li>
+              <li><strong>Feynman slips 12–18 months</strong> — A16 yield issues or hybrid bonding delays; volume CPO ramp pushes to 2030+</li>
+              <li><strong>AFD adoption limited</strong> — software complexity of ping-pong pipeline parallelism proves too burdensome for deployment at scale</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Source: SemiAnalysis GTC 2026 Report · Analytical Synthesis</span><span>Slide 15 / 18</span></div>
+    </div>
+
+    <!-- SLIDE 16: COMPETITIVE LANDSCAPE -->
+    <div class="slide content-slide" id="slide-16">
+      <div class="slide-header">
+        <h2>Competitive Landscape Shifts: Groq Neutralized, Samsung Benefiting Short-Term, FIT Rising</h2>
+        <p class="subtitle">GTC 2026 reshapes the competitive map across chips, foundries, connectors, and optical components</p>
+      </div>
+      <div class="slide-body">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Entity</th>
+              <th>Role</th>
+              <th>Position Change</th>
+              <th>Duration</th>
+              <th>Key Risk</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Groq / Nvidia LPU</strong></td>
+              <td>Inference accelerator</td>
+              <td class="positive">Neutralized → Integrated</td>
+              <td>Permanent</td>
+              <td>SerDes Gen 3 execution</td>
+            </tr>
+            <tr>
+              <td><strong>Samsung Foundry</strong></td>
+              <td>LP30/LP35 manufacturing</td>
+              <td class="positive">Short-term winner (SF4)</td>
+              <td>LP30/LP35 only</td>
+              <td>Lost to TSMC from LP40</td>
+            </tr>
+            <tr>
+              <td><strong>AlphaWave (Qualcomm)</strong></td>
+              <td>112G SerDes IP</td>
+              <td class="positive">Surprise win LP30/LP35</td>
+              <td>LP30/LP35 only</td>
+              <td>Loses to Nvidia IP at LP40</td>
+            </tr>
+            <tr>
+              <td><strong>FIT</strong></td>
+              <td>Connectors (LPX + Kyber)</td>
+              <td class="positive">Biggest emerging winner</td>
+              <td>Multi-year</td>
+              <td>Kyber design still in flux</td>
+            </tr>
+            <tr>
+              <td><strong>Amphenol</strong></td>
+              <td>Connectors (LPX backplane)</td>
+              <td class="negative">Losing design seat at Kyber</td>
+              <td>Structural</td>
+              <td>Voronoi connector loss</td>
+            </tr>
+            <tr>
+              <td><strong>SK Hynix</strong></td>
+              <td>Hybrid-bonded DRAM (LP40)</td>
+              <td class="positive">New position in LP40</td>
+              <td>Feynman gen</td>
+              <td>Process development risk</td>
+            </tr>
+            <tr>
+              <td><strong>Pluggable optics vendors</strong></td>
+              <td>OSFP transceivers</td>
+              <td class="negative">Threatened by MBOM</td>
+              <td>Uncertain</td>
+              <td>Hyperscaler pushback may protect</td>
+            </tr>
+            <tr>
+              <td><strong>Intel (Altera FPGA)</strong></td>
+              <td>Fabric Expansion Logic in LPX</td>
+              <td class="neutral">Embedded in LPX tray</td>
+              <td>LP30/LP35</td>
+              <td>Hyperscalers may substitute own NIC</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="slide-footer"><span>Source: SemiAnalysis GTC 2026 Report · Competitive Analysis</span><span>Slide 16 / 18</span></div>
+    </div>
+
+    <!-- SLIDE 17: KEY TAKEAWAYS -->
+    <div class="slide content-slide" id="slide-17">
+      <div class="slide-header">
+        <h2>Five Decisions Every Investor Should Make After GTC 2026</h2>
+        <p class="subtitle">Concrete implications — what to model, what to stress-test, what to monitor</p>
+      </div>
+      <div class="slide-body">
+        <div class="metric-row">
+          <div class="metric-box">
+            <div class="metric-value" style="font-size:28px;">Reset CPO</div>
+            <div class="metric-label">TAM Timing</div>
+            <div class="metric-sublabel">Push volume CPO revenue to 2028+ (Feynman NVL1152 inter-rack only). NVL576 is test/low-vol. Kyber = zero CPO.</div>
+          </div>
+          <div class="metric-box positive">
+            <div class="metric-value" style="font-size:28px;">Buy FIT</div>
+            <div class="metric-label">Connector Thesis</div>
+            <div class="metric-sublabel">LPX backplane licensed + leading Kyber Voronoi. Biggest connector supply chain beneficiary of GTC 2026.</div>
+          </div>
+          <div class="metric-box warning">
+            <div class="metric-value" style="font-size:28px;">Watch Kyber</div>
+            <div class="metric-label">Design Finality</div>
+            <div class="metric-sublabel">MBOM vs OSFP decision will determine pluggable optics TAM. Monitor hyperscaler pushback resolution.</div>
+          </div>
+        </div>
+        <div class="metric-row">
+          <div class="metric-box positive">
+            <div class="metric-value" style="font-size:28px;">Model LPX</div>
+            <div class="metric-label">Additive Capacity</div>
+            <div class="metric-sublabel">LP30 on SF4 doesn't compete with TSMC/HBM allocation. True incremental inference revenue Nvidia can grow independently.</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-value" style="font-size:28px;">Track AFD</div>
+            <div class="metric-label">Adoption Rate</div>
+            <div class="metric-sublabel">AFD + speculative decoding deployment velocity determines LPX rack volumes. Software complexity is the key adoption gating factor.</div>
+          </div>
+          <div class="metric-box negative">
+            <div class="metric-value" style="font-size:28px;">Flag Feynman</div>
+            <div class="metric-label">Execution Risk</div>
+            <div class="metric-sublabel">A16 + hybrid bonding + CPO + custom HBM simultaneously. Highest co-design complexity in Nvidia's visible roadmap.</div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Source: SemiAnalysis GTC 2026 Analysis · Investment Implications</span><span>Slide 17 / 18</span></div>
+    </div>
+
+    <!-- SLIDE 18: CLOSING -->
+    <div class="slide closing-slide" id="slide-18">
+      <h1>The Inference Kingdom Expands — But Execution is the Moat</h1>
+      <p class="subtitle">Nvidia's GTC 2026 platform reveals a vertically integrated inference stack from chip to storage, built on architectural innovations that competitors will struggle to replicate — if they ship on time.</p>
+      <p class="meta">SemiAnalysis · GTC 2026 Deep Dive · March 24, 2026 · semianalysis.com</p>
+    </div>
+
+  </div><!-- end .presentation -->
+</div><!-- end .stage -->
+
+<div class="controls">
+  <button id="prev">&#8592; Prev</button>
+  <span id="slide-counter">1 / 18</span>
+  <button id="next">Next &#8594;</button>
+  <button id="fullscreen-btn" title="Fullscreen (F)">&#x26F6;</button>
+</div>
+
+<div class="key-hint" id="key-hint">&#8592; &#8594; &nbsp;|&nbsp; Space &nbsp;|&nbsp; F = Fullscreen</div>
+
+<script>
+/* ---- Chart defaults ---- */
+const CHART_DEFAULTS = {
+  responsive:true,
+  maintainAspectRatio:false,
+  plugins:{
+    legend:{labels:{font:{family:'Inter',size:12,weight:'500'},color:'#4A4A5A',padding:14}},
+    tooltip:{backgroundColor:'#1A1A2E',titleFont:{family:'Inter',size:12,weight:'600'},bodyFont:{family:'Inter',size:11},padding:10,cornerRadius:6}
+  },
+  scales:{
+    x:{ticks:{font:{family:'Inter',size:11},color:'#6B7280'},grid:{color:'rgba(0,0,0,0.04)',drawBorder:false}},
+    y:{ticks:{font:{family:'Inter',size:11},color:'#6B7280'},grid:{color:'rgba(0,0,0,0.07)',drawBorder:false}}
+  }
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+
+  /* Chart S3 — LPU Roadmap (SRAM MB) */
+  new Chart(document.getElementById('chartLPU').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:['LPU Gen 1\n(GF14nm)','LPU Gen 2\n(Samsung SF4X)','LP30 / Gen 3\n(Samsung SF4)','LP35\n(Samsung SF4)','LP40\n(TSMC N3P)'],
+      datasets:[{
+        label:'On-Chip SRAM (MB)',
+        data:[230,0,500,500,null],
+        backgroundColor:['#94A3B8','#EF4444','#3B82F6','#0EA5E9','#8B5CF6'],
+        borderRadius:6,borderSkipped:false
+      }]
+    },
+    options:{
+      ...CHART_DEFAULTS,
+      plugins:{...CHART_DEFAULTS.plugins,legend:{display:false},
+        tooltip:{...CHART_DEFAULTS.plugins.tooltip,callbacks:{label:function(c){return c.raw===0?'Never shipped (SerDes fail)':c.raw===null?'Feynman gen — TBD':c.raw+' MB SRAM';}}}
+      },
+      scales:{...CHART_DEFAULTS.scales,y:{...CHART_DEFAULTS.scales.y,title:{display:true,text:'On-chip SRAM (MB)',font:{family:'Inter',size:11},color:'#6B7280'}}}
+    }
+  });
+
+  /* Chart S4 — Memory BW */
+  new Chart(document.getElementById('chartMemBW').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:['LPU SRAM','HBM4 12-Hi','GDDR7','DDR5'],
+      datasets:[{
+        label:'Bandwidth (TB/s)',
+        data:[150,22,1.65,0.46],
+        backgroundColor:['#10B981','#3B82F6','#F59E0B','#9CA3AF'],
+        borderRadius:8,borderSkipped:false
+      }]
+    },
+    options:{
+      ...CHART_DEFAULTS,
+      indexAxis:'y',
+      plugins:{...CHART_DEFAULTS.plugins,legend:{display:false}},
+      scales:{
+        x:{...CHART_DEFAULTS.scales.x,title:{display:true,text:'Bandwidth (TB/s)',font:{family:'Inter',size:11},color:'#6B7280'}},
+        y:{...CHART_DEFAULTS.scales.y,grid:{display:false}}
+      }
+    }
+  });
+
+  /* Chart S5 — AFD GPU utilization illustration */
+  new Chart(document.getElementById('chartAFD').getContext('2d'),{
+    type:'line',
+    data:{
+      labels:['1','4','8','16','32','64','128','256'],
+      datasets:[
+        {label:'FFN (GPU util %)',data:[8,18,32,50,68,82,91,95],borderColor:'#3B82F6',backgroundColor:'rgba(59,130,246,0.08)',tension:0.4,pointRadius:4,fill:true},
+        {label:'Attention (GPU util %)',data:[5,8,11,15,19,22,25,27],borderColor:'#F59E0B',backgroundColor:'rgba(245,158,11,0.06)',tension:0.4,pointRadius:4,fill:true}
+      ]
+    },
+    options:{
+      ...CHART_DEFAULTS,
+      scales:{
+        x:{...CHART_DEFAULTS.scales.x,title:{display:true,text:'Batch Size',font:{family:'Inter',size:11},color:'#6B7280'}},
+        y:{...CHART_DEFAULTS.scales.y,min:0,max:100,title:{display:true,text:'GPU Utilization (%)',font:{family:'Inter',size:11},color:'#6B7280'}}
+      }
+    }
+  });
+
+  /* Chart S8 — Kyber bandwidth comparison */
+  new Chart(document.getElementById('chartKyberBW').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:['Blackwell NVL72','Rubin NVL72','Rubin Ultra NVL144 Kyber','Feynman NVL144 Kyber (est.)'],
+      datasets:[{
+        label:'Scale-Up BW per GPU (Tbit/s uni-di)',
+        data:[3.6,7.2,14.4,28.8],
+        backgroundColor:['#94A3B8','#94A3B8','#3B82F6','#8B5CF6'],
+        borderRadius:8,borderSkipped:false
+      }]
+    },
+    options:{
+      ...CHART_DEFAULTS,
+      plugins:{...CHART_DEFAULTS.plugins,legend:{display:false}},
+      scales:{
+        x:{...CHART_DEFAULTS.scales.x,grid:{display:false}},
+        y:{...CHART_DEFAULTS.scales.y,title:{display:true,text:'Tbit/s uni-di per GPU',font:{family:'Inter',size:11},color:'#6B7280'}}
+      }
+    }
+  });
+
+  /* Chart S9 — World size GPU count */
+  new Chart(document.getElementById('chartWorldSize').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:['NVL72\nOberon','NVL144\nKyber','NVL288\n(unannounced)','NVL576\n(low vol)','NVL1152\nFeynman'],
+      datasets:[
+        {label:'# GPUs',data:[72,144,288,576,1152],backgroundColor:['#94A3B8','#3B82F6','#9CA3AF','#F59E0B','#8B5CF6'],borderRadius:6,borderSkipped:false},
+      ]
+    },
+    options:{
+      ...CHART_DEFAULTS,
+      plugins:{...CHART_DEFAULTS.plugins,legend:{display:false}},
+      scales:{
+        x:{...CHART_DEFAULTS.scales.x,grid:{display:false}},
+        y:{...CHART_DEFAULTS.scales.y,title:{display:true,text:'Total logical GPUs',font:{family:'Inter',size:11},color:'#6B7280'}}
+      }
+    }
+  });
+
+  /* Chart S12 — Supply chain winner positioning (horizontal bar) */
+  new Chart(document.getElementById('chartSupplyChain').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:['FIT','AlphaWave / Qualcomm','SK Hynix (LP40)','Victory Giant / WUS','Amphenol','Pluggable Optics Vendors','Intel / Altera FPGA'],
+      datasets:[{
+        label:'Estimated Positioning Score (1–10)',
+        data:[9,7,7,6,4,3,5],
+        backgroundColor:['#10B981','#3B82F6','#3B82F6','#0EA5E9','#F59E0B','#EF4444','#9CA3AF'],
+        borderRadius:6,borderSkipped:false
+      }]
+    },
+    options:{
+      ...CHART_DEFAULTS,
+      indexAxis:'y',
+      plugins:{...CHART_DEFAULTS.plugins,legend:{display:false},
+        tooltip:{...CHART_DEFAULTS.plugins.tooltip,callbacks:{label:function(c){const notes=['LPX backplane + Kyber Voronoi leader','112G SerDes for LP30/LP35','Hybrid-bonded DRAM for LP40','$7k ASP PCB for LPX','Licensing fees but losing design seat','MBOM threatens OSFP cages','Embedded in LPX, hyperscaler may replace'];return notes[c.dataIndex]||c.raw;}}}
+      },
+      scales:{
+        x:{...CHART_DEFAULTS.scales.x,min:0,max:10,title:{display:true,text:'Relative positioning (1=weak, 10=strong)',font:{family:'Inter',size:11},color:'#6B7280'}},
+        y:{...CHART_DEFAULTS.scales.y,grid:{display:false},ticks:{font:{family:'Inter',size:11}}}
+      }
+    }
+  });
+
+});
+
+/* ============================================================
+   FAVORED-STYLE DECK — Navigation JS
+   ============================================================ */
+(function(){
+  'use strict';
+  const SLIDE_W=1280,SLIDE_H=720;
+  let currentIndex=0,slides=[],hintTimeout=null;
+  const presentation=document.querySelector('.presentation');
+  const counterEl=document.getElementById('slide-counter');
+  const progressFill=document.getElementById('progress-fill');
+  const prevBtn=document.getElementById('prev');
+  const nextBtn=document.getElementById('next');
+  const fsBtn=document.getElementById('fullscreen-btn');
+  const keyHint=document.getElementById('key-hint');
+
+  function scalePresentation(){
+    if(!presentation)return;
+    const vw=window.innerWidth,vh=window.innerHeight;
+    const scale=Math.min(vw/SLIDE_W,vh/SLIDE_H);
+    const offsetX=Math.round((vw-SLIDE_W*scale)/2);
+    const offsetY=Math.round((vh-SLIDE_H*scale)/2);
+    presentation.style.transform='scale('+scale+')';
+    presentation.style.transformOrigin='top left';
+    presentation.style.position='absolute';
+    presentation.style.left=offsetX+'px';
+    presentation.style.top=offsetY+'px';
+  }
+
+  function showSlide(index){
+    const total=slides.length;
+    if(total===0)return;
+    index=((index%total)+total)%total;
+    currentIndex=index;
+    slides.forEach(function(slide,i){slide.classList.toggle('active',i===index);});
+    if(counterEl)counterEl.textContent=(index+1)+' / '+total;
+    if(progressFill){const pct=total>1?(index/(total-1))*100:100;progressFill.style.width=pct+'%';}
+  }
+
+  function goNext(){showSlide(currentIndex+1);}
+  function goPrev(){showSlide(currentIndex-1);}
+
+  function toggleFullscreen(){
+    if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(function(){});}
+    else{document.exitFullscreen().catch(function(){});}
+  }
+
+  document.addEventListener('fullscreenchange',function(){
+    if(fsBtn){fsBtn.textContent=document.fullscreenElement?'✕':'⛶';}
+    setTimeout(scalePresentation,50);
+  });
+
+  document.addEventListener('keydown',function(e){
+    switch(e.key){
+      case 'ArrowRight':case 'ArrowDown':case ' ':e.preventDefault();goNext();break;
+      case 'ArrowLeft':case 'ArrowUp':e.preventDefault();goPrev();break;
+      case 'f':case 'F':toggleFullscreen();break;
+      case 'Home':e.preventDefault();showSlide(0);break;
+      case 'End':e.preventDefault();showSlide(slides.length-1);break;
+    }
+  });
+
+  var touchStartX=0,touchStartY=0;
+  document.addEventListener('touchstart',function(e){touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY;},{passive:true});
+  document.addEventListener('touchend',function(e){
+    var dx=e.changedTouches[0].clientX-touchStartX,dy=e.changedTouches[0].clientY-touchStartY;
+    if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>48){if(dx<0)goNext();else goPrev();}
+  },{passive:true});
+
+  if(prevBtn)prevBtn.addEventListener('click',goPrev);
+  if(nextBtn)nextBtn.addEventListener('click',goNext);
+  if(fsBtn)fsBtn.addEventListener('click',toggleFullscreen);
+
+  function showKeyHint(){
+    if(!keyHint)return;
+    keyHint.style.opacity='1';
+    clearTimeout(hintTimeout);
+    hintTimeout=setTimeout(function(){keyHint.style.opacity='0';},3000);
+  }
+
+  var resizeTimer;
+  window.addEventListener('resize',function(){clearTimeout(resizeTimer);resizeTimer=setTimeout(scalePresentation,30);});
+
+  function init(){
+    slides=Array.from(document.querySelectorAll('.slide'));
+    if(slides.length===0){console.warn('[favored-deck] No .slide elements found.');return;}
+    var hasActive=slides.some(function(s){return s.classList.contains('active');});
+    if(!hasActive)slides[0].classList.add('active');
+    currentIndex=slides.findIndex(function(s){return s.classList.contains('active');});
+    if(currentIndex<0)currentIndex=0;
+    scalePresentation();
+    showSlide(currentIndex);
+    showKeyHint();
+    console.log('[favored-deck] '+slides.length+' slides loaded.');
+  }
+
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}
+  else{init();}
+})();
+</script>
+</body>
+</html>

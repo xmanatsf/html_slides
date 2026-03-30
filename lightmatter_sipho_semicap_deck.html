@@ -1,0 +1,1655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lightmatter SiPho &amp; Rubin: Semicap Equipment Analysis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+:root {
+  --cream:         #F5F5F0;
+  --cream-dark:    #EAEAE3;
+  --navy:          #1A1A2E;
+  --navy-mid:      #1E3A5F;
+  --blue:          #3B82F6;
+  --teal:          #0EA5E9;
+  --green:         #10B981;
+  --amber:         #F59E0B;
+  --red:           #DC2626;
+  --text-1:        #1A1A2E;
+  --text-2:        #4A4A5A;
+  --text-3:        #6B7280;
+  --text-4:        #9CA3AF;
+  --border:        rgba(30, 58, 95, 0.10);
+  --c1: #3B82F6;
+  --c2: #10B981;
+  --c3: #F59E0B;
+  --c4: #EF4444;
+  --c5: #8B5CF6;
+  --c6: #EC4899;
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --slide-w: 1280px;
+  --slide-h: 720px;
+  --pad:    60px;
+  --pad-sm: 40px;
+  --gap-lg: 40px;
+  --gap-md: 24px;
+  --gap-sm: 16px;
+  --shadow-slide: 0 32px 80px rgba(0,0,0,0.45), 0 8px 24px rgba(0,0,0,0.25);
+  --shadow-card:  0 2px 12px rgba(0,0,0,0.07);
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+  width: 100%; height: 100%;
+  background: var(--navy);
+  font-family: var(--font);
+  color: var(--text-1);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.stage {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--navy);
+}
+.presentation {
+  position: relative;
+  width: var(--slide-w); height: var(--slide-h);
+  transform-origin: top left;
+  box-shadow: var(--shadow-slide);
+  border-radius: 2px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.slide {
+  position: absolute; inset: 0;
+  width: var(--slide-w); height: var(--slide-h);
+  background: var(--cream);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.slide:not(.active) { display: none; }
+.slide.active       { display: flex; }
+
+/* TITLE SLIDE */
+.title-slide {
+  align-items: center; justify-content: center; text-align: center;
+  padding: var(--pad); background: var(--cream); position: relative;
+}
+.title-slide::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(30,58,95,0.06) 0%, transparent 50%),
+    radial-gradient(circle at 85% 80%, rgba(59,130,246,0.05) 0%, transparent 50%),
+    linear-gradient(135deg, transparent 45%, rgba(30,58,95,0.025) 45%, rgba(30,58,95,0.025) 55%, transparent 55%),
+    linear-gradient(45deg,  transparent 45%, rgba(30,58,95,0.025) 45%, rgba(30,58,95,0.025) 55%, transparent 55%);
+  background-size: auto, auto, 36px 36px, 36px 36px;
+  pointer-events: none;
+}
+.title-slide::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 5px;
+  background: linear-gradient(90deg, var(--navy-mid), var(--blue), var(--teal));
+}
+.title-slide h1 {
+  font-size: 48px; font-weight: 800; color: var(--navy);
+  line-height: 1.15; max-width: 860px; margin-bottom: 24px;
+  position: relative; letter-spacing: -0.02em;
+}
+.title-slide .subtitle {
+  font-size: 21px; font-weight: 400; color: var(--text-2);
+  max-width: 760px; line-height: 1.55; margin-bottom: 44px; position: relative;
+}
+.title-slide .meta {
+  font-size: 13px; font-weight: 500; color: var(--text-3);
+  letter-spacing: 0.04em; text-transform: uppercase; position: relative;
+}
+.title-slide .logo {
+  position: absolute; bottom: 28px; right: 36px;
+  font-size: 12px; font-weight: 600; color: var(--text-3);
+  letter-spacing: 0.03em; text-transform: uppercase;
+}
+
+/* CONTENT SLIDES */
+.content-slide {
+  padding: var(--pad) var(--pad) 28px var(--pad);
+  display: flex; flex-direction: column; position: relative;
+}
+.content-slide::before {
+  content: '';
+  position: absolute; top: 0; left: 0; width: 5px; height: 100%;
+  background: linear-gradient(180deg, var(--navy-mid) 0%, var(--blue) 60%, transparent 100%);
+}
+.slide-header { margin-bottom: 28px; padding-left: 16px; }
+.slide-header h2 {
+  font-size: 32px; font-weight: 700; color: var(--navy);
+  line-height: 1.2; margin-bottom: 6px; letter-spacing: -0.01em;
+}
+.slide-header .subtitle {
+  font-size: 16px; font-weight: 400; color: var(--text-2);
+  max-width: 820px; line-height: 1.5;
+}
+.slide-body { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.slide-footer {
+  margin-top: auto; padding-top: 12px; padding-left: 16px;
+  font-size: 11px; font-weight: 400; color: var(--text-4);
+  display: flex; justify-content: space-between; align-items: flex-end;
+  border-top: 1px solid var(--border);
+}
+
+/* LAYOUTS */
+.two-column { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap-lg); flex: 1; min-height: 0; }
+.two-column.text-chart { grid-template-columns: 44% 56%; }
+.two-column.chart-text { grid-template-columns: 56% 44%; }
+.two-column.wide-text  { grid-template-columns: 55% 45%; }
+.three-column { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap-md); flex: 1; min-height: 0; }
+.column { display: flex; flex-direction: column; min-height: 0; }
+
+/* METRIC BOXES */
+.metric-row { display: flex; gap: var(--gap-md); margin-bottom: var(--gap-md); }
+.metric-box {
+  flex: 1;
+  background: linear-gradient(135deg, #FAFAFA 0%, #F3F4F6 100%);
+  border-left: 4px solid var(--blue);
+  border-radius: 0 8px 8px 0;
+  padding: 18px 20px;
+  display: flex; flex-direction: column; gap: 5px;
+  box-shadow: var(--shadow-card);
+}
+.metric-box.positive { border-left-color: var(--green); }
+.metric-box.negative { border-left-color: var(--red); }
+.metric-box.warning  { border-left-color: var(--amber); }
+.metric-box.neutral  { border-left-color: var(--text-3); }
+.metric-value { font-size: 34px; font-weight: 800; color: var(--navy-mid); line-height: 1; letter-spacing: -0.02em; }
+.metric-box.positive .metric-value { color: var(--green); }
+.metric-box.negative .metric-value { color: var(--red); }
+.metric-box.warning  .metric-value { color: var(--amber); }
+.metric-label { font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
+.metric-sublabel { font-size: 12px; font-weight: 400; color: var(--text-3); line-height: 1.4; }
+.hero-metric { text-align: center; padding: 24px 0; }
+.hero-metric .hero-value {
+  font-size: 76px; font-weight: 900; color: var(--blue);
+  letter-spacing: -0.03em; line-height: 1; display: block;
+}
+.hero-metric .hero-label { font-size: 17px; font-weight: 500; color: var(--text-2); margin-top: 10px; display: block; }
+
+/* INSIGHT CARDS */
+.insight-card {
+  background: var(--cream-dark); border-radius: 10px;
+  padding: 24px 22px; display: flex; flex-direction: column;
+  position: relative; overflow: hidden; border: 1px solid var(--border);
+}
+.insight-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--blue), var(--teal));
+}
+.insight-card .card-number {
+  font-size: 52px; font-weight: 900; color: var(--navy-mid);
+  opacity: 0.12; line-height: 1; margin-bottom: 6px; letter-spacing: -0.03em;
+}
+.insight-card h3 { font-size: 17px; font-weight: 700; color: var(--navy); margin-bottom: 9px; line-height: 1.3; }
+.insight-card p  { font-size: 14px; font-weight: 400; color: var(--text-2); line-height: 1.6; flex: 1; }
+.insight-card .card-stat {
+  margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);
+  font-size: 20px; font-weight: 800; color: var(--blue);
+}
+
+/* CHARTS */
+.chart-container {
+  background: white; border-radius: 10px; padding: 16px 18px 14px;
+  flex: 1; display: flex; align-items: stretch; justify-content: center;
+  min-height: 180px; position: relative;
+  border: 1px solid var(--border); box-shadow: var(--shadow-card);
+}
+.chart-container canvas { width: 100% !important; height: 100% !important; }
+.chart-title { font-size: 12px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+
+/* BULLET LISTS */
+.bullet-list { list-style: none; padding: 0; }
+.bullet-list li {
+  position: relative; padding: 0 0 12px 24px;
+  font-size: 16px; font-weight: 400; color: var(--text-1);
+  line-height: 1.6; border-bottom: 1px solid rgba(0,0,0,0.04); margin-bottom: 2px;
+}
+.bullet-list li:last-child { border-bottom: none; }
+.bullet-list li::before {
+  content: ''; position: absolute; left: 0; top: 8px;
+  width: 8px; height: 8px; background: var(--blue); border-radius: 50%;
+}
+.bullet-list li strong { font-weight: 600; color: var(--navy-mid); }
+.bullet-list.compact li { padding-bottom: 8px; font-size: 14px; }
+
+/* DATA TABLE */
+.data-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.data-table th {
+  text-align: left; padding: 10px 14px;
+  background: var(--navy); color: white;
+  font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+}
+.data-table th:first-child { border-radius: 6px 0 0 0; }
+.data-table th:last-child  { border-radius: 0 6px 0 0; }
+.data-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text-1); font-size: 13px; }
+.data-table tr:nth-child(even) td { background: rgba(0,0,0,0.02); }
+.data-table tr:hover td { background: rgba(59,130,246,0.05); }
+.data-table .positive { color: var(--green); font-weight: 700; }
+.data-table .negative { color: var(--red); font-weight: 700; }
+.data-table .neutral  { color: var(--text-3); }
+.data-table .highlight-row td { background: rgba(59,130,246,0.07) !important; font-weight: 600; }
+
+/* QUOTE */
+.quote-slide { align-items: center; justify-content: center; padding: var(--pad) 100px; background: var(--cream); }
+blockquote.pull-quote {
+  font-size: 22px; font-weight: 400; font-style: italic;
+  color: var(--text-2); line-height: 1.65;
+  border-left: 5px solid var(--blue); padding: 12px 0 12px 34px;
+  max-width: 900px;
+}
+blockquote.pull-quote cite {
+  display: block; margin-top: 18px; font-size: 13px; font-style: normal;
+  font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em;
+}
+
+/* RISK/OPPORTUNITY CARDS */
+.risk-card {
+  background: #FEF2F2; border: 1px solid #FECACA; border-left: 4px solid var(--red);
+  border-radius: 0 8px 8px 0; padding: 14px 18px; margin-bottom: 12px;
+}
+.risk-card h4 { font-size: 14px; font-weight: 700; color: var(--red); margin-bottom: 5px; }
+.risk-card p  { font-size: 13px; color: #7F1D1D; line-height: 1.5; }
+.opportunity-card {
+  background: #ECFDF5; border: 1px solid #A7F3D0; border-left: 4px solid var(--green);
+  border-radius: 0 8px 8px 0; padding: 14px 18px; margin-bottom: 12px;
+}
+.opportunity-card h4 { font-size: 14px; font-weight: 700; color: #065F46; margin-bottom: 5px; }
+.opportunity-card p  { font-size: 13px; color: #064E3B; line-height: 1.5; }
+
+/* BADGES */
+.badge {
+  display: inline-flex; align-items: center; padding: 3px 10px;
+  border-radius: 100px; font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.badge.green  { background: #DCFCE7; color: #166534; }
+.badge.red    { background: #FEE2E2; color: #991B1B; }
+.badge.blue   { background: #DBEAFE; color: #1E40AF; }
+.badge.amber  { background: #FEF3C7; color: #92400E; }
+.badge.gray   { background: #F3F4F6; color: #4B5563; }
+
+/* CLOSING SLIDE */
+.closing-slide {
+  align-items: center; justify-content: center; text-align: center;
+  padding: var(--pad); background: var(--navy); position: relative;
+}
+.closing-slide::before {
+  content: ''; position: absolute; inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(59,130,246,0.12) 0%, transparent 55%),
+    radial-gradient(circle at 80% 70%, rgba(14,165,233,0.10) 0%, transparent 50%);
+  pointer-events: none;
+}
+.closing-slide h1 { font-size: 48px; font-weight: 800; color: white; letter-spacing: -0.02em; position: relative; }
+.closing-slide .subtitle { font-size: 20px; font-weight: 400; color: rgba(255,255,255,0.65); margin-top: 18px; position: relative; }
+.closing-slide .meta { font-size: 12px; color: rgba(255,255,255,0.35); margin-top: 44px; position: relative; text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* PROGRESS BAR */
+.progress-bar { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: rgba(255,255,255,0.1); z-index: 2000; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--teal)); transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); width: 0%; }
+
+/* CONTROLS */
+.controls {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 4px;
+  background: rgba(26, 26, 46, 0.88); padding: 8px 16px;
+  border-radius: 100px; backdrop-filter: blur(12px);
+  z-index: 1000; box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.08); opacity: 0.6; transition: opacity 0.2s;
+}
+.controls:hover { opacity: 1; }
+.controls button {
+  background: transparent; border: none; color: rgba(255,255,255,0.85);
+  font-family: var(--font); font-size: 13px; font-weight: 500;
+  cursor: pointer; padding: 6px 14px; border-radius: 100px;
+  transition: background 0.15s, color 0.15s; white-space: nowrap;
+}
+.controls button:hover { background: rgba(255,255,255,0.12); color: white; }
+#slide-counter { color: rgba(255,255,255,0.5); font-size: 12px; font-family: var(--font); min-width: 56px; text-align: center; padding: 0 8px; }
+#fullscreen-btn { font-size: 16px; padding: 6px 10px; opacity: 0.7; }
+.key-hint {
+  position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%);
+  font-family: var(--font); font-size: 12px; color: rgba(255,255,255,0.4);
+  background: rgba(0,0,0,0.3); padding: 5px 14px; border-radius: 100px;
+  z-index: 999; pointer-events: none; transition: opacity 0.5s;
+}
+
+/* UTILITIES */
+.text-blue   { color: var(--blue); }
+.text-green  { color: var(--green); }
+.text-red    { color: var(--red); }
+.text-amber  { color: var(--amber); }
+.text-muted  { color: var(--text-3); }
+.text-navy   { color: var(--navy-mid); }
+.fw-800 { font-weight: 800; }
+.fw-700 { font-weight: 700; }
+.fw-600 { font-weight: 600; }
+.fs-large  { font-size: 20px; }
+.fs-normal { font-size: 16px; }
+.fs-small  { font-size: 13px; }
+.mt-auto { margin-top: auto; }
+.mb-md   { margin-bottom: var(--gap-md); }
+.mb-sm   { margin-bottom: var(--gap-sm); }
+.divider { height: 1px; background: var(--border); margin: var(--gap-md) 0; }
+.pct-bar-track { background: #E5E7EB; height: 10px; border-radius: 100px; overflow: hidden; margin: 6px 0; }
+.pct-bar-fill  { height: 100%; border-radius: 100px; background: var(--blue); }
+.pct-bar-fill.green { background: var(--green); }
+.pct-bar-fill.amber { background: var(--amber); }
+.pct-bar-fill.red   { background: var(--red); }
+
+/* SECTION LABEL */
+.section-tag {
+  display: inline-block; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--blue); margin-bottom: 8px;
+}
+
+/* ARCH DIAGRAM */
+.arch-box {
+  border-radius: 8px; padding: 14px 18px; text-align: center;
+  font-size: 13px; font-weight: 600;
+}
+.arch-box.optics  { background: #DBEAFE; color: #1E40AF; border: 2px solid #93C5FD; }
+.arch-box.copper  { background: #FEF3C7; color: #92400E; border: 2px solid #FCD34D; }
+.arch-box.gpu     { background: #1E3A5F; color: white; border: 2px solid #2D5282; }
+.arch-box.hbm     { background: #ECFDF5; color: #065F46; border: 2px solid #6EE7B7; }
+.arch-box.package { background: #F3F4F6; color: #374151; border: 2px dashed #9CA3AF; }
+
+/* WINNER CARD */
+.winner-card {
+  background: var(--cream-dark); border-radius: 8px;
+  padding: 14px 16px; border: 1px solid var(--border);
+  border-top: 3px solid var(--blue);
+}
+.winner-card.green-top { border-top-color: var(--green); }
+.winner-card.amber-top { border-top-color: var(--amber); }
+.winner-card.red-top   { border-top-color: var(--red); }
+.winner-card h4 { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+.winner-card .ticker { font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
+.winner-card p { font-size: 12px; color: var(--text-2); line-height: 1.5; margin-top: 6px; }
+
+/* PHASING BAR */
+.phase-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.phase-label { font-size: 13px; font-weight: 600; color: var(--text-2); min-width: 160px; }
+.phase-bar-wrap { flex: 1; }
+.phase-bar { height: 28px; border-radius: 4px; display: flex; align-items: center; padding-left: 10px; font-size: 12px; font-weight: 700; color: white; }
+  </style>
+</head>
+<body>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+
+<div class="stage">
+  <div class="presentation">
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SLIDE 1 — TITLE
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="slide title-slide active" id="slide-1">
+      <h1>Lightmatter SiPho in Vera Rubin:<br>A $2.3B Semicap Equipment Opportunity</h1>
+      <p class="subtitle">
+        Modeling the equipment demand cascade from Nvidia's hybrid electro-optical packaging strategy —
+        lithography, electro-optical test, inspection, bonders, and fiber attach
+      </p>
+      <p class="meta">SemiAnalysis Case Study &nbsp;·&nbsp; Semicap Equipment Demand Model &nbsp;·&nbsp; 2025–2028</p>
+      <div class="logo">SemiAnalysis</div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SLIDE 2 — EXECUTIVE SUMMARY
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="slide content-slide" id="slide-2">
+      <div class="slide-header">
+        <div class="section-tag">Executive Summary</div>
+        <h2>Three Conclusions That Frame the Entire Analysis</h2>
+        <p class="subtitle">SiPho adoption in Rubin creates a new, identifiable equipment demand layer on top of the existing CoWoS supply chain</p>
+      </div>
+      <div class="slide-body">
+        <div class="three-column">
+          <div class="insight-card">
+            <div class="card-number">01</div>
+            <h3>SiPho is a Localized Optical I/O Tile, Not a Full Interposer Swap</h3>
+            <p>Lightmatter's interposer is CoWoS-L-like — a silicon-plus-optics tile added at the package edge. The dense GPU-to-HBM copper fabric is untouched. This scopes which tools actually matter.</p>
+            <div class="card-stat">Hybrid Package Architecture</div>
+          </div>
+          <div class="insight-card">
+            <div class="card-number">02</div>
+            <h3>Lithography Alone Captures 78% of the Revenue Pool</h3>
+            <p>The &gt;4,000 mm² SiPho die requires 5–6 reticle stitches, which crushes scanner throughput and makes litho the clear spending king. ASML's NXT:2050i is the critical tool.</p>
+            <div class="card-stat">$1.76B of $2.26B Total</div>
+          </div>
+          <div class="insight-card">
+            <div class="card-number">03</div>
+            <h3>Electro-Optical Test Is the Most Differentiated Category</h3>
+            <p>Every SiPho die must be optically validated before downstream assembly — a requirement with no CoWoS equivalent. This creates 119 new EO test systems and a genuine incremental spend pool.</p>
+            <div class="card-stat">$298M / 119 Systems</div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Source: SemiAnalysis Case Study Model</span>
+        <span>Slide 2 of 16</span>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SLIDE 3 — ARCHITECTURE
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="slide content-slide" id="slide-3">
+      <div class="slide-header">
+        <div class="section-tag">Architecture Analysis</div>
+        <h2>Rubin Is a Hybrid Electro-Optical Package — Optics at the Edge, Copper at the Core</h2>
+        <p class="subtitle">Understanding the architecture is prerequisite to scoping which equipment categories experience incremental demand</p>
+      </div>
+      <div class="slide-body">
+        <div class="two-column wide-text">
+          <div class="column">
+            <ul class="bullet-list">
+              <li><strong>Not a full interposer replacement.</strong> Lightmatter's SiPho tile is better understood as CoWoS-L-like — a localized silicon-plus-optics die added to the package, not a base interposer replacing the entire electrical fabric.</li>
+              <li><strong>Primary role: package-edge I/O bandwidth.</strong> SiPho relieves the off-package bottleneck where optical long-reach connectivity has a clear advantage over copper.</li>
+              <li><strong>Core GPU-HBM fabric stays copper.</strong> The dense, short-reach GPU-to-HBM interface remains electrical — still the optimal solution for local high-bandwidth memory at close proximity.</li>
+              <li><strong>Model assumption: 1 SiPho interposer per Rubin package.</strong> Interposer demand therefore scales 1:1 with Rubin volume, adjusted only for assembly yield (95%).</li>
+            </ul>
+          </div>
+          <div class="column" style="justify-content:center; gap:10px; padding:10px 0;">
+            <div style="background:white; border-radius:10px; border:1px solid var(--border); padding:20px; box-shadow:var(--shadow-card);">
+              <div style="font-size:11px; font-weight:700; color:var(--text-3); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:14px; text-align:center;">Rubin Package Schematic</div>
+              <div class="arch-box package" style="padding:18px; margin-bottom:10px;">
+                <div style="font-size:12px; font-weight:600; color:var(--text-3); margin-bottom:12px;">Package Boundary</div>
+                <div class="arch-box optics" style="margin-bottom:10px; padding:12px;">
+                  Lightmatter SiPho Tile<br><span style="font-size:11px; font-weight:400;">&gt;4,000 mm² · Package-edge I/O · Off-package bandwidth</span>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                  <div class="arch-box gpu" style="padding:12px;">
+                    GPU Die<br><span style="font-size:10px; font-weight:400; opacity:0.75;">Rubin compute</span>
+                  </div>
+                  <div class="arch-box hbm" style="padding:12px;">
+                    HBM Stack<br><span style="font-size:10px; font-weight:400;">×8 modules</span>
+                  </div>
+                </div>
+                <div class="arch-box copper" style="margin-top:10px; padding:10px; font-size:12px;">
+                  Copper Electrical Interposer<br><span style="font-size:10px; font-weight:400;">Dense GPU↔HBM fabric — unchanged by SiPho</span>
+                </div>
+              </div>
+              <div style="display:flex; gap:10px; margin-top:8px;">
+                <div style="display:flex; align-items:center; gap:5px; font-size:11px; color:var(--text-3);">
+                  <div style="width:10px;height:10px;border-radius:2px;background:#DBEAFE;border:1px solid #93C5FD;"></div> Optics domain
+                </div>
+                <div style="display:flex; align-items:center; gap:5px; font-size:11px; color:var(--text-3);">
+                  <div style="width:10px;height:10px;border-radius:2px;background:#FEF3C7;border:1px solid #FCD34D;"></div> Copper domain
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Source: Case Study Write-Up Analysis</span>
+        <span>Slide 3 of 16</span>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SLIDE 4 — VOLUME MODEL
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="slide content-slide" id="slide-4">
+      <div class="slide-header">
+        <div class="section-tag">Volume Model</div>
+        <h2>5M Rubin Packages in 2026 Translate to 752K Wafer Starts — The Peak Demand Year</h2>
+        <p class="subtitle">Demand cascade: Rubin packages → required interposers (adj. for yield) → annual wafer starts → WSPM</p>
+      </div>
+      <div class="slide-body">
+        <div class="metric-row" style="margin-bottom:18px;">
+          <div class="metric-box">
+            <div class="metric-label">2025 Rubin Units</div>
+            <div class="metric-value">100K</div>
+            <div class="metric-sublabel">Pilot / qualification ramp</div>
+          </div>
+          <div class="metric-box positive">
+            <div class="metric-label">2026–27 Peak Units</div>
+            <div class="metric-value">5.0M</div>
+            <div class="metric-sublabel">+4,900% YoY; full production ramp</div>
+          </div>
+          <div class="metric-box warning">
+            <div class="metric-label">2028 Units</div>
+            <div class="metric-value">1.0M</div>
+            <div class="metric-sublabel">–80% cycle correction</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">Peak Annual Wafer Starts</div>
+            <div class="metric-value">752K</div>
+            <div class="metric-sublabel">2026–27 at steady state</div>
+          </div>
+        </div>
+        <div class="two-column" style="gap:24px;">
+          <div class="column">
+            <div class="chart-title">Rubin Package Volume (Units, 000s)</div>
+            <div class="chart-container" style="height:240px;">
+              <canvas id="volumeChart"></canvas>
+            </div>
+          </div>
+          <div class="column">
+            <div style="background:white; border-radius:10px; border:1px solid var(--border); padding:18px; box-shadow:var(--shadow-card); height:100%;">
+              <div class="chart-title" style="margin-bottom:14px;">Volume → Wafer Starts Bridge</div>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Parameter</th>
+                    <th>Value</th>
+                    <th>Basis</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Assembly yield</td><td>95%</td><td>Standard CoWoS assumption</td></tr>
+                  <tr><td>Interposers needed (peak)</td><td>5.26M</td><td>5M ÷ 0.95</td></tr>
+                  <tr><td>Wafer size</td><td>300mm</td><td>Standard logic</td></tr>
+                  <tr><td>Gross dies / wafer</td><td>14</td><td>4,000mm² interposer on 300mm</td></tr>
+                  <tr><td>FE yield</td><td>50%</td><td>SiPho penalty (stitching + photonics)</td></tr>
+                  <tr><td>Net good dies / wafer</td><td>7</td><td>14 × 50%</td></tr>
+                  <tr class="highlight-row"><td>Peak annual wafer starts</td><td>751,880</td><td>5.26M ÷ 7</td></tr>
+                  <tr class="highlight-row"><td>Peak WSPM</td><td>62,657</td><td>751.9K ÷ 12</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Source: Case Study Model Output Sheet</span>
+        <span>Slide 4 of 16</span>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SLIDE 5 — YIELD ECONOMICS
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="slide content-slide" id="slide-5">
+      <div class="slide-header">
+        <div class="section-tag">Yield Economics</div>
+        <h2>50% FE Yield Is the Critical Assumption — and the Biggest Upside / Downside Lever</h2>
+        <p class="subtitle">The SiPho yield penalty drives wafer start requirements up 2× versus a hypothetical 100% yield scenario, directly sizing the equipment pool</p>
+      </div>
+      <div class="slide-body">
+        <div class="two-column text-chart" style="gap:28px;">
+          <div class="column" style="gap:14px;">
+            <div style="background:white; border-radius:10px; border:1px solid var(--border); padding:18px; box-shadow:var(--shadow-card);">
+              <div class="chart-title" style="margin-bottom:10px;">Why 50%? The SiPho Yield Penalty Stack</div>
+              <div style="margin-bottom:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                  <span style="font-size:13px; color:var(--text-2); font-weight:500;">Large die area (&gt;4,000 mm²)</span>
+                  <span class="badge red">High impact</span>
+                </div>
+                <div class="pct-bar-track"><div class="pct-bar-fill red" style="width:85%"></div></div>
+              </div>
+              <div style="margin-bottom:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                  <span style="font-size:13px; color:var(--text-2); font-weight:500;">Multi-reticle stitching defects</span>
+                  <span class="badge red">High impact</span>
+                </div>
+                <div class="pct-bar-track"><div class="pct-bar-fill red" style="width:75%"></div></div>
+              </div>
+              <div style="margin-bottom:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                  <span style="font-size:13px; color:var(--text-2); font-weight:500;">Active photonic component failures</span>
+                  <span class="badge amber">Med impact</span>
+                </div>
+                <div class="pct-bar-track"><div class="pct-bar-fill amber" style="width:55%"></div></div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                  <span style="font-size:13px; color:var(--text-2); font-weight:500;">Waveguide CD / overlay sensitivity</span>
+                  <span class="badge amber">Med impact</span>
+                </div>
+                <div class="pct-bar-track"><div class="pct-bar-fill amber" style="width:50%"></div></div>
+              </div>
+            </div>
+            <div style="background:white; border-radius:10px; border:1px solid var(--border); padding:18px; box-shadow:var(--shadow-card);">
+              <div class="chart-title" style="margin-bottom:10px;">Yield Sensitivity: Wafer Starts (Peak Year, 5M Pkgs)</div>
+              <table class="data-table" style="font-size:12px;">
+                <thead><tr><th>FE Yield</th><th>Wafer Starts</th><th>WSPM</th><th>vs. Base</th></tr></thead>
+                <tbody>
+                  <tr><td>35%</td><td>1,075,269</td><td>89,606</td><td class="negative">+43%</td></tr>
+                  <tr class="highlight-row"><td><strong>50% (base)</strong></td><td><strong>752,688</strong></td><td><strong>62,724</strong></td><td class="neutral">—</td></tr>
+                  <tr><td>65%</td><td>578,022</td><td>48,168</td><td class="positive">–23%</td></tr>
+                  <tr><td>80%</td><td>469,518</td><td>39,126</td><td class="positive">–38%</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="column">
+            <div class="chart-title">Equipment Pool Size vs. FE Yield Assumption ($M Total Sales)</div>
+            <div class="chart-container" style="flex:1; min-height:340px;">
+              <canvas id="yieldSensChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Source: Case Study Model; SemiAnalysis analysis</span>
+        <span>Slide 5 of 16</span>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SLIDE 6 — EQUIPMENT CATEGORIES OVERVIEW
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="slide content-slide" id="slide-6">
+      <div class="slide-header">
+        <div class="section-tag">Equipment Model</div>
+        <h2>5 Categories, 233 Tools, $2.26B — Scoped by What SiPho Actually Changes</h2>
+        <p class="subtitle">Analysis focuses on equipment whose demand profile shifts materially with SiPho insertion; standard CoWoS packaging tools are excluded</p>
+      </div>
+      <div class="slide-body">
+        <div class="two-column text-chart" style="gap:24px;">
+          <div class="column">
+            <div style="background:white; border-radius:10px; border:1px solid var(--border); padding:16px; box-shadow:var(--shadow-card);">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Category</th>
+                    <th>Tools</th>
+                    <th>Total Sales</th>
+                    <th>ASP</th>
+                    <th>Role</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="highlight-row">
+                    <td><strong>Lithography</strong></td>
+                    <td>22</td>
+                    <td class="positive"><strong>$1,760M</strong></td>
+                    <td>$80M</td>
+                    <td><span class="badge blue">Revenue King</span></td>
+                  </tr>
+                  <tr>
+                    <td>EO Wafer Test</td>
+                    <td>119</td>
+                    <td class="positive">$298M</td>
+                    <td>$2.5M</td>
+                    <td><span class="badge green">Most Differentiated</span></td>
+                  </tr>
+                  <tr>
+                    <td>Inspection / Metrology</td>
+                    <td>26</td>
+                    <td>$91M</td>
+                    <td>$3.5M</td>
+                    <td><span class="badge gray">Yield Support</span></td>
+                  </tr>
+                  <tr>
+                    <td>Fiber Attach / Align</td>
+                    <td>56</td>
+                    <td>$84M</td>
+                    <td>$1.5M</td>
+                    <td><span class="badge amber">Bottleneck Risk</span></td>
+                  </tr>
+                  <tr>
+                    <td>Flip Chip Bonders</td>
+                    <td>10</td>
+                    <td>$30M</td>
+                    <td>$3M</td>
+                    <td><span class="badge gray">Enablement</span></td>
+                  </tr>
+                  <tr class="highlight-row">
+                    <td><strong>Total</strong></td>
+                    <td><strong>233</strong></td>
+                    <td><strong>$2,263M</strong></td>
+                    <td>—</td>
+                    <td>—</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div style="margin-top:12px; background:#EFF6FF; border-radius:8px; padding:12px 16px; border:1px solid #BFDBFE;">
+              <div style="font-size:12px; font-weight:600; color:#1E40AF; margin-bottom:4px;">Selection Rationale</div>
+              <div style="font-size:12px; color:#1E40AF; line-height:1.5;">Only categories whose demand profile changes with SiPho insertion are modeled. Standard CoWoS tools (CMP, deposition, etch) continue but see no incremental step-change from SiPho adoption.</div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="chart-title">Revenue Distribution by Equipment Category</div>
+            <div class="chart-container" style="flex:1; min-height:340px;">
+              <canvas id="categoryChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Source: Case Study Model Output</span>
+        <span>Slide 6 of 16</span>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SLIDE 7 — LITHOGRAPHY
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="slide content-slide" id="slide-7">
+      <div class="slide-header">
+        <div class="section-tag">Category Deep Dive · Lithography</div>
+        <h2>Stitching Penalizes Scanner Throughput 83% — Turning Litho Into a $1.76B Capex Concentration</h2>
+        <p class="subtitle">The &gt;4,000 mm² SiPho die requires 5–6 reticle exposures per wafer; effective WPH collapses from 295 to 50, multiplying tool count</p>
+      </div>
+      <div class="slide-body">
+        <div class="metric-row" style="margin-bottom:14px;">
+          <div class="metric-box">
+            <div class="metric-label">Nominal Scanner WPH</div>
+            <div class="metric-value">295</div>
+            <div class="metric-sublabel">ASML NXT:2050i rated throughput</div>
+          </div>
+          <div class="metric-box negative">
+            <div class="metric-label">Effective WPH (Stitched)</div>
+            <div class="metric-value">50</div>
+            <div class="metric-sublabel">5–6× stitching = 83% haircut</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">Critical Litho Passes</div>
+            <div class="metric-value">10</div>
+            <div class="metric-sublabel">Per wafer for SiPho layer stack</div>
+          </div>
+          <div class="metric-box positive">
+            <div class="metric-label">Tools Required (Peak)</div>
+            <div class="metric-value">22</div>
+            <div class="metric-sublabel">ASML NXT:2050i @ $80M ASP</div>
+          </div>
+          <div class="metric-box positive">
+            <div class="metric-label">Total Sales</div>
+            <div class="metric-value text-blue">$1.76B</div>
+            <div class="metric-sublabel">78% of total equipment pool</div>
+          </div>
+        </div>
+        <div class="two-column" style="gap:24px;">
+          <div class="column">
+            <div class="chart-title">Litho Tool Count Buildup: 2025 vs. 2026 Ordering</div>
+            <div class="chart-container" style="flex:1; min-height:220px;">
+              <canvas id="lithoOrderChart"></canvas>
+            </div>
+          </div>
+          <div class="column">
+            <div style="background:white; border-radius:10px; border:1px solid var(--border); padding:18px; box-shadow:var(--shadow-card); height:100%;">
+              <div class="chart-title" style="margin-bottom:12px;">Tool Sizing Math</div>
+              <div style="background:#F8FAFC; border-radius:6px; padding:14px; font-size:13px; font-family:monospace; color:var(--text-2); line-height:1.8; border:1px solid #E2E8F0;">
+                Capacity/tool = 50 WPH × 7,446 hrs/yr ÷ 10 passes<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= 37,230 wafers/tool/yr<br><br>
+                Tools = 751,880 wfrs ÷ 37,230<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <strong style="color:var(--navy);">22 scanners</strong>
+              </div>
+              <div style="margin-top:14px;">
+                <div style="font-size:12px; font-weight:700; color:var(--text-3); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px;">Key Reference Equipment</div>
+                <div style="display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--border);">
+                  <span class="badge blue">ASML</span>
+                  <span style="font-size:13px; color:var(--text-2);">NXT:2050i — ~$80M ASP · Immersion DUV</span>
+                </div>
+                <div style="font-size:12px; color:var(--text-3); line-height:1.5; margin-top:8px;">
+                  ASML is the sole practical supplier for the critical litho layer of a stitched photonic interposer at this throughput regime. Stitching capability and overlay precision are non-negotiable requirements.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Source: Case Study Model; ASML public ASP data</span>
+        <span>Slide 7 of 16</span>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SLIDE 8 — ELECTRO-OPTICAL TEST
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="slide content-slide" id="slide-8">
+      <div class="slide-header">
+        <div class="section-tag">Category Deep Dive · EO Wafer Test</div>
+        <h2>EO Test Is SiPho's Most Distinctive Equipment Requirement: 119 Systems With No CoWoS Analog</h2>
+        <p class="subtitle">Every SiPho die must be optically validated at wafer level before downstream assembly — a genuinely new insertion that creates an entirely incremental fleet</p>
+      </div>
+      <div class="slide-body">
+        <div class="two-column chart-text" style="gap:24px;">
+          <div class="column">
+            <div class="chart-title">EO Test Fleet Ramp vs. Other Categories (Cumulative Units)</div>
+            <div class="chart-container" style="flex:1; min-height:320px;">
+              <canvas id="fleetChart"></canvas>
+            </div>
+          </div>
+          <div class="column" style="gap:14px;">
+            <div class="metric-row">
+              <div class="metric-box positive">
+                <div class="metric-label">EO Systems (Peak)</div>
+                <div class="metric-value">119</div>
+                <div class="metric-sublabel">Largest fleet count in model</div>
+              </div>
+              <div class="metric-box">
+                <div class="metric-label">Total Sales</div>
+                <div class="metric-value text-green">$298M</div>
+                <div class="metric-sublabel">2nd largest revenue category</div>
+              </div>
+            </div>
+            <div style="background:white; border-radius:10px; border:1px solid var(--border); padding:16px; box-shadow:var(--shadow-card);">
+              <div class="chart-title" style="margin-bottom:10px;">Tool Sizing Math</div>
+              <div style="background:#F8FAFC; border-radius:6px; padding:12px; font-size:12px; font-family:monospace; color:var(--text-2); line-height:1.8; border:1px solid #E2E8F0;">
+                Test time: 10 min/die × 7 dies = 70 min/wafer<br>
+                Eff. WPH = 0.85 wafers/hour<br><br>
+                Capacity/tool = 0.85 × 7,446 hrs = 6,329 wfrs/yr<br>
+                Tools = 751,880 ÷ 6,329 = <strong style="color:var(--navy);">119 systems</strong>
+              </div>
+            </div>
+            <div style="background:white; border-radius:10px; border:1px solid var(--border); padding:16px; box-shadow:var(--shadow-card);">
+              <div class="chart-title" style="margin-bottom:8px;">Reference Equipment</div>
+              <div style="display:flex; align-items:center; gap:10px; padding:6px 0; border-bottom:1px solid var(--border);">
+                <span class="badge green">FormFactor</span>
+                <span style="font-size:12px; color:var(--text-2);">Photonic wafer probe systems · ~$2.5M ASP</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; padding:6px 0;">
+                <span class="badge blue">Advantest</span>
+                <span style="font-size:12px; color:var(--text-2);">V93000 + optical module integration</span>
+              </div>
+              <div style="font-size:12px; color:var(--text-3); margin-top:8px; line-height:1.5;">
+                This category has no meaningful CoWoS equivalent — every SiPho die requires optical continuity testing before integration. It is the clearest incremental equipment requirement in the model.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Source: Case Study Model; FormFactor and Advantest public data</span>
+        <span>Slide 8 of 16</span>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SLIDE 9 — INSPECTION / METROLOGY
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="slide content-slide" id="slide-9">
+      <div class="slide-header">
+        <div class="section-tag">Category Deep Dive · Inspection &amp; Metrology</div>
+        <h2>Photonics Is Exquisitely Sensitive to Process Variation — Inspection Becomes a Yield Lifeline</h2>
+        <p class="subtitle">26 combined tools / $91M — secondary in dollars but essential to achieving the 50% FE yield assumption; worse without it</p>
+      </div>
+      <div class="slide-body">
+        <div class="two-column" style="gap:24px;">
+          <div class="column" style="gap:14px;">
+            <ul class="bullet-list">
+              <li><strong>Photonics yield is highly CD-sensitive.</strong> Waveguide width tolerances are sub-nm; any CD deviation shifts the optical transmission window and kills performance even on structurally intact die.</li>
+              <li><strong>5 insertions per wafer assumed.</strong> Both optical inspection and metrology tools are modeled at 5 passes/wafer — cover overlay, film thickness, waveguide CD, and surface defects at multiple process stages.</li>
+              <li><strong>Combined tool count: 13 each, 26 total.</strong> Onto (optical surface inspection) and KLA (wafer-level metrology) are the reference platforms, modeled at $3.5M and ~$3M ASPs respectively.</li>
+              <li><strong>Economically secondary, strategically essential.</strong> At $91M combined, inspection is a rounding error vs. litho — but without it, yield degrades and the wafer start requirement (and litho demand) climbs sharply.</li>
+            </ul>
+            <div style="display:flex; gap:12px; margin-top:8px;">
+              <div class="winner-card" style="flex:1;">
+                <div class="ticker">ONTO</div>
+                <h4>Onto Innovation</h4>
+                <p>Optical surface inspection — G3/G5 platform. ASP ~$3.5–4M (G3 public data). Waveguide CD and overlay coverage.</p>
+              </div>
+              <div class="winner-card" style="flex:1;">
+                <div class="ticker">KLAC</div>
+                <h4>KLA Corporation</h4>
+                <p>Wafer-level metrology. ASP ~$3M (portfolio range). Film thickness, overlay, and defect classification.</p>
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="chart-title">Inspection / Metrology: Tool Count &amp; Revenue Phasing</div>
+            <div class="chart-container" style="flex:1; min-height:310px;">
+              <canvas id="inspChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Source: Case Study Model; Onto Innovation and KLA public data</span>
+        <span>Slide 9 of 16</span>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SLIDE 10 — BONDERS & FIBER ATTACH
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="slide content-slide" id="slide-10">
+      <div class="slide-header">
+        <div class="section-tag">Category Deep Dive · Bonders &amp; Fiber Attach</div>
+        <h2>Bonders Enable Integration; Fiber Attach Is the Hardest Step to Industrialize at Scale</h2>
+        <p class="subtitle">10 bonders ($30M) enable SiPho-to-package assembly; 56 fiber attach lines ($84M) face the steepest throughput scaling challenge in the model</p>
+      </div>
+      <div class="slide-body">
+        <div class="two-column" style="gap:24px;">
+          <!-- BONDERS -->
+          <div class="column" style="gap:14px;">
+            <div style="background:white; border-radius:10px; border:1px solid var(--border); padding:16px; box-shadow:var(--shadow-card);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <div class="chart-title" style="margin:0;">Flip Chip Bonders</div>
+                <div style="display:flex; gap:8px;">
+                  <div class="metric-box" style="padding:8px 14px; border-radius:6px;">
+                    <div class="metric-value" style="font-size:22px;">10</div>
+                    <div class="metric-label">Tools</div>
+                  </div>
+                  <div class="metric-box" style="padding:8px 14px; border-radius:6px;">
+                    <div class="metric-value" style="font-size:22px;">$30M</div>
+                    <div class="metric-label">Revenue</div>
+                  </div>
+                </div>
+              </div>
+              <ul class="bullet-list compact">
+                <li><strong>12 placements per package</strong> (2 compute + 2 I/O + 8 HBM die) → 63.2M total placements at 5M pkg/yr</li>
+                <li><strong>Eff. CPH = 1,500</strong> (2,000 nominal × 75% utilization) → capacity of 11.2M placements/tool/yr</li>
+                <li><strong>6 base tools, +40% redundancy = 10 total</strong>. Besi is the reference at ~$3M ASP.</li>
+                <li>Strategically required for integration, but economically modest relative to litho and EO test.</li>
+              </ul>
+            </div>
+            <div class="winner-card" style="margin-top:4px;">
+              <div class="ticker">BESI · Besi Equipment</div>
+              <h4>Besi (BE Semiconductor)</h4>
+              <p>Flip chip thermocompression bonders. ASP ~$3M per system. Primary supplier for advanced multi-die packaging at this placement density and accuracy requirement.</p>
+            </div>
+          </div>
+          <!-- FIBER ATTACH -->
+          <div class="column" style="gap:14px;">
+            <div style="background:white; border-radius:10px; border:1px solid var(--border); padding:16px; box-shadow:var(--shadow-card);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <div class="chart-title" style="margin:0;">Fiber Attach / Optical Alignment</div>
+                <div style="display:flex; gap:8px;">
+                  <div class="metric-box warning" style="padding:8px 14px; border-radius:6px;">
+                    <div class="metric-value" style="font-size:22px;">56</div>
+                    <div class="metric-label">Lines</div>
+                  </div>
+                  <div class="metric-box warning" style="padding:8px 14px; border-radius:6px;">
+                    <div class="metric-value" style="font-size:22px;">$84M</div>
+                    <div class="metric-label">Revenue</div>
+                  </div>
+                </div>
+              </div>
+              <ul class="bullet-list compact">
+                <li><strong>12 UPH throughput ceiling</strong> — active alignment of 256 fibers/package is extremely time-intensive and hard to parallelize.</li>
+                <li><strong>Capacity/line = 89,352 packages/yr</strong> at 12 UPH × 7,446 hrs. Lines = 5M ÷ 89,352 = 56.</li>
+                <li><strong>Highest model uncertainty</strong>. If throughput improves to 20 UPH, only ~34 lines needed. If it stalls at 8 UPH, ~84 lines required.</li>
+              </ul>
+              <div style="background:#FEF3C7; border-radius:6px; padding:10px 14px; margin-top:8px; border:1px solid #FCD34D;">
+                <div style="font-size:12px; font-weight:700; color:#92400E; margin-bottom:3px;">⚠ Key Bottleneck Risk</div>
+                <div style="font-size:12px; color:#92400E; line-height:1.5;">Active alignment at 256 fibers/package is the hardest step to industrialize. Volume ramp could be gated by fiber attach throughput even if all other tools are in place.</div>
+              </div>
+            </div>
+            <div class="winner-card amber-top" style="margin-top:4px;">
+              <div class="ticker">ficonTEC</div>
+              <h4>ficonTEC Service GmbH</h4>
+              <p>Active optical alignment and fiber attach systems. ASP ~$1.5M (official price range $1.0–1.5M configured). Private, specialized supplier — scaling capacity is a risk in itself.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Source: Case Study Model; ficonTEC, Besi public data</span>
+        <span>Slide 10 of 16</span>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SLIDE 11 — TOTAL SALES DASHBOARD
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="slide content-slide" id="slide-11">
+      <div class="slide-header">
+        <div class="section-tag">Model Output</div>
+        <h2>$2.26B Equipment Pool Concentrated in Two Years — 2025 Seeds, 2026 Ramps</h2>
+        <p class="subtitle">30/70 ordering cadence reflects 12–18 month tool lead times; $679M ordered in 2025 (pilot) vs. $1,584M in 2026 (full ramp)</p>
+      </div>
+      <div class="slide-body">
+        <div class="two-column" style="gap:24px;">
+          <div class="column">
+            <div class="chart-title">Equipment Sales by Category ($M, Stacked)</div>
+            <div class="chart-container" style="flex:1; min-height:330px;">
+              <canvas id="stackedSalesChart"></canvas>
+            </div>
+          </div>
+          <div class="column" style="gap:14px;">
+            <div style="background:white; border-radius:10px; border:1px solid var(--border); padding:16px; box-shadow:var(--shadow-card);">
+              <div class="chart-title" style="margin-bottom:10px;">Cumulative Installed Base / Revenue Summary</div>
+              <table class="data-table">
+                <thead>
+                  <tr><th>Category</th><th>2025 ($M)</th><th>2026 ($M)</th><th>Installed ($M)</th></tr>
+                </thead>
+                <tbody>
+                  <tr class="highlight-row"><td><strong>Lithography</strong></td><td>528</td><td>1,232</td><td><strong>1,760</strong></td></tr>
+                  <tr><td>EO Wafer Test</td><td>89</td><td>208</td><td>298</td></tr>
+                  <tr><td>Inspection / Metro</td><td>27</td><td>64</td><td>91</td></tr>
+                  <tr><td>Fiber Attach</td><td>25</td><td>59</td><td>84</td></tr>
+                  <tr><td>Flip Chip Bonders</td><td>9</td><td>21</td><td>30</td></tr>
+                  <tr class="highlight-row"><td><strong>Total</strong></td><td><strong>679</strong></td><td><strong>1,584</strong></td><td><strong>2,263</strong></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div style="background:white; border-radius:10px; border:1px solid var(--border); padding:16px; box-shadow:var(--shadow-card);">
+              <div class="chart-title" style="margin-bottom:10px;">Revenue Share by Category</div>
+              <div style="height:160px;">
+                <canvas id="sharePieChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Source: Case Study Model Output Sheet</span>
+        <span>Slide 11 of 16</span>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SLIDE 12 — ORDER PHASING
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="slide content-slide" id="slide-12">
+      <div class="slide-header">
+        <div class="section-tag">Deployment Phasing</div>
+        <h2>Lead Times Force Front-Loaded Ordering — 30% of the Fleet Commits in 2025 to Enable 2026 Production</h2>
+        <p class="subtitle">Equipment with 12–18 month lead times must be ordered well before peak demand; mis-timing creates either tool shortages or stranded capex</p>
+      </div>
+      <div class="slide-body">
+        <div class="two-column text-chart" style="gap:24px;">
+          <div class="column" style="gap:16px;">
+            <div style="background:white; border-radius:10px; border:1px solid var(--border); padding:18px; box-shadow:var(--shadow-card);">
+              <div class="chart-title" style="margin-bottom:14px;">2025 Pilot Orders — 30% of Final Fleet</div>
+              <div class="phase-row">
+                <div class="phase-label">Lithography (6.6 tools)</div>
+                <div class="phase-bar-wrap">
+                  <div class="phase-bar" style="width:30%; background:var(--blue);">$528M</div>
+                </div>
+              </div>
+              <div class="phase-row">
+                <div class="phase-label">EO Wafer Test (36 sys)</div>
+                <div class="phase-bar-wrap">
+                  <div class="phase-bar" style="width:30%; background:var(--green);">$89M</div>
+                </div>
+              </div>
+              <div class="phase-row">
+                <div class="phase-label">Inspection / Metro (8)</div>
+                <div class="phase-bar-wrap">
+                  <div class="phase-bar" style="width:30%; background:var(--teal);">$27M</div>
+                </div>
+              </div>
+              <div class="phase-row">
+                <div class="phase-label">Fiber Attach (17 ln)</div>
+                <div class="phase-bar-wrap">
+                  <div class="phase-bar" style="width:30%; background:var(--amber);">$25M</div>
+                </div>
+              </div>
+              <div class="phase-row">
+                <div class="phase-label">Bonders (3 tools)</div>
+                <div class="phase-bar-wrap">
+                  <div class="phase-bar" style="width:30%; background:var(--text-3);">$9M</div>
+                </div>
+              </div>
+            </div>
+            <ul class="bullet-list compact" style="margin-top:4px;">
+              <li><strong>12–18 month lead times</strong> on ASML scanners mean 2025 orders are prerequisite for 2026 peak-ramp tool availability.</li>
+              <li><strong>30% pilot-phase ordering</strong> allows fab engineers to qualify the SiPho process before committing full fleet spend.</li>
+              <li><strong>2028 demand cliff (–80% Rubin units)</strong> creates stranded capacity risk for tools ordered speculatively; fiber attach lines and EO test systems are most exposed given lower resale utility.</li>
+            </ul>
+          </div>
+          <div class="column">
+            <div class="chart-title">Cumulative Fleet Build-Out: Units by Year</div>
+            <div class="chart-container" style="flex:1; min-height:340px;">
+              <canvas id="phasingChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Source: Case Study Model; SemiAnalysis analysis</span>
+        <span>Slide 12 of 16</span>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SLIDE 13 — RISK ANALYSIS
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="slide content-slide" id="slide-13">
+      <div class="slide-header">
+        <div class="section-tag">Risk Analysis</div>
+        <h2>Three Structural Risks Could Materially Compress the Equipment Pool</h2>
+        <p class="subtitle">Bull case is $2.26B; bear case compresses substantially depending on yield trajectory, throughput realization, and cycle dynamics</p>
+      </div>
+      <div class="slide-body">
+        <div class="two-column" style="gap:24px;">
+          <div class="column" style="gap:12px;">
+            <div class="risk-card">
+              <h4>Risk 1: FE Yield Improvement Reduces Wafer Starts (and Equipment Demand)</h4>
+              <p>Base case assumes 50% FE yield — a conservative SiPho penalty assumption. If yield improves to 65–80% through process learning, annual wafer starts drop 23–38%, compressing litho tool demand by 5–9 scanners and shrinking the equipment pool by ~$400–700M. This is an upside risk for Lightmatter but a downside for ASML and EO test suppliers.</p>
+            </div>
+            <div class="risk-card">
+              <h4>Risk 2: Fiber Attach Throughput Stalls and Gates Volume Ramp</h4>
+              <p>Active alignment of 256 fibers/package at scale has no established industrial playbook. Model assumes 12 UPH; if throughput stalls at 6–8 UPH, line count roughly doubles but the physical ramp may not be achievable, effectively capping Rubin volume below 5M packages/yr regardless of litho and test capacity.</p>
+            </div>
+            <div class="risk-card">
+              <h4>Risk 3: 2028 Cycle Cliff Creates Stranded Capex</h4>
+              <p>Rubin volume drops 80% in 2028 (1M units) versus 2026–27 peak (5M). Tools ordered for peak capacity — particularly EO test systems and fiber attach lines with limited secondary-market demand — face significant utilization headwinds in the trough year.</p>
+            </div>
+          </div>
+          <div class="column">
+            <div class="chart-title">Bear / Base / Bull Equipment Pool ($M Total)</div>
+            <div class="chart-container" style="height:200px; margin-bottom:16px;">
+              <canvas id="scenarioChart"></canvas>
+            </div>
+            <div style="background:white; border-radius:10px; border:1px solid var(--border); padding:16px; box-shadow:var(--shadow-card);">
+              <div class="chart-title" style="margin-bottom:10px;">Scenario Assumptions</div>
+              <table class="data-table" style="font-size:12px;">
+                <thead><tr><th>Scenario</th><th>FE Yield</th><th>Fiber UPH</th><th>Pool ($M)</th></tr></thead>
+                <tbody>
+                  <tr><td><span class="badge red">Bear</span></td><td>65% (improved)</td><td>12 (base)</td><td class="negative">~$1,650M</td></tr>
+                  <tr class="highlight-row"><td><span class="badge gray">Base</span></td><td>50%</td><td>12</td><td>$2,263M</td></tr>
+                  <tr><td><span class="badge green">Bull</span></td><td>35% (early struggle)</td><td>8 (slower)</td><td class="positive">~$3,200M</td></tr>
+                </tbody>
+              </table>
+              <div style="font-size:11px; color:var(--text-4); margin-top:8px;">Bear assumes better yield + base throughput. Bull assumes worse yield + slower fiber attach — both increase wafer starts and fleet requirements.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Source: SemiAnalysis analysis; Case Study Model sensitivity runs</span>
+        <span>Slide 13 of 16</span>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SLIDE 14 — STRATEGIC IMPLICATIONS / WINNER MAP
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="slide content-slide" id="slide-14">
+      <div class="slide-header">
+        <div class="section-tag">Strategic Implications</div>
+        <h2>ASML Captures the Prize; FormFactor and Onto Have Differentiated Exposure</h2>
+        <p class="subtitle">Winner map identifies direct beneficiaries, with exposure calibrated to both dollar magnitude and competitive moat in the SiPho supply chain</p>
+      </div>
+      <div class="slide-body">
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:16px;">
+          <div>
+            <div style="font-size:11px; font-weight:700; color:var(--blue); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Tier 1 — Primary Winners</div>
+            <div class="winner-card" style="margin-bottom:10px;">
+              <div class="ticker">ASML · NXT:2050i</div>
+              <h4>ASML Holdings</h4>
+              <p><strong>$1.76B</strong> · Sole qualified supplier for stitched SiPho litho. No substitute at the required overlay and throughput spec. Demand is binary with Rubin adoption.</p>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:11px; font-weight:700; color:var(--green); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Tier 2 — Differentiated Exposure</div>
+            <div class="winner-card green-top" style="margin-bottom:10px;">
+              <div class="ticker">FORM · FormFactor</div>
+              <h4>FormFactor</h4>
+              <p><strong>$298M</strong> · EO wafer probing is genuinely new. No existing CoWoS analogue. FormFactor has early photonic probe experience and is best-positioned for this fleet.</p>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:11px; font-weight:700; color:var(--amber); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Tier 3 — Supportive Exposure</div>
+            <div class="winner-card amber-top" style="margin-bottom:10px;">
+              <div class="ticker">ONTO · Onto Innovation</div>
+              <h4>Onto Innovation</h4>
+              <p><strong>~$46M</strong> · Waveguide CD inspection and overlay metrology. Differentiated by SiPho process sensitivity; competes with KLA for each insertion.</p>
+            </div>
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:12px;">
+          <div class="winner-card">
+            <div class="ticker">KLAC · KLA Corp</div>
+            <h4>KLA Corporation</h4>
+            <p><strong>~$39M</strong> · Wafer metrology. Competes with Onto; strong baseline in CoWoS inspection gives natural extension to SiPho process control.</p>
+          </div>
+          <div class="winner-card">
+            <div class="ticker">ADVA · Advantest</div>
+            <h4>Advantest</h4>
+            <p><strong>Partial of $298M</strong> · V93000 with optical module. Shares EO test opportunity with FormFactor. Incumbent in semiconductor ATE with photonics roadmap.</p>
+          </div>
+          <div class="winner-card">
+            <div class="ticker">BESI · BE Semiconductor</div>
+            <h4>Besi</h4>
+            <p><strong>$30M</strong> · Flip chip bonders. Smaller dollar exposure, but flip chip leadership at advanced packaging nodes is strategically relevant as SiPho scales.</p>
+          </div>
+          <div class="winner-card amber-top">
+            <div class="ticker">ficonTEC (Private)</div>
+            <h4>ficonTEC</h4>
+            <p><strong>$84M</strong> · Fiber attach. Largest per-line exposure but privately held and capacity-constrained. The bottleneck risk is as much supplier scaling as technology.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Source: SemiAnalysis analysis; public company data</span>
+        <span>Slide 14 of 16</span>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SLIDE 15 — KEY TAKEAWAYS
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="slide content-slide" id="slide-15">
+      <div class="slide-header">
+        <div class="section-tag">Key Takeaways</div>
+        <h2>Four Analytical Conclusions From the SiPho Equipment Model</h2>
+        <p class="subtitle">Structured around architecture logic, equipment sizing, risk calibration, and strategic positioning</p>
+      </div>
+      <div class="slide-body">
+        <div class="two-column" style="gap:24px;">
+          <div class="column" style="gap:14px;">
+            <div style="background:white; border-radius:10px; border:1px solid var(--border); padding:18px; box-shadow:var(--shadow-card); border-top:3px solid var(--blue);">
+              <div style="display:flex; gap:14px; align-items:flex-start;">
+                <div style="font-size:32px; font-weight:900; color:var(--blue); opacity:0.25; line-height:1; min-width:40px;">1</div>
+                <div>
+                  <div style="font-size:16px; font-weight:700; color:var(--navy); margin-bottom:6px;">Architecture Scope Is Decisive for Equipment Selection</div>
+                  <div style="font-size:14px; color:var(--text-2); line-height:1.6;">Because SiPho is a package-edge tile rather than a full interposer, only 5 equipment categories see step-change incremental demand. Confusing this with a full-interposer replacement would misidentify the tool set entirely.</div>
+                </div>
+              </div>
+            </div>
+            <div style="background:white; border-radius:10px; border:1px solid var(--border); padding:18px; box-shadow:var(--shadow-card); border-top:3px solid var(--blue);">
+              <div style="display:flex; gap:14px; align-items:flex-start;">
+                <div style="font-size:32px; font-weight:900; color:var(--blue); opacity:0.25; line-height:1; min-width:40px;">2</div>
+                <div>
+                  <div style="font-size:16px; font-weight:700; color:var(--navy); margin-bottom:6px;">Litho Revenue Concentration Is a Direct Consequence of Die Size</div>
+                  <div style="font-size:14px; color:var(--text-2); line-height:1.6;">The 83% scanner throughput haircut from stitching is not a model assumption — it is a geometric consequence of a &gt;4,000 mm² die on a 26×33mm reticle field. 78% of the equipment pool flowing to ASML is structurally locked in.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="column" style="gap:14px;">
+            <div style="background:white; border-radius:10px; border:1px solid var(--border); padding:18px; box-shadow:var(--shadow-card); border-top:3px solid var(--green);">
+              <div style="display:flex; gap:14px; align-items:flex-start;">
+                <div style="font-size:32px; font-weight:900; color:var(--green); opacity:0.25; line-height:1; min-width:40px;">3</div>
+                <div>
+                  <div style="font-size:16px; font-weight:700; color:var(--navy); margin-bottom:6px;">EO Test Is the Model's Most Analytically Interesting Category</div>
+                  <div style="font-size:14px; color:var(--text-2); line-height:1.6;">119 systems with zero CoWoS precedent, forming a genuinely incremental spend pool. 70-min/wafer test time creates a fleet that rivals inspection in unit count despite a lower ASP — and is the clearest structural proof that SiPho changes the equipment map.</div>
+                </div>
+              </div>
+            </div>
+            <div style="background:white; border-radius:10px; border:1px solid var(--border); padding:18px; box-shadow:var(--shadow-card); border-top:3px solid var(--amber);">
+              <div style="display:flex; gap:14px; align-items:flex-start;">
+                <div style="font-size:32px; font-weight:900; color:var(--amber); opacity:0.25; line-height:1; min-width:40px;">4</div>
+                <div>
+                  <div style="font-size:16px; font-weight:700; color:var(--navy); margin-bottom:6px;">Fiber Attach Throughput Is the Volume Ramp's Weakest Link</div>
+                  <div style="font-size:14px; color:var(--text-2); line-height:1.6;">At 12 UPH for 256-fiber active alignment, fiber attach is the hardest step to industrialize and the most uncertain input in the model. Achieving 5M packages/yr may require either a step-change in throughput or a rethink of the fiber coupling architecture.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Source: SemiAnalysis Case Study Analysis</span>
+        <span>Slide 15 of 16</span>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SLIDE 16 — CONCLUSION
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="slide closing-slide" id="slide-16">
+      <h1>$2.3B Equipment Opportunity.<br>Two Years to Execute.</h1>
+      <p class="subtitle">
+        Lightmatter SiPho in Rubin creates a concentrated, time-limited semicap demand window —<br>
+        dominated by ASML, differentiated by EO test, and gated by fiber attach throughput.
+      </p>
+      <p class="meta">SemiAnalysis Case Study &nbsp;·&nbsp; Shibin Xie &nbsp;·&nbsp; March 2026</p>
+    </div>
+
+  </div><!-- end .presentation -->
+</div><!-- end .stage -->
+
+<div class="controls">
+  <button id="prev">&#8592; Prev</button>
+  <span id="slide-counter">1 / 16</span>
+  <button id="next">Next &#8594;</button>
+  <button id="fullscreen-btn" title="Fullscreen (F)">&#x26F6;</button>
+</div>
+<div class="key-hint" id="key-hint">&#8592; &#8594; &nbsp;|&nbsp; Space &nbsp;|&nbsp; F = Fullscreen</div>
+
+<script>
+/* ============================================================
+   CHART DEFAULTS
+============================================================ */
+const CHART_DEFAULTS = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      labels: { font: { family: 'Inter', size: 12, weight: '500' }, color: '#4A4A5A', padding: 14 }
+    },
+    tooltip: {
+      backgroundColor: '#1A1A2E',
+      titleFont: { family: 'Inter', size: 12, weight: '600' },
+      bodyFont: { family: 'Inter', size: 11 },
+      padding: 10, cornerRadius: 6
+    }
+  },
+  scales: {
+    x: { ticks: { font: { family: 'Inter', size: 11 }, color: '#6B7280' }, grid: { color: 'rgba(0,0,0,0.04)', drawBorder: false } },
+    y: { ticks: { font: { family: 'Inter', size: 11 }, color: '#6B7280' }, grid: { color: 'rgba(0,0,0,0.07)', drawBorder: false } }
+  }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  /* --- SLIDE 4: Volume Chart --- */
+  new Chart(document.getElementById('volumeChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: ['2025', '2026e', '2027e', '2028e'],
+      datasets: [{
+        label: 'Rubin Packages (000s)',
+        data: [100, 5000, 5000, 1000],
+        backgroundColor: ['#94A3B8', '#3B82F6', '#3B82F6', '#F59E0B'],
+        borderRadius: 6, borderSkipped: false
+      }]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      plugins: { ...CHART_DEFAULTS.plugins, legend: { display: false } },
+      scales: {
+        ...CHART_DEFAULTS.scales,
+        y: { ...CHART_DEFAULTS.scales.y, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => v >= 1000 ? (v/1000)+'M' : v+'K' } }
+      }
+    }
+  });
+
+  /* --- SLIDE 5: Yield Sensitivity Chart --- */
+  new Chart(document.getElementById('yieldSensChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: ['35% Yield', '50% (Base)', '65% Yield', '80% Yield'],
+      datasets: [{
+        label: 'Total Equipment Pool ($M)',
+        data: [3229, 2263, 1739, 1412],
+        backgroundColor: ['#DC2626', '#3B82F6', '#10B981', '#10B981'],
+        borderRadius: 6, borderSkipped: false
+      }]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      plugins: { ...CHART_DEFAULTS.plugins, legend: { display: false } },
+      scales: {
+        ...CHART_DEFAULTS.scales,
+        y: { ...CHART_DEFAULTS.scales.y, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => '$'+v+'M' } }
+      }
+    }
+  });
+
+  /* --- SLIDE 6: Category Doughnut --- */
+  new Chart(document.getElementById('categoryChart').getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Lithography', 'EO Wafer Test', 'Insp. / Metrology', 'Fiber Attach', 'Bonders'],
+      datasets: [{
+        data: [1760, 298, 91, 84, 30],
+        backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'],
+        borderWidth: 2, borderColor: '#F5F5F0',
+        hoverOffset: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'right', labels: { font: { family: 'Inter', size: 12 }, color: '#4A4A5A', padding: 14, boxWidth: 14 } },
+        tooltip: {
+          backgroundColor: '#1A1A2E',
+          titleFont: { family: 'Inter', size: 12, weight: '600' },
+          bodyFont: { family: 'Inter', size: 11 },
+          padding: 10, cornerRadius: 6,
+          callbacks: { label: ctx => ' $' + ctx.parsed + 'M (' + Math.round(ctx.parsed/2263*100) + '%)' }
+        }
+      }
+    }
+  });
+
+  /* --- SLIDE 7: Litho Order Chart --- */
+  new Chart(document.getElementById('lithoOrderChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: ['Lithography'],
+      datasets: [
+        { label: '2025 Orders (6.6 tools)', data: [528], backgroundColor: '#93C5FD', borderRadius: 4, borderSkipped: false },
+        { label: '2026 Orders (15.4 tools)', data: [1232], backgroundColor: '#3B82F6', borderRadius: 4, borderSkipped: false }
+      ]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      indexAxis: 'y',
+      scales: {
+        x: { ...CHART_DEFAULTS.scales.x, stacked: true, ticks: { ...CHART_DEFAULTS.scales.x.ticks, callback: v => '$'+v+'M' } },
+        y: { ...CHART_DEFAULTS.scales.y, stacked: true }
+      },
+      plugins: { ...CHART_DEFAULTS.plugins, legend: { display: true, position: 'bottom' } }
+    }
+  });
+
+  /* --- SLIDE 8: Fleet Size Comparison --- */
+  new Chart(document.getElementById('fleetChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: ['EO Wafer Test', 'Fiber Attach\n(lines)', 'Insp / Metro', 'Lithography', 'Bonders'],
+      datasets: [{
+        label: 'Cumulative Units / Lines',
+        data: [119, 56, 26, 22, 10],
+        backgroundColor: ['#10B981', '#F59E0B', '#0EA5E9', '#3B82F6', '#8B5CF6'],
+        borderRadius: 6, borderSkipped: false
+      }]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      indexAxis: 'y',
+      plugins: { ...CHART_DEFAULTS.plugins, legend: { display: false } },
+      scales: {
+        x: { ...CHART_DEFAULTS.scales.x },
+        y: { ...CHART_DEFAULTS.scales.y, ticks: { font: { family: 'Inter', size: 11 }, color: '#6B7280' } }
+      }
+    }
+  });
+
+  /* --- SLIDE 9: Inspection Chart --- */
+  new Chart(document.getElementById('inspChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: ['2025 (Pilot)', '2026 (Ramp)', 'Installed Base'],
+      datasets: [
+        { label: 'Onto Innovation ($M)', data: [13.65, 31.85, 45.5], backgroundColor: '#3B82F6', borderRadius: 4, borderSkipped: false },
+        { label: 'KLA Corporation ($M)', data: [13.65, 31.85, 45.5], backgroundColor: '#0EA5E9', borderRadius: 4, borderSkipped: false }
+      ]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      scales: {
+        x: { ...CHART_DEFAULTS.scales.x, stacked: true },
+        y: { ...CHART_DEFAULTS.scales.y, stacked: true, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => '$'+v+'M' } }
+      },
+      plugins: { ...CHART_DEFAULTS.plugins, legend: { display: true, position: 'bottom' } }
+    }
+  });
+
+  /* --- SLIDE 11: Stacked Sales Chart --- */
+  new Chart(document.getElementById('stackedSalesChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: ['2025 Orders', '2026 Orders'],
+      datasets: [
+        { label: 'Lithography', data: [528, 1232], backgroundColor: '#3B82F6', borderRadius: 4, borderSkipped: false },
+        { label: 'EO Wafer Test', data: [89, 208], backgroundColor: '#10B981', borderRadius: 4, borderSkipped: false },
+        { label: 'Insp / Metro', data: [27, 64], backgroundColor: '#0EA5E9', borderRadius: 4, borderSkipped: false },
+        { label: 'Fiber Attach', data: [25, 59], backgroundColor: '#F59E0B', borderRadius: 4, borderSkipped: false },
+        { label: 'Bonders', data: [9, 21], backgroundColor: '#8B5CF6', borderRadius: 4, borderSkipped: false }
+      ]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      scales: {
+        x: { ...CHART_DEFAULTS.scales.x, stacked: true },
+        y: { ...CHART_DEFAULTS.scales.y, stacked: true, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => '$'+v+'M' } }
+      },
+      plugins: { ...CHART_DEFAULTS.plugins, legend: { display: true, position: 'bottom', labels: { ...CHART_DEFAULTS.plugins.legend.labels, padding: 10 } } }
+    }
+  });
+
+  /* --- SLIDE 11: Share Pie --- */
+  new Chart(document.getElementById('sharePieChart').getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Litho 78%', 'EO Test 13%', 'Insp 4%', 'Fiber 4%', 'Bond 1%'],
+      datasets: [{
+        data: [1760, 298, 91, 84, 30],
+        backgroundColor: ['#3B82F6', '#10B981', '#0EA5E9', '#F59E0B', '#8B5CF6'],
+        borderWidth: 2, borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '60%',
+      plugins: {
+        legend: { position: 'right', labels: { font: { family: 'Inter', size: 10 }, color: '#4A4A5A', padding: 8, boxWidth: 10 } },
+        tooltip: { backgroundColor: '#1A1A2E', titleFont: { family: 'Inter', size: 11 }, bodyFont: { family: 'Inter', size: 10 }, padding: 8, cornerRadius: 4 }
+      }
+    }
+  });
+
+  /* --- SLIDE 12: Phasing Chart --- */
+  new Chart(document.getElementById('phasingChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: ['Litho', 'EO Test', 'Insp/Metro', 'Fiber Attach', 'Bonders'],
+      datasets: [
+        { label: '2025 (30%)', data: [6.6, 35.7, 7.8, 16.8, 3], backgroundColor: '#93C5FD', borderRadius: 4, borderSkipped: false },
+        { label: '2026 (70%)', data: [15.4, 83.3, 18.2, 39.2, 7], backgroundColor: '#3B82F6', borderRadius: 4, borderSkipped: false }
+      ]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      scales: {
+        x: { ...CHART_DEFAULTS.scales.x, stacked: true },
+        y: { ...CHART_DEFAULTS.scales.y, stacked: true, title: { display: true, text: 'Units / Lines', font: { family: 'Inter', size: 11 }, color: '#6B7280' } }
+      },
+      plugins: { ...CHART_DEFAULTS.plugins, legend: { display: true, position: 'bottom' } }
+    }
+  });
+
+  /* --- SLIDE 13: Scenario Chart --- */
+  new Chart(document.getElementById('scenarioChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: ['Bear (65% yield)', 'Base (50% yield)', 'Bull (35% yield)'],
+      datasets: [{
+        label: 'Total Equipment Pool ($M)',
+        data: [1650, 2263, 3229],
+        backgroundColor: ['#10B981', '#3B82F6', '#DC2626'],
+        borderRadius: 6, borderSkipped: false
+      }]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      plugins: { ...CHART_DEFAULTS.plugins, legend: { display: false } },
+      scales: {
+        x: { ...CHART_DEFAULTS.scales.x },
+        y: { ...CHART_DEFAULTS.scales.y, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => '$'+v+'M' } }
+      }
+    }
+  });
+
+}); // end DOMContentLoaded
+
+/* ============================================================
+   PRESENTATION ENGINE
+============================================================ */
+(function () {
+  'use strict';
+  const SLIDE_W = 1280, SLIDE_H = 720;
+  let currentIndex = 0, slides = [], hintTimeout = null;
+
+  const presentation = document.querySelector('.presentation');
+  const counterEl    = document.getElementById('slide-counter');
+  const progressFill = document.getElementById('progress-fill');
+  const prevBtn      = document.getElementById('prev');
+  const nextBtn      = document.getElementById('next');
+  const fsBtn        = document.getElementById('fullscreen-btn');
+  const keyHint      = document.getElementById('key-hint');
+
+  function scalePresentation() {
+    if (!presentation) return;
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const scale  = Math.min(vw / SLIDE_W, vh / SLIDE_H);
+    const offsetX = Math.round((vw - SLIDE_W * scale) / 2);
+    const offsetY = Math.round((vh - SLIDE_H * scale) / 2);
+    presentation.style.transform       = `scale(${scale})`;
+    presentation.style.transformOrigin = 'top left';
+    presentation.style.position        = 'absolute';
+    presentation.style.left            = offsetX + 'px';
+    presentation.style.top             = offsetY + 'px';
+  }
+
+  function showSlide(index) {
+    const total = slides.length;
+    if (total === 0) return;
+    index = ((index % total) + total) % total;
+    currentIndex = index;
+    slides.forEach((s, i) => s.classList.toggle('active', i === index));
+    if (counterEl) counterEl.textContent = (index + 1) + ' / ' + total;
+    if (progressFill) {
+      const pct = total > 1 ? (index / (total - 1)) * 100 : 100;
+      progressFill.style.width = pct + '%';
+    }
+  }
+
+  function goNext() { showSlide(currentIndex + 1); }
+  function goPrev() { showSlide(currentIndex - 1); }
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+    else document.exitFullscreen().catch(() => {});
+  }
+
+  document.addEventListener('fullscreenchange', () => {
+    if (fsBtn) { fsBtn.textContent = document.fullscreenElement ? '✕' : '⛶'; }
+    setTimeout(scalePresentation, 50);
+  });
+
+  document.addEventListener('keydown', e => {
+    switch (e.key) {
+      case 'ArrowRight': case 'ArrowDown': case ' ': e.preventDefault(); goNext(); break;
+      case 'ArrowLeft':  case 'ArrowUp':             e.preventDefault(); goPrev(); break;
+      case 'f': case 'F': toggleFullscreen(); break;
+      case 'Home': e.preventDefault(); showSlide(0); break;
+      case 'End':  e.preventDefault(); showSlide(slides.length - 1); break;
+    }
+  });
+
+  let touchStartX = 0, touchStartY = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; }, { passive: true });
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 48) { if (dx < 0) goNext(); else goPrev(); }
+  }, { passive: true });
+
+  if (prevBtn) prevBtn.addEventListener('click', goPrev);
+  if (nextBtn) nextBtn.addEventListener('click', goNext);
+  if (fsBtn)   fsBtn.addEventListener('click', toggleFullscreen);
+
+  var resizeTimer;
+  window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(scalePresentation, 30); });
+
+  function init() {
+    slides = Array.from(document.querySelectorAll('.slide'));
+    if (!slides.some(s => s.classList.contains('active'))) slides[0].classList.add('active');
+    currentIndex = slides.findIndex(s => s.classList.contains('active'));
+    if (currentIndex < 0) currentIndex = 0;
+    scalePresentation();
+    showSlide(currentIndex);
+    if (keyHint) {
+      keyHint.style.opacity = '1';
+      clearTimeout(hintTimeout);
+      hintTimeout = setTimeout(() => { keyHint.style.opacity = '0'; }, 3000);
+    }
+    console.log('[deck] ' + slides.length + ' slides loaded.');
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+</body>
+</html>
